@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Connections</string>
+    <string name="description">Connections Desc</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+</resources>
