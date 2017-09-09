@@ -81,7 +81,10 @@ void Updater::advance(float dt)
 		float lengthSq = diff.lengthSq();
 		if(lengthSq > it.maxDistanceSq)
 		{
-			float over = std::min(diff.length() - it.maxDistance, m_maxForce);
+			float length = diff.length();
+			float over = std::min(length - it.maxDistance, m_maxForce);
+			it.tension = m_maxForce / length;
+
 			diff.normalize();
 			diff *= over;
 			m_points[it.i1].force -= diff;
@@ -89,12 +92,16 @@ void Updater::advance(float dt)
 		}
 		else if(lengthSq < it.minDistanceSq)
 		{
-			float under = std::min(it.minDistance - diff.length(), m_maxForce);
+			float length = diff.length();
+			float under = std::min(it.minDistance - length, m_maxForce);
+			it.tension = m_maxForce / length;
+
 			diff.normalize();
 			diff *= under;
 			m_points[it.i1].force += diff;
 			m_points[it.i2].force -= diff;
-		}
+		} else
+			it.tension = 0.0f;
 	}
 
 	for(auto& it : m_points)
@@ -105,10 +112,14 @@ void Updater::advance(float dt)
 
 	{
 		std::lock_guard<std::mutex> _(m_mutex);
+
 		if(m_backupPoints.size() != m_points.size())
 			m_backupPoints.resize(m_points.size());
-
 		memcpy(&m_backupPoints[0], &m_points[0], sizeof(Point) * m_points.size());
+
+		if(m_backupConnections.size() != m_connections.size())
+			m_backupConnections.resize(m_connections.size());
+		memcpy(&m_backupConnections[0], &m_connections[0], sizeof(Connection) * m_backupConnections.size());
 	}
 }
 

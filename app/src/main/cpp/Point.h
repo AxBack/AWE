@@ -17,4 +17,5 @@ struct Connection
 	float maxDistance;
 	float minDistanceSq;
 	float maxDistanceSq;
+	float tension;
 };

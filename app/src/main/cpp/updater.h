@@ -29,6 +29,7 @@ private:
 	point_vec		m_backupPoints;
 
 	connection_vec	m_connections;
+	connection_vec	m_backupConnections;
 
 	instance_vec 	m_instances;
 
@@ -50,19 +51,30 @@ public:
 	{
 		m_id = sThreadCounter;
 		++sThreadCounter;
-		m_points.push_back({{0,500,1}, 50, 0, {0,0,0}});
-		m_points.push_back({{500,-500,1}, 50, 0, {0,0,0}});
-		m_points.push_back({{-500,-500,1}, 50, 0, {0,0,0}});
-		addConnection(0,1, 450, 550);
-		addConnection(1,2, 450, 550);
-		addConnection(0,2, 450, 550);
+
+		m_points.push_back({{0,250,1}, 50, 0, {0,0,0}});
+
+		add({500,-250,1}, 50, 0);
+		add({-500,-250,1}, 50, 0);
+
+		addConnection(1,2, 490.0f, 510.0f);
 		LOGI("Engine( Created: %d )", m_id);
+	}
+
+	void add(Vector3 point, float size, UINT connectedTo)
+	{
+		m_points.push_back({point, size, 0, {0,0,0}});
+		Vector3 diff = point - m_points[connectedTo].position;
+		float length= diff.length();
+
+		addConnection(connectedTo, m_points.size()-1, length-10.0f, length + 10.0f);
 	}
 
 	void addConnection(UINT i1, UINT i2, float minDistance, float maxDistance)
 	{
 		m_connections.push_back({i1, i2, minDistance, maxDistance,
-								 minDistance * minDistance, maxDistance * maxDistance});
+								 minDistance * minDistance, maxDistance * maxDistance,
+								 0.0f});
 	}
 
 	virtual ~Updater()
