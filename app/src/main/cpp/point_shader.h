@@ -7,7 +7,7 @@
 #include "vertex.h"
 #include "mesh.h"
 
-class ItemShader
+class PointShader
 {
 private:
 
@@ -60,13 +60,13 @@ private:
 
 public:
 
-	ItemShader()
+	PointShader()
 		: m_program(0)
 		, m_vao(0)
 	{
 	}
 
-	virtual ~ItemShader()
+	virtual ~PointShader()
 	{
 		release();
 	}

@@ -18,7 +18,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/engine.cpp
              src/main/cpp/matrix.cpp
              src/main/cpp/vector3.cpp
-             src/main/cpp/item_shader.cpp
+             src/main/cpp/point_shader.cpp
+             src/main/cpp/connection_shader.cpp
              src/main/cpp/updater.cpp
              )
 

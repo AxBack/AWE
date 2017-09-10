@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "vector3.h"
-#include "Point.h"
+#include "point.h"
 #include "vertex.h"
 #include "mesh.h"
 #include <vector>
@@ -17,7 +17,8 @@ private:
 
 	typedef std::vector<Point> point_vec;
 	typedef std::vector<Connection> connection_vec;
-	typedef std::vector<Instance> instance_vec;
+	typedef std::vector<PointInstance> point_instance_vec;
+	typedef std::vector<ConnectionInstance> connection_instance_vec;
 
 	UINT			m_id;
 
@@ -31,7 +32,9 @@ private:
 	connection_vec	m_connections;
 	connection_vec	m_backupConnections;
 
-	instance_vec 	m_instances;
+	point_instance_vec 	m_pointInstances;
+	connection_instance_vec m_connectionInstances;
+
 
 	float 			m_maxForce;
 	float 			m_friction;
@@ -42,6 +45,9 @@ private:
 	void run();
 
 	void advance(float dt);
+
+	void add(Vector3 point, float size, UINT connectedTo);
+	void addConnection(UINT i1, UINT i2, float minDistance, float maxDistance);
 
 public:
 
@@ -61,22 +67,6 @@ public:
 		LOGI("Engine( Created: %d )", m_id);
 	}
 
-	void add(Vector3 point, float size, UINT connectedTo)
-	{
-		m_points.push_back({point, size, 0, {0,0,0}});
-		Vector3 diff = point - m_points[connectedTo].position;
-		float length= diff.length();
-
-		addConnection(connectedTo, m_points.size()-1, length-10.0f, length + 10.0f);
-	}
-
-	void addConnection(UINT i1, UINT i2, float minDistance, float maxDistance)
-	{
-		m_connections.push_back({i1, i2, minDistance, maxDistance,
-								 minDistance * minDistance, maxDistance * maxDistance,
-								 0.0f});
-	}
-
 	virtual ~Updater()
 	{
 		stop();
@@ -94,5 +84,6 @@ public:
 		stop();
 	}
 
-	bool updateInstances(Mesh<Vertex, Instance>& mesh);
+	bool updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
+						 Mesh<Vertex, ConnectionInstance>& connectionMesh);
 };
