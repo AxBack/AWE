@@ -6,27 +6,34 @@
 #include "matrix.h"
 #include "pch.h"
 
-#include "item_shader.h"
+#include "point_shader.h"
 #include "updater.h"
 #include "mesh.h"
 #include "vertex.h"
+#include "connection_shader.h"
 
 
 class Engine
 {
 private:
 
+	typedef Mesh<Vertex, PointInstance> PointMesh;
+	typedef Mesh<Vertex, ConnectionInstance> ConnectionMesh;
+
 	static UINT sThreadCounter;
 
-	UINT					m_id;
+	UINT				m_id;
 
-	Updater					m_updater;
+	Updater				m_updater;
 
-	ItemShader 				m_itemShader;
-	Mesh<Vertex, Instance> 	m_mesh;
+	PointShader 		m_pointShader;
+	PointMesh 			m_pointMesh;
 
-	Matrix          		m_viewProjection;
-	GLint					m_viewport[4];
+	ConnectionShader 	m_connectionShader;
+	ConnectionMesh 		m_connectionMesh;
+
+	Matrix          	m_viewProjection;
+	GLint				m_viewport[4];
 
 public:
 

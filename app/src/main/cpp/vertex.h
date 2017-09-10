@@ -2,10 +2,15 @@
 
 struct Vertex
 {
-	GLfloat x,y,z;
+	GLfloat x,y,z, tag;
 };
 
-struct Instance
+struct PointInstance
 {
 	GLfloat x,y,z, size;
+};
+
+struct ConnectionInstance
+{
+	GLfloat startx,starty,startz, endx,endy,endz, tension;
 };

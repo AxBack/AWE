@@ -71,6 +71,7 @@ public:
 									GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
 		memcpy(p, pInstances, size);
 		glUnmapBuffer(GL_ARRAY_BUFFER);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		m_nrInstances = nrInstances;
 	}
 

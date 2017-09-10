@@ -83,7 +83,7 @@ void Updater::advance(float dt)
 		{
 			float length = diff.length();
 			float over = std::min(length - it.maxDistance, m_maxForce);
-			it.tension = m_maxForce / length;
+			it.tension = -(over / m_maxForce);
 
 			diff.normalize();
 			diff *= over;
@@ -94,7 +94,7 @@ void Updater::advance(float dt)
 		{
 			float length = diff.length();
 			float under = std::min(it.minDistance - length, m_maxForce);
-			it.tension = m_maxForce / length;
+			it.tension = (under / m_maxForce);
 
 			diff.normalize();
 			diff *= under;
@@ -123,23 +123,60 @@ void Updater::advance(float dt)
 	}
 }
 
-bool Updater::updateInstances(Mesh<Vertex, Instance>& mesh)
+bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
+							  Mesh<Vertex, ConnectionInstance>& connectionMesh)
 {
 	{
 		std::lock_guard<std::mutex> _(m_mutex);
-		if(m_instances.size() != m_backupPoints.size())
-			m_instances.resize(m_backupPoints.size());
+		if(m_pointInstances.size() != m_backupPoints.size())
+			m_pointInstances.resize(m_backupPoints.size());
 
 		for(int i = 0; i < m_backupPoints.size(); ++i)
 		{
-			m_instances[i].x = m_backupPoints[i].position.x;
-			m_instances[i].y = m_backupPoints[i].position.y;
-			m_instances[i].z = m_backupPoints[i].position.z;
-			m_instances[i].size = m_backupPoints[i].size;
+			m_pointInstances[i].x = m_backupPoints[i].position.x;
+			m_pointInstances[i].y = m_backupPoints[i].position.y;
+			m_pointInstances[i].z = m_backupPoints[i].position.z;
+			m_pointInstances[i].size = m_backupPoints[i].size;
+		}
+
+		if(m_connectionInstances.size() != m_backupConnections.size())
+			m_connectionInstances.resize(m_backupConnections.size());
+
+		for(int i = 0; i < m_backupConnections.size(); ++i)
+		{
+			const Point& p1 = m_backupPoints[m_backupConnections[i].i1];
+			const Point& p2 = m_backupPoints[m_backupConnections[i].i2];
+
+			m_connectionInstances[i].startx = p1.position.x;
+			m_connectionInstances[i].starty = p1.position.y;
+			m_connectionInstances[i].startz = p1.position.z;
+
+			m_connectionInstances[i].endx = p2.position.x;
+			m_connectionInstances[i].endy = p2.position.y;
+			m_connectionInstances[i].endz = p2.position.z;
+
+			m_connectionInstances[i].tension = m_backupConnections[i].tension;
 		}
 	}
 
-	mesh.updateInstances(m_instances.size(), &m_instances[0]);
+	pointMesh.updateInstances(m_pointInstances.size(), &m_pointInstances[0]);
+	connectionMesh.updateInstances(m_connectionInstances.size(), &m_connectionInstances[0]);
 
 	return true;
+}
+
+void Updater::add(Vector3 point, float size, UINT connectedTo)
+{
+	m_points.push_back({point, size, 0, {0,0,0}});
+	Vector3 diff = point - m_points[connectedTo].position;
+	float length= diff.length();
+
+	addConnection(connectedTo, m_points.size()-1, length-10.0f, length + 10.0f);
+}
+
+void Updater::addConnection(UINT i1, UINT i2, float minDistance, float maxDistance)
+{
+	m_connections.push_back({i1, i2, minDistance, maxDistance,
+							 minDistance * minDistance, maxDistance * maxDistance,
+							 0.0f});
 }

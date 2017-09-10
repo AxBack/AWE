@@ -1,11 +1,11 @@
-#include "item_shader.h"
+#include "connection_shader.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-bool ItemShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
+bool ConnectionShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 {
 	std::string file;
-	if(!loadFile(pAssetManager, "shaders/ItemShader.vs", file))
+	if(!loadFile(pAssetManager, "shaders/ConnectionShader.vs", file))
 		return false;
 
 	const char* pFile = file.c_str();
@@ -16,7 +16,7 @@ bool ItemShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 	if(!verifyShader(vs))
 		return false;
 
-	if(!loadFile(pAssetManager, "shaders/ItemShader.ps", file))
+	if(!loadFile(pAssetManager, "shaders/ConnectionShader.ps", file))
 		return false;
 
 	pFile = file.c_str();
@@ -54,7 +54,7 @@ bool ItemShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 	return true;
 }
 
-void ItemShader::bindTo(const IMesh& mesh)
+void ConnectionShader::bindTo(const IMesh& mesh)
 {
 	if(m_vao <= 0)
 		glGenVertexArrays(1, &m_vao);
@@ -67,15 +67,22 @@ void ItemShader::bindTo(const IMesh& mesh)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(12));
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.getDynamicBuffer());
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Instance), 0);
-	glVertexAttribDivisor(1, 1);
-
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Instance), BUFFER_OFFSET(12));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), 0);
 	glVertexAttribDivisor(2, 1);
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(12));
+	glVertexAttribDivisor(3, 1);
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(24));
+	glVertexAttribDivisor(4, 1);
 
 	glBindVertexArray(0);
 }
