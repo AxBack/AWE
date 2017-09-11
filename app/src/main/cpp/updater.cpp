@@ -18,7 +18,7 @@ bool Updater::init(float updateFrequency)
 
 void Updater::start()
 {
-	std::lock_guard<std::mutex> _(m_mutex);
+	std::lock_guard<std::mutex> _(m_pointMutex);
 	if(m_running)
 		return;
 
@@ -33,7 +33,7 @@ void Updater::stop()
 		return;
 
 	{
-		std::lock_guard<std::mutex> _(m_mutex);
+		std::lock_guard<std::mutex> _(m_pointMutex);
 		m_running = false;
 	}
 
@@ -64,7 +64,7 @@ void Updater::run()
 
 		advance(dt);
 
-		std::lock_guard<std::mutex> _(m_mutex);
+		std::lock_guard<std::mutex> _(m_pointMutex);
 		if(!m_running)
 			break;
 	}
@@ -74,6 +74,17 @@ void Updater::advance(float dt)
 {
 	if(m_points.size() == 0)
 		return;
+
+	event_vec events;
+	{
+		std::lock_guard<std::mutex> _(m_eventMutex);
+		events.swap(m_events);
+	}
+
+	for(auto& it : events)
+	{
+
+	}
 
 	for(auto& it : m_connections)
 	{
@@ -106,12 +117,21 @@ void Updater::advance(float dt)
 
 	for(auto& it : m_points)
 	{
+		if(it.position.lengthSq() > m_maxOffsetSq)
+		{
+			float length = it.position.length();
+			float over = std::min(length - m_maxOffset, m_maxForce);
+			Vector3 diff = it.position;
+			diff.normalize();
+			it.force += diff * over;
+		}
+
 		it.position += it.force * dt;
 		it.force -= it.force * ((1.0f - m_friction) * dt);
 	}
 
 	{
-		std::lock_guard<std::mutex> _(m_mutex);
+		std::lock_guard<std::mutex> _(m_pointMutex);
 
 		if(m_backupPoints.size() != m_points.size())
 			m_backupPoints.resize(m_points.size());
@@ -127,7 +147,8 @@ bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 							  Mesh<Vertex, ConnectionInstance>& connectionMesh)
 {
 	{
-		std::lock_guard<std::mutex> _(m_mutex);
+		std::lock_guard<std::mutex> _(m_pointMutex);
+
 		if(m_pointInstances.size() != m_backupPoints.size())
 			m_pointInstances.resize(m_backupPoints.size());
 
@@ -141,7 +162,6 @@ bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 			m_pointInstances[i].r = m_backupPoints[i].color.x;
 			m_pointInstances[i].g = m_backupPoints[i].color.y;
 			m_pointInstances[i].b = m_backupPoints[i].color.z;
-
 		}
 
 		if(m_connectionInstances.size() != m_backupConnections.size())
@@ -192,4 +212,10 @@ void Updater::addConnection(UINT i1, UINT i2, float minDistance, float maxDistan
 	m_connections.push_back({i1, i2, minDistance, maxDistance,
 							 minDistance * minDistance, maxDistance * maxDistance,
 							 0.0f});
+}
+
+void Updater::rayTest(const Vector3& start, const Vector3& end)
+{
+	std::lock_guard<std::mutex> _(m_eventMutex);
+	m_events.push_back({start, end});
 }

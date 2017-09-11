@@ -33,6 +33,7 @@ private:
 	ConnectionMesh 		m_connectionMesh;
 
 	Matrix          	m_viewProjection;
+	Matrix				m_inverseViewProjection;
 	GLint				m_viewport[4];
 
 public:

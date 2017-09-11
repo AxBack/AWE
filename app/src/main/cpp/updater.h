@@ -13,16 +13,26 @@
 class Updater
 {
 private:
+
+	struct Ray
+	{
+		Vector3 start, end;
+	};
+
 	static UINT sThreadCounter;
 
 	typedef std::vector<Point> point_vec;
 	typedef std::vector<Connection> connection_vec;
 	typedef std::vector<PointInstance> point_instance_vec;
 	typedef std::vector<ConnectionInstance> connection_instance_vec;
+	typedef std::vector<Ray> event_vec;
 
 	UINT			m_id;
 
-	std::mutex		m_mutex;
+	std::mutex		m_eventMutex;
+	event_vec		m_events;
+
+	std::mutex		m_pointMutex;
 	bool 			m_running;
 	std::thread		m_workThread;
 
@@ -37,6 +47,9 @@ private:
 
 	float 	m_maxForce;
 	float 	m_friction;
+
+	float	m_maxOffset;
+	float 	m_maxOffsetSq;
 
 	void start();
 	void stop();
@@ -53,6 +66,8 @@ public:
 	Updater()
 	: m_maxForce(500.0f)
 	, m_friction(0.05f)
+  	, m_maxOffset(1000.0f)
+	, m_maxOffsetSq(m_maxOffset * m_maxOffset)
 	{
 		m_id = sThreadCounter;
 		++sThreadCounter;
@@ -85,4 +100,6 @@ public:
 
 	bool updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 						 Mesh<Vertex, ConnectionInstance>& connectionMesh);
+
+	void rayTest(const Vector3& start, const Vector3& end);
 };

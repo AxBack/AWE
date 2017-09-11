@@ -116,7 +116,7 @@ bool Engine::render()
 void Engine::updateSize(int width, int height)
 {
 	LOGI("Engine(size updated: %d, %d )", width, height);
-	m_viewport[0] = m_viewport[1];
+	m_viewport[0] = m_viewport[1] = 0;
 	m_viewport[2] = width;
 	m_viewport[3] = height;
 
@@ -128,9 +128,12 @@ void Engine::updateSize(int width, int height)
 	Matrix::frustum(projection, -halfWidth, halfWidth, -halfHeight, halfHeight, 10, 110);
 	Matrix::lookAt(view, {0, 0, -10.0f}, {0, 0, 1}, {0, 1, 0});
 	m_viewProjection = projection * view;
+	Matrix::invert(m_viewProjection, m_inverseViewProjection);
 }
 
 void Engine::touch(float x, float y)
 {
-
+	Vector3 start = {x - m_viewport[2] * 0.5f, y - m_viewport[3] * 0.5f, 0.0f};
+	Vector3 end = m_inverseViewProjection.project(start);
+	m_updater.rayTest(start, end);
 }
