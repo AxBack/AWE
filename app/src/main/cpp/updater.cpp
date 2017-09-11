@@ -123,7 +123,7 @@ void Updater::advance(float dt)
 			float over = std::min(length - m_maxOffset, m_maxForce);
 			Vector3 diff = it.position;
 			diff.normalize();
-			it.force += diff * over;
+			it.force -= diff * over;
 		}
 
 		it.position += it.force * dt;
