@@ -26,9 +26,15 @@ bool ConnectionShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 		return false;
 
 	m_program = glCreateProgram();
-	glAttachShader(m_program, ps);
 	glAttachShader(m_program, vs);
+	glAttachShader(m_program, ps);
 	glLinkProgram(m_program);
+
+	glDetachShader(m_program, vs);
+	glDetachShader(m_program, ps);
+
+	glDeleteShader(vs);
+	glDeleteShader(ps);
 
 	GLint param = 0;
 	glGetProgramiv(m_program, GL_LINK_STATUS, &param);
@@ -41,9 +47,6 @@ bool ConnectionShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 		SAFE_DELETE_ARRAY(pLog);
 		return false;
 	}
-
-	glDeleteShader(vs);
-	glDeleteShader(ps);
 
 	m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
 
