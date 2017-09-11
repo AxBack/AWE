@@ -137,6 +137,11 @@ bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 			m_pointInstances[i].y = m_backupPoints[i].position.y;
 			m_pointInstances[i].z = m_backupPoints[i].position.z;
 			m_pointInstances[i].size = m_backupPoints[i].size;
+
+			m_pointInstances[i].r = m_backupPoints[i].color.x;
+			m_pointInstances[i].g = m_backupPoints[i].color.y;
+			m_pointInstances[i].b = m_backupPoints[i].color.z;
+
 		}
 
 		if(m_connectionInstances.size() != m_backupConnections.size())
@@ -156,6 +161,14 @@ bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 			m_connectionInstances[i].endz = p2.position.z;
 
 			m_connectionInstances[i].tension = m_backupConnections[i].tension;
+
+			m_connectionInstances[i].startr = p1.color.x;
+			m_connectionInstances[i].startg = p1.color.y;
+			m_connectionInstances[i].startb = p1.color.z;
+
+			m_connectionInstances[i].endr = p2.color.x;
+			m_connectionInstances[i].endg = p2.color.y;
+			m_connectionInstances[i].endb = p2.color.z;
 		}
 	}
 
@@ -165,9 +178,9 @@ bool Updater::updateInstances(Mesh<Vertex, PointInstance>& pointMesh,
 	return true;
 }
 
-void Updater::add(Vector3 point, float size, UINT connectedTo)
+void Updater::add(Vector3 point, Vector3 color, float size, UINT connectedTo)
 {
-	m_points.push_back({point, size, 0, {0,0,0}});
+	m_points.push_back({point, color, size, 0, {0,0,0}});
 	Vector3 diff = point - m_points[connectedTo].position;
 	float length= diff.length();
 

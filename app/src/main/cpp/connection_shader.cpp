@@ -1,7 +1,5 @@
 #include "connection_shader.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
 bool ConnectionShader::init(AAssetManager* pAssetManager, const IMesh& mesh)
 {
 	std::string file;
@@ -68,7 +66,7 @@ void ConnectionShader::bindTo(const IMesh& mesh)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(12));
+	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(3));
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.getDynamicBuffer());
 
@@ -77,12 +75,20 @@ void ConnectionShader::bindTo(const IMesh& mesh)
 	glVertexAttribDivisor(2, 1);
 
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(12));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(3));
 	glVertexAttribDivisor(3, 1);
 
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(24));
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(6));
 	glVertexAttribDivisor(4, 1);
+
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(7));
+	glVertexAttribDivisor(5, 1);
+
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, sizeof(ConnectionInstance), BUFFER_OFFSET(10));
+	glVertexAttribDivisor(6, 1);
 
 	glBindVertexArray(0);
 }

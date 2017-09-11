@@ -5,6 +5,7 @@
 struct Point
 {
 	Vector3 position;
+	Vector3 color;
 	float size;
 	float time;
 	Vector3 force;

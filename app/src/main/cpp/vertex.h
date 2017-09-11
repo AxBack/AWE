@@ -8,9 +8,11 @@ struct Vertex
 struct PointInstance
 {
 	GLfloat x,y,z, size;
+	GLfloat r,g,b;
 };
 
 struct ConnectionInstance
 {
 	GLfloat startx,starty,startz, endx,endy,endz, tension;
+	GLfloat startr, startg, startb, endr, endg, endb;
 };

@@ -32,7 +32,7 @@ private:
 	connection_vec	m_connections;
 	connection_vec	m_backupConnections;
 
-	point_instance_vec 	m_pointInstances;
+	point_instance_vec 		m_pointInstances;
 	connection_instance_vec m_connectionInstances;
 
 	float 	m_maxForce;
@@ -45,7 +45,7 @@ private:
 
 	void advance(float dt);
 
-	void add(Vector3 point, float size, UINT connectedTo);
+	void add(Vector3 point, Vector3 color, float size, UINT connectedTo);
 	void addConnection(UINT i1, UINT i2, float minDistance, float maxDistance);
 
 public:
@@ -57,10 +57,10 @@ public:
 		m_id = sThreadCounter;
 		++sThreadCounter;
 
-		m_points.push_back({{0,250,1}, 50, 0, {0,0,0}});
+		m_points.push_back({{0,250,1}, {1,0,0}, 50, 0, {0,0,0}});
 
-		add({500,-250,1}, 50, 0);
-		add({-500,-250,1}, 50, 0);
+		add({500,-250,1}, {0,1,0}, 50, 0);
+		add({-500,-250,1}, {0,0,1}, 50, 0);
 
 		addConnection(1,2, 490.0f, 510.0f);
 		LOGI("Engine( Created: %d )", m_id);

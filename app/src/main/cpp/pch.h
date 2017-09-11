@@ -8,6 +8,8 @@
 #define SAFE_DELETE( p ) { if( p ) { delete ( p ); ( p ) = nullptr; } }
 #define SAFE_DELETE_ARRAY( p ) { if( p ) { delete [] ( p ); ( p ) = nullptr; } }
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i * 4))
+
 #define UINT unsigned int
 
 #define LOG_TAG "Connections"
