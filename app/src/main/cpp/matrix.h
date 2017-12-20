@@ -27,7 +27,7 @@ private:
 #define M23 14
 #define M33 15
 
-	float mData[16];
+	float m_data[16];
 
 public:
 
@@ -36,17 +36,22 @@ public:
 	}
 
 	const float* const data() const
-	{ return mData; }
+	{ return m_data; }
 
 	Matrix operator*(const Matrix& rhs)
 	{
 		return multiply(*this, rhs);
 	}
 
-	float operator[](const int index) const
+	float& operator[](const int index)
 	{
-		return mData[index];
+		return m_data[index];
 	}
+
+    float operator[](const int index) const
+    {
+        return m_data[index];
+    }
 
 	Vector3 transform(const Vector3& point)
 	{
@@ -60,55 +65,67 @@ public:
 
 	static void identity(Matrix& matrix)
 	{
-		memset(matrix.mData, 0, sizeof(matrix.mData));
-		matrix.mData[M00] = matrix.mData[M11] = matrix.mData[M22] = matrix.mData[M33] = 1.0f;
+		memset(matrix.m_data, 0, sizeof(matrix));
+		matrix[M00] = matrix[M11] = matrix[M22] = matrix[M33] = 1.0f;
 	}
 
 	static Matrix multiply(const Matrix& left, const Matrix& right)
 	{
 		Matrix ret;
 
-		const float* pL = left.mData;
-		const float* pR = right.mData;
+		const float* pL = left.m_data;
+		const float* pR = right.m_data;
 
-		ret.mData[M00] =
-				pR[M00] * pL[M00] + pR[M10] * pL[M01] + pR[M20] * pL[M02] + pR[M30] * pL[M03];
-		ret.mData[M10] =
-				pR[M00] * pL[M10] + pR[M10] * pL[M11] + pR[M20] * pL[M12] + pR[M30] * pL[M13];
-		ret.mData[M20] =
-				pR[M00] * pL[M20] + pR[M10] * pL[M21] + pR[M20] * pL[M22] + pR[M30] * pL[M23];
-		ret.mData[M30] =
-				pR[M00] * pL[M30] + pR[M10] * pL[M31] + pR[M20] * pL[M32] + pR[M30] * pL[M33];
+		ret[M00] = pR[M00] * pL[M00] + pR[M10] * pL[M01] + pR[M20] * pL[M02] + pR[M30] * pL[M03];
+		ret[M10] = pR[M00] * pL[M10] + pR[M10] * pL[M11] + pR[M20] * pL[M12] + pR[M30] * pL[M13];
+		ret[M20] = pR[M00] * pL[M20] + pR[M10] * pL[M21] + pR[M20] * pL[M22] + pR[M30] * pL[M23];
+		ret[M30] = pR[M00] * pL[M30] + pR[M10] * pL[M31] + pR[M20] * pL[M32] + pR[M30] * pL[M33];
 
-		ret.mData[M01] =
-				pR[M01] * pL[M00] + pR[M11] * pL[M01] + pR[M21] * pL[M02] + pR[M31] * pL[M03];
-		ret.mData[M11] =
-				pR[M01] * pL[M10] + pR[M11] * pL[M11] + pR[M21] * pL[M12] + pR[M31] * pL[M13];
-		ret.mData[M21] =
-				pR[M01] * pL[M20] + pR[M11] * pL[M21] + pR[M21] * pL[M22] + pR[M31] * pL[M23];
-		ret.mData[M31] =
-				pR[M01] * pL[M30] + pR[M11] * pL[M31] + pR[M21] * pL[M32] + pR[M31] * pL[M33];
+		ret[M01] = pR[M01] * pL[M00] + pR[M11] * pL[M01] + pR[M21] * pL[M02] + pR[M31] * pL[M03];
+		ret[M11] = pR[M01] * pL[M10] + pR[M11] * pL[M11] + pR[M21] * pL[M12] + pR[M31] * pL[M13];
+		ret[M21] = pR[M01] * pL[M20] + pR[M11] * pL[M21] + pR[M21] * pL[M22] + pR[M31] * pL[M23];
+		ret[M31] = pR[M01] * pL[M30] + pR[M11] * pL[M31] + pR[M21] * pL[M32] + pR[M31] * pL[M33];
 
-		ret.mData[M02] =
-				pR[M02] * pL[M00] + pR[M12] * pL[M01] + pR[M22] * pL[M02] + pR[M32] * pL[M03];
-		ret.mData[M12] =
-				pR[M02] * pL[M10] + pR[M12] * pL[M11] + pR[M22] * pL[M12] + pR[M32] * pL[M13];
-		ret.mData[M22] =
-				pR[M02] * pL[M20] + pR[M12] * pL[M21] + pR[M22] * pL[M22] + pR[M32] * pL[M23];
-		ret.mData[M32] =
-				pR[M02] * pL[M30] + pR[M12] * pL[M31] + pR[M22] * pL[M32] + pR[M32] * pL[M33];
+		ret[M02] = pR[M02] * pL[M00] + pR[M12] * pL[M01] + pR[M22] * pL[M02] + pR[M32] * pL[M03];
+		ret[M12] = pR[M02] * pL[M10] + pR[M12] * pL[M11] + pR[M22] * pL[M12] + pR[M32] * pL[M13];
+		ret[M22] = pR[M02] * pL[M20] + pR[M12] * pL[M21] + pR[M22] * pL[M22] + pR[M32] * pL[M23];
+		ret[M32] = pR[M02] * pL[M30] + pR[M12] * pL[M31] + pR[M22] * pL[M32] + pR[M32] * pL[M33];
 
-		ret.mData[M03] =
-				pR[M03] * pL[M00] + pR[M13] * pL[M01] + pR[M23] * pL[M02] + pR[M33] * pL[M03];
-		ret.mData[M13] =
-				pR[M03] * pL[M10] + pR[M13] * pL[M11] + pR[M23] * pL[M12] + pR[M33] * pL[M13];
-		ret.mData[M23] =
-				pR[M03] * pL[M20] + pR[M13] * pL[M21] + pR[M23] * pL[M22] + pR[M33] * pL[M23];
-		ret.mData[M33] =
-				pR[M03] * pL[M30] + pR[M13] * pL[M31] + pR[M23] * pL[M32] + pR[M33] * pL[M33];
+		ret[M03] = pR[M03] * pL[M00] + pR[M13] * pL[M01] + pR[M23] * pL[M02] + pR[M33] * pL[M03];
+		ret[M13] = pR[M03] * pL[M10] + pR[M13] * pL[M11] + pR[M23] * pL[M12] + pR[M33] * pL[M13];
+		ret[M23] = pR[M03] * pL[M20] + pR[M13] * pL[M21] + pR[M23] * pL[M22] + pR[M33] * pL[M23];
+		ret[M33] = pR[M03] * pL[M30] + pR[M13] * pL[M31] + pR[M23] * pL[M32] + pR[M33] * pL[M33];
 
 		return ret;
 	}
+
+    static Matrix& perspective(Matrix& m, float fov, float aspect, float zNear, float zFar)
+    {
+        float f = 1.0f / tanf(fov * (static_cast<float>(M_PI) / 360.0f));
+        float rangeRec = 1.0f / (zNear - zFar);
+
+        m[M00] = f / aspect;
+        m[M10] = 0.0f;
+        m[M20] = 0.0f;
+        m[M30] = 0.0f;
+
+        m[M01] = 0.0f;
+        m[M11] = f;
+        m[M21] = 0.0f;
+        m[M31] = 0.0f;
+
+        m[M02] = 0.0f;
+        m[M12] = 0.0f;
+        m[M22] = (zNear - zFar) * rangeRec;
+        m[M32] = -1.0f;
+
+        m[M03] = 0.0f;
+        m[M13] = 0.0f;
+        m[M23] = 2.0f * zFar * zNear * rangeRec;
+        m[M33] = 0.0f;
+
+        return m;
+    }
 
 	static Matrix& frustum(Matrix& m, float left, float right, float bottom, float top, float near,
 						   float far)
@@ -123,22 +140,22 @@ public:
 		float c = (far + near) * depth;
 		float d = 2.0f * (far * near * depth);
 
-		m.mData[M00] = x;
-		m.mData[M11] = y;
-		m.mData[M02] = a;
-		m.mData[M12] = b;
-		m.mData[M22] = c;
-		m.mData[M23] = d;
-		m.mData[M32] = -1.0f;
-		m.mData[M10] = 0.0f;
-		m.mData[M20] = 0.0f;
-		m.mData[M30] = 0.0f;
-		m.mData[M01] = 0.0f;
-		m.mData[M21] = 0.0f;
-		m.mData[M31] = 0.0f;
-		m.mData[M03] = 0.0f;
-		m.mData[M13] = 0.0f;
-		m.mData[M33] = 0.0f;
+		m[M00] = x;
+		m[M11] = y;
+		m[M02] = a;
+		m[M12] = b;
+		m[M22] = c;
+		m[M23] = d;
+		m[M32] = -1.0f;
+		m[M10] = 0.0f;
+		m[M20] = 0.0f;
+		m[M30] = 0.0f;
+		m[M01] = 0.0f;
+		m[M21] = 0.0f;
+		m[M31] = 0.0f;
+		m[M03] = 0.0f;
+		m[M13] = 0.0f;
+		m[M33] = 0.0f;
 
 		return m;
 	}
@@ -146,22 +163,22 @@ public:
 	static Matrix& ortho(Matrix& m, float left, float right, float bottom, float top, float near,
 						 float far)
 	{
-		m.mData[M00] = 2.0f / (right - left);
-		m.mData[M10] = 0.0f;
-		m.mData[M20] = 0.0f;
-		m.mData[M30] = 0.0f;
-		m.mData[M01] = 0.0f;
-		m.mData[M11] = 2.0f / (top - bottom);
-		m.mData[M21] = 0.0f;
-		m.mData[M31] = 0.0f;
-		m.mData[M02] = 0.0f;
-		m.mData[M12] = 0.0f;
-		m.mData[M22] = 2.0f / (far - near);
-		m.mData[M32] = 0.0f;
-		m.mData[M03] = -(right + left) / (right - left);
-		m.mData[M13] = -(top + bottom) / (top - bottom);
-		m.mData[M23] = -(near + far) / (far - near);
-		m.mData[M33] = 1.0f;
+		m[M00] = 2.0f / (right - left);
+		m[M10] = 0.0f;
+		m[M20] = 0.0f;
+		m[M30] = 0.0f;
+		m[M01] = 0.0f;
+		m[M11] = 2.0f / (top - bottom);
+		m[M21] = 0.0f;
+		m[M31] = 0.0f;
+		m[M02] = 0.0f;
+		m[M12] = 0.0f;
+		m[M22] = 2.0f / (far - near);
+		m[M32] = 0.0f;
+		m[M03] = -(right + left) / (right - left);
+		m[M13] = -(top + bottom) / (top - bottom);
+		m[M23] = -(near + far) / (far - near);
+		m[M33] = 1.0f;
 
 		return m;
 	}
@@ -176,22 +193,22 @@ public:
 
 		Vector3 u = s.cross(f);
 
-		m.mData[M00] = s.x;
-		m.mData[M10] = u.x;
-		m.mData[M20] = -f.x;
-		m.mData[M30] = 0.0f;
-		m.mData[M01] = s.y;
-		m.mData[M11] = u.y;
-		m.mData[M21] = -f.y;
-		m.mData[M31] = 0.0f;
-		m.mData[M02] = s.z;
-		m.mData[M12] = u.z;
-		m.mData[M22] = -f.z;
-		m.mData[M32] = 0.0f;
-		m.mData[M03] = 0.0f;
-		m.mData[M13] = 0.0f;
-		m.mData[M23] = 0.0f;
-		m.mData[M33] = 1.0f;
+		m[M00] = s.x;
+		m[M10] = u.x;
+		m[M20] = -f.x;
+		m[M30] = 0.0f;
+		m[M01] = s.y;
+		m[M11] = u.y;
+		m[M21] = -f.y;
+		m[M31] = 0.0f;
+		m[M02] = s.z;
+		m[M12] = u.z;
+		m[M22] = -f.z;
+		m[M32] = 0.0f;
+		m[M03] = 0.0f;
+		m[M13] = 0.0f;
+		m[M23] = 0.0f;
+		m[M33] = 1.0f;
 
 		return translate(m, -eye.x, -eye.y, -eye.z);
 	}
@@ -228,7 +245,7 @@ public:
 	{
 		for(int i = 0; i < 4; ++i)
 		{
-			m.mData[12 + i] += m.mData[i] * x + m.mData[i + 4] * y + m.mData[i + 8] * z;
+			m[12 + i] += m[i] * x + m[i + 4] * y + m[i + 8] * z;
 		}
 		return m;
 	}
@@ -236,22 +253,17 @@ public:
 	static inline float matrix4_det(float* m)
 	{
 		return m[M30] * m[M21] * m[M12] * m[M03] - m[M20] * m[M31] * m[M12] * m[M03] -
-			   m[M30] * m[M11]
-			   * m[M22] * m[M03] + m[M10] * m[M31] * m[M22] * m[M03] +
-			   m[M20] * m[M11] * m[M32] * m[M03] - m[M10]
-												   * m[M21] * m[M32] * m[M03] -
-			   m[M30] * m[M21] * m[M02] * m[M13] + m[M20] * m[M31] * m[M02] * m[M13]
-			   + m[M30] * m[M01] * m[M22] * m[M13] - m[M00] * m[M31] * m[M22] * m[M13] -
-			   m[M20] * m[M01] * m[M32]
-			   * m[M13] + m[M00] * m[M21] * m[M32] * m[M13] + m[M30] * m[M11] * m[M02] * m[M23] -
-			   m[M10] * m[M31]
-			   * m[M02] * m[M23] - m[M30] * m[M01] * m[M12] * m[M23] +
-			   m[M00] * m[M31] * m[M12] * m[M23] + m[M10]
-												   * m[M01] * m[M32] * m[M23] -
-			   m[M00] * m[M11] * m[M32] * m[M23] - m[M20] * m[M11] * m[M02] * m[M33]
-			   + m[M10] * m[M21] * m[M02] * m[M33] + m[M20] * m[M01] * m[M12] * m[M33] -
-			   m[M00] * m[M21] * m[M12]
-			   * m[M33] - m[M10] * m[M01] * m[M22] * m[M33] + m[M00] * m[M11] * m[M22] * m[M33];
+			   m[M30] * m[M11] * m[M22] * m[M03] + m[M10] * m[M31] * m[M22] * m[M03] +
+			   m[M20] * m[M11] * m[M32] * m[M03] - m[M10] * m[M21] * m[M32] * m[M03] -
+			   m[M30] * m[M21] * m[M02] * m[M13] + m[M20] * m[M31] * m[M02] * m[M13] +
+               m[M30] * m[M01] * m[M22] * m[M13] - m[M00] * m[M31] * m[M22] * m[M13] -
+			   m[M20] * m[M01] * m[M32] * m[M13] + m[M00] * m[M21] * m[M32] * m[M13] +
+               m[M30] * m[M11] * m[M02] * m[M23] - m[M10] * m[M31] * m[M02] * m[M23] -
+               m[M30] * m[M01] * m[M12] * m[M23] + m[M00] * m[M31] * m[M12] * m[M23] +
+               m[M10] * m[M01] * m[M32] * m[M23] - m[M00] * m[M11] * m[M32] * m[M23] -
+               m[M20] * m[M11] * m[M02] * m[M33] + m[M10] * m[M21] * m[M02] * m[M33] +
+               m[M20] * m[M01] * m[M12] * m[M33] - m[M00] * m[M21] * m[M12] * m[M33] -
+               m[M10] * m[M01] * m[M22] * m[M33] + m[M00] * m[M11] * m[M22] * m[M33];
 	}
 
 	static bool invert(const Matrix& m, Matrix& out)
