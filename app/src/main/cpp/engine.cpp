@@ -40,16 +40,16 @@ bool Engine::init(AAssetManager* pAssetManager)
 
 	{
 		Vertex vertices[] = {
-				{-10.0f, 0.0f,  0, 0},
-				{10.0f,  0.0f,  0, 0},
-				{-10.0f, 0.25f,  0, 0.7f},
-				{10.0f,  0.25f,  0, 0.7f},
-				{-10.0f, 0.5f,  0, 1},
-				{10.0f,  0.5f,  0, 1},
-				{-10.0f, 0.75f,  0, 0.7f},
-				{10.0f,  0.75f,  0, 0.7f},
-				{-10.0f, 1.0f, 0, 0},
-				{10.0f,  1.0f, 0, 0}
+				{-1.0f, 0.0f,  0, 0},
+				{1.0f,  0.0f,  0, 0},
+				{-1.0f, 0.25f,  0, 0.7f},
+				{1.0f,  0.25f,  0, 0.7f},
+				{-1.0f, 0.5f,  0, 1},
+				{1.0f,  0.5f,  0, 1},
+				{-1.0f, 0.75f,  0, 0.7f},
+				{1.0f,  0.75f,  0, 0.7f},
+				{-1.0f, 1.0f, 0, 0},
+				{1.0f,  1.0f, 0, 0}
 		};
 
 		GLushort indices[] = {
@@ -86,7 +86,7 @@ bool Engine::init(AAssetManager* pAssetManager)
 	glDisable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDisable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBlendEquation(GL_FUNC_ADD);
@@ -125,7 +125,8 @@ void Engine::updateSize(int width, int height)
 	float halfWidth = static_cast<float>(width) * 0.5f;
 	float halfHeight = static_cast<float>(height) * 0.5f;
 
-	Matrix::frustum(projection, -halfWidth, halfWidth, -halfHeight, halfHeight, 10, 110);
+	//Matrix::frustum(projection, -halfWidth, halfWidth, -halfHeight, halfHeight, 10, 110);
+    Matrix::perspective(projection, 90.0f, static_cast<float>(width) / static_cast<float>(height), 10, 110);
 	Matrix::lookAt(view, {0, 0, -10.0f}, {0, 0, 1}, {0, 1, 0});
 	m_viewProjection = projection * view;
 	Matrix::invert(m_viewProjection, m_inverseViewProjection);

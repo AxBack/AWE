@@ -72,12 +72,12 @@ public:
 		m_id = sThreadCounter;
 		++sThreadCounter;
 
-		m_points.push_back({{0,250,1}, {1,0,0}, 50, 0, {0,0,0}});
+		m_points.push_back({{0,25,100}, {1,0,0}, 5, 0, {0,0,0}});
 
-		add({500,-250,1}, {0,1,0}, 50, 0);
-		add({-500,-250,1}, {0,0,1}, 50, 0);
+		add({50,-25,100}, {0,1,0}, 5, 0);
+		add({-50,-25,100}, {0,0,1}, 5, 0);
 
-		addConnection(1,2, 490.0f, 510.0f);
+		addConnection(1,2, 49.0f, 51.0f);
 		LOGI("Engine( Created: %d )", m_id);
 	}
 

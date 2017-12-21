@@ -101,30 +101,10 @@ public:
 
     static Matrix& perspective(Matrix& m, float fov, float aspect, float zNear, float zFar)
     {
-        float f = 1.0f / tanf(fov * (static_cast<float>(M_PI) / 360.0f));
-        float rangeRec = 1.0f / (zNear - zFar);
+        float fh = tanf(fov / 360.0f * static_cast<float>(M_PI)) * zNear;
+        float fw = fh * aspect;
 
-        m[M00] = f / aspect;
-        m[M10] = 0.0f;
-        m[M20] = 0.0f;
-        m[M30] = 0.0f;
-
-        m[M01] = 0.0f;
-        m[M11] = f;
-        m[M21] = 0.0f;
-        m[M31] = 0.0f;
-
-        m[M02] = 0.0f;
-        m[M12] = 0.0f;
-        m[M22] = (zNear - zFar) * rangeRec;
-        m[M32] = -1.0f;
-
-        m[M03] = 0.0f;
-        m[M13] = 0.0f;
-        m[M23] = 2.0f * zFar * zNear * rangeRec;
-        m[M33] = 0.0f;
-
-        return m;
+        return frustum(m, -fw, fw, -fh, fh, zNear, zFar);
     }
 
 	static Matrix& frustum(Matrix& m, float left, float right, float bottom, float top, float near,
