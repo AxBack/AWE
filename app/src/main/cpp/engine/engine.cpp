@@ -1,3 +1,4 @@
 #include "engine.h"
-
-UINT Engine::sThreadCounter = 0;
+namespace Engine {
+     UINT Engine::sThreadCounter = 0;
+ }

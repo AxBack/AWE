@@ -1,19 +1,19 @@
 #include <jni.h>
 
-#include "connections_engine.h"
+#include "connections/engine.h"
 
 #include <map>
 
 int id = 0;
 
-std::map<int, Engine*> engines;
+std::map<int, Engine::Engine*> engines;
 
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_create(JNIEnv* pEnv, jobject thiz, jobject assetManager)
+Java_com_wallpaper_axb_connections_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jobject assetManager)
 {
-	ConnectionsEngine* pEngine = new ConnectionsEngine;
+	Connections::ConnectionsEngine* pEngine = new Connections::ConnectionsEngine;
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
 	if(!pEngine->init(pAssetManager))
 	{

@@ -6,48 +6,47 @@
 #include <mutex>
 #include <atomic>
 
-class Updater
-{
-private:
+namespace Engine {
 
-	static UINT sThreadCounter;
+    class Updater {
+    private:
 
-	UINT			 m_id;
+        static UINT sThreadCounter;
 
-	std::atomic_bool m_running;
-	std::thread		 m_workThread;
+        UINT m_id;
 
-	void start();
-	void stop();
+        std::atomic_bool m_running;
+        std::thread m_workThread;
 
-	void run();
+        void start();
 
-	virtual void advance(float dt) = 0;
+        void stop();
 
-public:
+        void run();
 
-	Updater()
-	: m_running(false)
-	{
-		m_id = sThreadCounter;
-		++sThreadCounter;
-		LOGI("Engine( Created: %d )", m_id);
-	}
+        virtual void advance(float dt) = 0;
 
-	virtual ~Updater()
-	{
-		stop();
-	}
+    public:
 
-	virtual bool init();
+        Updater()
+                : m_running(false) {
+            m_id = sThreadCounter;
+            ++sThreadCounter;
+            LOGI("Engine( Created: %d )", m_id);
+        }
 
-	void resume()
-	{
-		start();
-	}
+        virtual ~Updater() {
+            stop();
+        }
 
-	void pause()
-	{
-		stop();
-	}
-};
+        virtual bool init();
+
+        void resume() {
+            start();
+        }
+
+        void pause() {
+            stop();
+        }
+    };
+}
