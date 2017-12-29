@@ -12,6 +12,7 @@ class NativeEngine {
     public native void pause(int id);
     public native void setSize(int id, int w, int h);
     public native void onTouch(int id, float x, float y);
+    public native void onOffsetChanged(int id, float x, float y);
 
 
     // Used to load the 'native-lib' library on application startup.

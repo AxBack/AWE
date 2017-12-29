@@ -225,6 +225,43 @@ namespace Math {
 				   m[M00] * m[M11] * m[M22] * m[M33];
 		}
 
+        static inline Matrix& setRotate(Matrix& m, float pitch, float yaw, float roll)
+        {
+            pitch *= static_cast<float>(M_PI) / 180.0f;
+            yaw *= static_cast<float>(M_PI) / 180.0f;
+            roll *= static_cast<float>(M_PI) / 180.0f;
+            float cx = cosf(pitch);
+            float sx = sinf(pitch);
+            float cy = cosf(yaw);
+            float sy = sinf(yaw);
+            float cz = cosf(roll);
+            float sz = sinf(roll);
+            float cxsy = cx * sy;
+            float sxsy = sx * sy;
+
+            m[M00] = cy * cz;
+            m[M10] = -cy * sz;
+            m[M20] = sy;
+            m[M30] = 0;
+
+            m[M01] = cxsy * cz + cx * sz;
+            m[M11] = -cxsy * sy + cx * cz;
+            m[M21] = -sx * cy;
+            m[M31] = 0;
+
+            m[M02] = -sxsy * cz + sx * sz;
+            m[M12] = sxsy * sz + sx * cz;
+            m[M22] = cx * cy;
+            m[M32] = 0;
+
+            m[M03] = 0;
+            m[M13] = 0;
+            m[M23] = 0;
+            m[M33] = 1;
+
+            return m;
+        }
+
 		static Matrix &translate(Matrix &m, float x, float y, float z) {
 			for (int i = 0; i < 4; ++i) {
 				m[12 + i] += m[i] * x + m[i + 4] * y + m[i + 8] * z;
@@ -323,9 +360,9 @@ namespace Math {
 		}
 
 		static Vector3 transform(const Matrix &m, const Vector3 &point) {
-			float x = (point.x * m[M00] + point.y * m[M01] + point.z * m[M02] + m[M03]);
-			float y = (point.x * m[M10] + point.y * m[M11] + point.z * m[M12] + m[M13]);
-			float z = (point.x * m[M20] + point.y * m[M21] + point.z * m[M22] + m[M23]);
+			float x = point.x * m[M00] + point.y * m[M01] + point.z * m[M02] + m[M03];
+			float y = point.x * m[M10] + point.y * m[M11] + point.z * m[M12] + m[M13];
+			float z = point.x * m[M20] + point.y * m[M21] + point.z * m[M22] + m[M23];
 			return {x, y, z};
 		}
 

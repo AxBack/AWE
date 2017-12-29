@@ -7,7 +7,7 @@ import android.opengl.GLSurfaceView;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-class ConnectionsRenderer implements GLSurfaceView.Renderer {
+class Renderer implements GLSurfaceView.Renderer {
 
     private final AssetManager mAssetManager;
     private final NativeEngine mRenderEngine = new NativeEngine();
@@ -15,7 +15,7 @@ class ConnectionsRenderer implements GLSurfaceView.Renderer {
     private int mNativeId = -1;
     private boolean mIsActive = false;
 
-    public ConnectionsRenderer(AssetManager assetManager, Rect frame) {
+    public Renderer(AssetManager assetManager, Rect frame) {
         mAssetManager = assetManager;
     }
 
@@ -42,6 +42,11 @@ class ConnectionsRenderer implements GLSurfaceView.Renderer {
             mRenderEngine.render(mNativeId);
     }
 
+    public void onOffsetChanged(float xOffset, float yOffset) {
+        if (mNativeId >= 0)
+            mRenderEngine.onOffsetChanged(mNativeId, xOffset, yOffset);
+    }
+
     public void resume() {
         if(!mIsActive) {
             mIsActive = true;
@@ -63,6 +68,8 @@ class ConnectionsRenderer implements GLSurfaceView.Renderer {
             mRenderEngine.onTouch(mNativeId,x,y);
         }
     }
+
+
 
     private synchronized void createEngine() {
         if(mNativeId > -1)

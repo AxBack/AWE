@@ -2,12 +2,10 @@ package com.wallpaper.axb.connections;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.service.wallpaper.WallpaperService;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
-public class ConnectionsService extends WallpaperService {
+public class WallpaperService extends android.service.wallpaper.WallpaperService {
 
     private ConnectionsEngine mEngine;
 
@@ -27,10 +25,10 @@ public class ConnectionsService extends WallpaperService {
         return mEngine;
     }
 
-    private class ConnectionsEngine extends WallpaperService.Engine {
+    private class ConnectionsEngine extends android.service.wallpaper.WallpaperService.Engine {
 
         private ConnectionsSurfaceView mSurfaceView;
-        private ConnectionsRenderer mRenderer;
+        private Renderer mRenderer;
 
         private float mTouchX = 0;
         private float mTouchY = 0;
@@ -39,13 +37,13 @@ public class ConnectionsService extends WallpaperService {
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
 
-            mSurfaceView = new ConnectionsSurfaceView(ConnectionsService.this);
+            mSurfaceView = new ConnectionsSurfaceView(WallpaperService.this);
             mSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 1);
             mSurfaceView.setEGLContextClientVersion(3);
             mSurfaceView.setPreserveEGLContextOnPause(true);
             mSurfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
 
-            mRenderer = new ConnectionsRenderer(getAssets(), mSurfaceView.getHolder().getSurfaceFrame());
+            mRenderer = new Renderer(getAssets(), mSurfaceView.getHolder().getSurfaceFrame());
             mSurfaceView.setRenderer(mRenderer);
             mSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         }
@@ -76,6 +74,12 @@ public class ConnectionsService extends WallpaperService {
                 else
                     mSurfaceView.onPause();
             }
+        }
+
+        @Override
+        public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset) {
+            super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
+            mRenderer.onOffsetChanged(xOffset, yOffset);
         }
 
         @Override

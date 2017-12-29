@@ -24,7 +24,6 @@ public class MainActivity extends ListActivity {
 
         mListValues = new ArrayList<>();
         mListValues.add(getResources().getString( R.string.set_wallpaper));
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, layout.simple_list_item_1,
                 mListValues);
         setListAdapter(adapter);
@@ -38,7 +37,7 @@ public class MainActivity extends ListActivity {
                 Intent intent = new Intent(
                         WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
                         .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                                new ComponentName(this, ConnectionsService.class));
+                                new ComponentName(this, WallpaperService.class));
                 startActivity(intent);
                 break;
         }
