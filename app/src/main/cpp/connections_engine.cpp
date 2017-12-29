@@ -1,8 +1,6 @@
-#include "engine.h"
+#include "connections_engine.h"
 
-UINT Engine::sThreadCounter = 0;
-
-void Engine::clear()
+void ConnectionsEngine::clear()
 {
 	m_pointShader.release();
 	m_pointMesh.clean();
@@ -10,7 +8,7 @@ void Engine::clear()
 	LOGI("Engine( Cleared: %d )", m_id);
 }
 
-bool Engine::init(AAssetManager* pAssetManager)
+bool ConnectionsEngine::init(AAssetManager* pAssetManager)
 {
 	clear();
 
@@ -76,7 +74,7 @@ bool Engine::init(AAssetManager* pAssetManager)
 	}
 	updateSize(1,1);
 
-	if(!m_updater.init(1.0f / 60.0f))
+	if(!m_updater.init())
 	{
 		LOGD("init( Failed to init updater: %d )", m_id);
 		return false;
@@ -96,7 +94,7 @@ bool Engine::init(AAssetManager* pAssetManager)
 	return true;
 }
 
-bool Engine::render()
+bool ConnectionsEngine::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
@@ -113,7 +111,7 @@ bool Engine::render()
 	return true;
 }
 
-void Engine::updateSize(int width, int height)
+void ConnectionsEngine::updateSize(int width, int height)
 {
 	LOGI("Engine(size updated: %d, %d )", width, height);
 	m_viewport[0] = m_viewport[1] = 0;
@@ -122,17 +120,13 @@ void Engine::updateSize(int width, int height)
 
 	Matrix projection, view;
 
-	float halfWidth = static_cast<float>(width) * 0.5f;
-	float halfHeight = static_cast<float>(height) * 0.5f;
-
-	//Matrix::frustum(projection, -halfWidth, halfWidth, -halfHeight, halfHeight, 10, 110);
     Matrix::perspective(projection, 90.0f, static_cast<float>(width) / static_cast<float>(height), 10, 110);
 	Matrix::lookAt(view, {0, 0, -10.0f}, {0, 0, 1}, {0, 1, 0});
 	m_viewProjection = projection * view;
 	Matrix::invert(m_viewProjection, m_inverseViewProjection);
 }
 
-void Engine::touch(float x, float y)
+void ConnectionsEngine::touch(float x, float y)
 {
 	Vector3 start = {x - m_viewport[2] * 0.5f, y - m_viewport[3] * 0.5f, 0.0f};
 	Vector3 end = m_inverseViewProjection.project(start);

@@ -15,12 +15,13 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/native-engine-lib.cpp
-             src/main/cpp/engine.cpp
-             src/main/cpp/matrix.cpp
-             src/main/cpp/vector3.cpp
+             src/main/cpp/engine/engine.cpp
+             src/main/cpp/engine/matrix.cpp
+             src/main/cpp/engine/updater.cpp
+             src/main/cpp/connections_engine.cpp
+             src/main/cpp/connections_updater.cpp
              src/main/cpp/point_shader.cpp
              src/main/cpp/connection_shader.cpp
-             src/main/cpp/updater.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

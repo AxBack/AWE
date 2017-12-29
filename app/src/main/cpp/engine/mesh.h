@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "pch.h"
+#include "../pch.h"
 
 class IMesh
 {
