@@ -25,7 +25,26 @@ namespace Connections {
         ConnectionShader m_connectionShader;
         ConnectionMesh m_connectionMesh;
 
+        std::mutex m_matrixMutex;
+
+        Math::Matrix m_view;
+        Math::Matrix m_projection;
+
+        Math::Matrix m_viewProjection;
+        Math::Matrix m_inverseViewProjection;
+
+        void updateProjection(float w, float h);
+        void updateView(float offset);
+        void updateViewProjection();
+
     public:
+
+        ConnectionsEngine()
+        {
+            updateView(0.25f);
+            updateProjection(1.0f,1.0f);
+            updateViewProjection();
+        }
 
         virtual void clear() override;
 

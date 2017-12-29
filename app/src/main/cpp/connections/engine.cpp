@@ -96,27 +96,46 @@ namespace Connections {
         if (!m_updater.updateInstances(m_pointMesh, m_connectionMesh))
             return false;
 
-        m_connectionShader.bind(m_viewProjection);
+        Math::Matrix vp;
+        {
+            std::lock_guard<std::mutex> _(m_matrixMutex);
+            vp = m_viewProjection;
+        }
+
+        m_connectionShader.bind(vp);
         m_connectionMesh.render();
 
-        m_pointShader.bind(m_viewProjection);
+        m_pointShader.bind(vp);
         m_pointMesh.render();
 
         return true;
     }
 
     void ConnectionsEngine::updateSize(int width, int height) {
-        LOGI("Engine(size updated: %d, %d )", width, height);
-        m_viewport[0] = m_viewport[1] = 0;
-        m_viewport[2] = width;
-        m_viewport[3] = height;
+        Engine::updateSize(width, height);
+        updateProjection(static_cast<float>(width), static_cast<float>(height));
+        updateViewProjection();
+    }
 
-        Math::Matrix projection, view;
+    void ConnectionsEngine::updateProjection(float w, float h)
+    {
+        std::lock_guard<std::mutex> _(m_matrixMutex);
+        Math::Matrix::perspective(m_projection, 90.0f, w / h, 10, 110);
+    }
 
-        Math::Matrix::perspective(projection, 90.0f,
-                            static_cast<float>(width) / static_cast<float>(height), 10, 110);
-        Math::Matrix::lookAt(view, {0, 0, -10.0f}, {0, 0, 1}, {0, 1, 0});
-        m_viewProjection = projection * view;
+    void ConnectionsEngine::updateView(float offset)
+    {
+        Math::Matrix rotation;
+        Math::Matrix::setRotate(rotation, 0, 360.0f * (offset - 0.5f), 0);
+        Math::Vector3 pos = Math::Matrix::transform(rotation, {0, 0, -100.0f});
+        std::lock_guard<std::mutex> _(m_matrixMutex);
+        Math::Matrix::lookAt(m_view, pos, {0, 0, 1}, {0, 1, 0});
+    }
+
+    void ConnectionsEngine::updateViewProjection()
+    {
+        std::lock_guard<std::mutex> _(m_matrixMutex);
+        m_viewProjection = m_projection * m_view;
         Math::Matrix::invert(m_viewProjection, m_inverseViewProjection);
     }
 

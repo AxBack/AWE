@@ -18,8 +18,6 @@ namespace Engine {
 
         UINT m_id;
 
-        Math::Matrix m_viewProjection;
-        Math::Matrix m_inverseViewProjection;
         GLint m_viewport[4];
 
     public:
@@ -27,7 +25,6 @@ namespace Engine {
         Engine() {
             m_id = sThreadCounter;
             ++sThreadCounter;
-            Math::Matrix::identity(m_viewProjection);
         }
 
         virtual ~Engine() {
@@ -44,7 +41,13 @@ namespace Engine {
 
         virtual void pause() = 0;
 
-        virtual void updateSize(int width, int height) = 0;
+        virtual void updateSize(int width, int height)
+        {
+            LOGI("Engine(size updated: %d, %d )", width, height);
+            m_viewport[0] = m_viewport[1] = 0;
+            m_viewport[2] = width;
+            m_viewport[3] = height;
+        }
 
         virtual void touch(float /*x*/, float /*y*/) {}
     };
