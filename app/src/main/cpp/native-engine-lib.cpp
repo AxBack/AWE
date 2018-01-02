@@ -11,7 +11,7 @@ std::map<int, Engine::Engine*> engines;
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jobject assetManager)
+Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jobject assetManager)
 {
 	Connections::ConnectionsEngine* pEngine = new Connections::ConnectionsEngine;
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
@@ -28,7 +28,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_create(JNIEnv* pEnv, jobject /*t
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_destroy(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+Java_com_wallpaper_axb_engine_NativeEngine_destroy(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
 {
 	auto it = engines.find(id);
 	if(it == engines.end())
@@ -40,7 +40,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_destroy(JNIEnv* /*pEnv*/, jobjec
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_render(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+Java_com_wallpaper_axb_engine_NativeEngine_render(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
@@ -51,7 +51,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_render(JNIEnv* /*pEnv*/, jobject
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_resume(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+Java_com_wallpaper_axb_engine_NativeEngine_resume(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
@@ -61,7 +61,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_resume(JNIEnv* /*pEnv*/, jobject
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_pause(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+Java_com_wallpaper_axb_engine_NativeEngine_pause(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
@@ -71,7 +71,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_pause(JNIEnv* /*pEnv*/, jobject 
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_setSize(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, int w, int h)
+Java_com_wallpaper_axb_engine_NativeEngine_setSize(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, int w, int h)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
@@ -81,7 +81,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_setSize(JNIEnv* /*pEnv*/, jobjec
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_onTouch(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float x, float y)
+Java_com_wallpaper_axb_engine_NativeEngine_onTouch(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float x, float y)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
@@ -91,7 +91,7 @@ Java_com_wallpaper_axb_connections_NativeEngine_onTouch(JNIEnv* /*pEnv*/, jobjec
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_connections_NativeEngine_onOffsetChanged(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float x, float y)
+Java_com_wallpaper_axb_engine_NativeEngine_onOffsetChanged(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float x, float y)
 {
     auto it = engines.find(id);
     if(it != engines.end())

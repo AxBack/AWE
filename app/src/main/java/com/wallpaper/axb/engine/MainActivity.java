@@ -1,11 +1,10 @@
-package com.wallpaper.axb.connections;
+package com.wallpaper.axb.engine;
 
 import android.R.layout;
 import android.app.ListActivity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.opengl.Matrix;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
