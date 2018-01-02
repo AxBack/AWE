@@ -1,6 +1,7 @@
 #include <jni.h>
 
 #include "connections/engine.h"
+#include "electric/engine.h"
 
 #include <map>
 
@@ -11,9 +12,17 @@ std::map<int, Engine::Engine*> engines;
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jobject assetManager)
+Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type, jobject assetManager)
 {
-	Connections::ConnectionsEngine* pEngine = new Connections::ConnectionsEngine;
+    const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
+    Engine::Engine* pEngine = nullptr;
+    if(strcmp(str, "Connections") == 0)
+        pEngine = new Connections::ConnectionsEngine;
+    else if(strcmp(str, "Electric") == 0)
+        pEngine = new Electric::ElectricEngine;
+    else
+        return -1;
+
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
 	if(!pEngine->init(pAssetManager))
 	{

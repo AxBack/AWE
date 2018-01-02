@@ -5,12 +5,14 @@ import android.app.ListActivity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends ListActivity {
@@ -22,8 +24,7 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mListValues = new ArrayList<>();
-        mListValues.add(getResources().getString( R.string.set_wallpaper));
+        mListValues = Arrays.asList(getResources().getStringArray(R.array.wallpapers));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, layout.simple_list_item_1,
                 mListValues);
         setListAdapter(adapter);
@@ -32,14 +33,17 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        switch (position) {
-            case 0:
-                Intent intent = new Intent(
-                        WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
-                        .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                                new ComponentName(this, WallpaperService.class));
-                startActivity(intent);
-                break;
-        }
+
+        final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("WallpaperType", mListValues.get(position));
+        editor.apply();
+
+        Intent intent = new Intent(
+                WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
+                .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                        new ComponentName(this, WallpaperService.class))
+                .putExtra("WallpaperType", mListValues.get(position));
+        startActivity(intent);
     }
 }

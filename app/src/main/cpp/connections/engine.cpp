@@ -6,13 +6,13 @@ namespace Connections {
         m_pointShader.release();
         m_pointMesh.clean();
         m_updater.pause();
-        LOGI("Engine( Cleared: %d )", m_id);
+        LOGI("ConnectionsEngine( Cleared: %d )", m_id);
     }
 
     bool ConnectionsEngine::init(AAssetManager *pAssetManager) {
         clear();
 
-        LOGI("Engine( Init begin: %d )", m_id);
+        LOGI("ConnectionsEngine( Init begin: %d )", m_id);
 
         {
             Vertex vertices[] = {
@@ -68,13 +68,19 @@ namespace Connections {
                 return false;
             }
         }
-        updateSize(1, 1);
 
         if (!m_updater.init()) {
             LOGD("init( Failed to init updater: %d )", m_id);
             return false;
         }
 
+        LOGI("ConnectionsEngine( Init end: %d )", m_id);
+
+        return true;
+    }
+
+    bool ConnectionsEngine::render()
+    {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glDisable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
@@ -83,15 +89,8 @@ namespace Connections {
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
-
-        LOGI("Engine( Init end: %d )", m_id);
-
-        return true;
-    }
-
-    bool ConnectionsEngine::render() {
-        glClear(GL_COLOR_BUFFER_BIT);
         glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         if (!m_updater.updateInstances(m_pointMesh, m_connectionMesh))
             return false;

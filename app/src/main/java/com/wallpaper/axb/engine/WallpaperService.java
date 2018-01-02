@@ -1,13 +1,14 @@
 package com.wallpaper.axb.engine;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
 
-    private ConnectionsEngine mEngine;
+    private Engine mEngine;
 
     @Override
     public void onCreate() {
@@ -20,14 +21,14 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     }
 
     @Override
-    public Engine onCreateEngine() {
-        mEngine = new ConnectionsEngine();
+    public android.service.wallpaper.WallpaperService.Engine onCreateEngine() {
+        mEngine = new Engine();
         return mEngine;
     }
 
-    private class ConnectionsEngine extends android.service.wallpaper.WallpaperService.Engine {
+    private class Engine extends android.service.wallpaper.WallpaperService.Engine {
 
-        private ConnectionsSurfaceView mSurfaceView;
+        private WallpaperView mSurfaceView;
         private Renderer mRenderer;
 
         private float mTouchX = 0;
@@ -37,13 +38,13 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
 
-            mSurfaceView = new ConnectionsSurfaceView(WallpaperService.this);
+            mSurfaceView = new WallpaperView(WallpaperService.this);
             mSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 1);
             mSurfaceView.setEGLContextClientVersion(3);
             mSurfaceView.setPreserveEGLContextOnPause(true);
             mSurfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
 
-            mRenderer = new Renderer(getAssets(), mSurfaceView.getHolder().getSurfaceFrame());
+            mRenderer = new Renderer(WallpaperService.this);
             mSurfaceView.setRenderer(mRenderer);
             mSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         }
@@ -105,9 +106,9 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
         }
 
-        private class ConnectionsSurfaceView extends GLSurfaceView {
+        private class WallpaperView extends GLSurfaceView {
 
-            public ConnectionsSurfaceView(Context context) {
+            public WallpaperView(Context context) {
                 super(context);
             }
 

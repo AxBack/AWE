@@ -21,6 +21,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/connections/updater.cpp
              src/main/cpp/connections/point_shader.cpp
              src/main/cpp/connections/connection_shader.cpp
+             src/main/cpp/electric/engine.cpp
+             src/main/cpp/electric/updater.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

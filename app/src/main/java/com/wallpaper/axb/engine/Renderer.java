@@ -1,5 +1,7 @@
 package com.wallpaper.axb.engine;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Rect;
 import android.opengl.GLSurfaceView;
@@ -7,16 +9,18 @@ import android.opengl.GLSurfaceView;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static android.content.Context.MODE_PRIVATE;
+
 class Renderer implements GLSurfaceView.Renderer {
 
-    private final AssetManager mAssetManager;
+    private final Context mContext;
     private final NativeEngine mRenderEngine = new NativeEngine();
 
     private int mNativeId = -1;
     private boolean mIsActive = false;
 
-    public Renderer(AssetManager assetManager, Rect frame) {
-        mAssetManager = assetManager;
+    public Renderer(Context ctx) {
+        mContext = ctx;
     }
 
     public synchronized void destroy() {
@@ -69,13 +73,13 @@ class Renderer implements GLSurfaceView.Renderer {
         }
     }
 
-
-
     private synchronized void createEngine() {
         if(mNativeId > -1)
             return;
 
-        mNativeId = mRenderEngine.create(mAssetManager);
+        final SharedPreferences preferences = mContext.getSharedPreferences("AxB", MODE_PRIVATE);
+        String type = preferences.getString("WallpaperType", "Connections");
+        mNativeId = mRenderEngine.create(type, mContext.getAssets());
         if(mIsActive)
             mRenderEngine.resume(mNativeId);
 
