@@ -12,6 +12,26 @@ namespace Electric {
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
+        {
+            Vertex vertices[] = {
+                    {-0.5f, 0.5f,  0},
+                    {0.5f,  0.5f,  0},
+                    {0.5f,  -0.5f, 0},
+                    {-0.5f, -0.5f, 0}
+            };
+
+            GLushort indices[] = {0, 1, 2, 0, 2, 3};
+            if (!m_particlesMesh.init(4, vertices, 6, indices)) {
+                LOGD("init( Failed to init PointMesh: %d )", m_id);
+                return false;
+            }
+
+            if (!m_particleShader.init(pAssetManager, m_particlesMesh)) {
+                LOGD("init( Failed to init PointShader: %d )", m_id);
+                return false;
+            }
+        }
+
         if(m_updater.init())
             return false;
 

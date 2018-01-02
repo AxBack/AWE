@@ -3,7 +3,14 @@
 #include "../engine/engine.h"
 #include "updater.h"
 
+#include "vertex.h"
+
+#include "../engine/mesh.h"
+#include "particle_shader.h"
+
 namespace Electric {
+
+    typedef Engine::Mesh<Vertex, ParticleInstance> ParticleMesh;
 
     class ElectricEngine : public Engine::Engine
     {
@@ -20,6 +27,9 @@ namespace Electric {
         Matrix      m_vp;
 
         Updater     m_updater;
+
+        ParticleMesh    m_particlesMesh;
+        ParticleShader  m_particleShader;
 
     public:
 

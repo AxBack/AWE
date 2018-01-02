@@ -1,8 +1,0 @@
-//
-// Created by 86004181 on 1/2/18.
-//
-
-#ifndef CONNECTIONS_VERTEX_H
-#define CONNECTIONS_VERTEX_H
-
-#endif //CONNECTIONS_VERTEX_H
