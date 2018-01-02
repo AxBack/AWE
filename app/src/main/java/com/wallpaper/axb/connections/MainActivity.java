@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
