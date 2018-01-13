@@ -225,17 +225,17 @@ namespace Math {
 				   m[M00] * m[M11] * m[M22] * m[M33];
 		}
 
-        static inline Matrix& setRotate(Matrix& m, float pitch, float yaw, float roll)
+        static inline Matrix& setRotate(Matrix& m, float x, float y, float z)
         {
-            pitch *= static_cast<float>(M_PI) / 180.0f;
-            yaw *= static_cast<float>(M_PI) / 180.0f;
-            roll *= static_cast<float>(M_PI) / 180.0f;
-            float cx = cosf(pitch);
-            float sx = sinf(pitch);
-            float cy = cosf(yaw);
-            float sy = sinf(yaw);
-            float cz = cosf(roll);
-            float sz = sinf(roll);
+            x *= static_cast<float>(M_PI) / 180.0f;
+            y *= static_cast<float>(M_PI) / 180.0f;
+            z *= static_cast<float>(M_PI) / 180.0f;
+            float cx = cosf(x);
+            float sx = sinf(x);
+            float cy = cosf(y);
+            float sy = sinf(y);
+            float cz = cosf(z);
+            float sz = sinf(z);
             float cxsy = cx * sy;
             float sxsy = sx * sy;
 
@@ -360,9 +360,9 @@ namespace Math {
 		}
 
 		static Vector3 transform(const Matrix &m, const Vector3 &point) {
-			float x = point.x * m[M00] + point.y * m[M01] + point.z * m[M02] + m[M03];
-			float y = point.x * m[M10] + point.y * m[M11] + point.z * m[M12] + m[M13];
-			float z = point.x * m[M20] + point.y * m[M21] + point.z * m[M22] + m[M23];
+			float x = point.x * m[M00] + point.y * m[M10] + point.z * m[M20] + m[M30];
+			float y = point.x * m[M01] + point.y * m[M11] + point.z * m[M21] + m[M31];
+			float z = point.x * m[M02] + point.y * m[M12] + point.z * m[M22] + m[M32];
 			return {x, y, z};
 		}
 

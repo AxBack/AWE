@@ -8,6 +8,6 @@ namespace Electric {
 
     struct ParticleInstance
     {
-        GLfloat x,y,z;
+        GLfloat x,y,z,size,r,g,b,a;
     };
 }

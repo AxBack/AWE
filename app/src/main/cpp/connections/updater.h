@@ -53,8 +53,10 @@ namespace Connections {
     public:
 
         Updater()
-                : m_maxForce(500.0f), m_friction(0.05f), m_maxOffset(1000.0f),
-                  m_maxOffsetSq(m_maxOffset * m_maxOffset) {
+                : m_maxForce(500.0f)
+                , m_friction(0.05f)
+                , m_maxOffset(1000.0f)
+                , m_maxOffsetSq(m_maxOffset * m_maxOffset) {
             m_points.push_back({{0, 25, 100}, {1, 0, 0}, 5, 0, {0, 0, 0}});
 
             add({50, -25, 100}, {0, 1, 0}, 5, 0);

@@ -3,8 +3,6 @@
 #include "../engine/engine.h"
 #include "updater.h"
 
-#include "vertex.h"
-
 #include "../engine/mesh.h"
 #include "particle_shader.h"
 
@@ -44,18 +42,17 @@ namespace Electric {
         virtual bool render() override;
 
         virtual void resume() override { m_updater.resume(); }
-
         virtual void pause() override { m_updater.pause(); }
 
         virtual void updateSize(int width, int height) override
         {
-            Engine::updateSize(width, height);
+            Engine::Engine::updateSize(width, height);
             updateProjection(static_cast<float>(width), static_cast<float>(height));
         }
 
         virtual void setOffset(float x, float y) override
         {
-            Engine::setOffset(x, y);
+            Engine::Engine::setOffset(x, y);
             updateView(x);
         }
 
@@ -75,7 +72,7 @@ namespace Electric {
         {
             {
                 std::lock_guard<std::mutex> _(m_matrixMutex);
-                Matrix::perspective(m_projection, 90.0f, w / h, 10, 110);
+                Matrix::perspective(m_projection, 90.0f, w / h, 10, 1000);
                 m_vpDirty = true;
             }
         }

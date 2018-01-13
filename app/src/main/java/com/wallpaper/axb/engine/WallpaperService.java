@@ -8,6 +8,8 @@ import android.view.SurfaceHolder;
 
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
 
+    private static boolean DEBUG = true;
+
     private Engine mEngine;
 
     @Override
@@ -39,10 +41,13 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             super.onCreate(surfaceHolder);
 
             mSurfaceView = new WallpaperView(WallpaperService.this);
-            mSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 1);
+            mSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 24, 1);
             mSurfaceView.setEGLContextClientVersion(3);
             mSurfaceView.setPreserveEGLContextOnPause(true);
-            mSurfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
+
+            if(DEBUG) {
+                mSurfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
+            }
 
             mRenderer = new Renderer(WallpaperService.this);
             mSurfaceView.setRenderer(mRenderer);

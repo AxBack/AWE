@@ -5,7 +5,7 @@ namespace Electric {
 
     bool ParticleShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
 
-        m_program = createProgram(pAssetManager, "shaders/ParticleShader.vs", "shaders/Simple.ps");
+        m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/Simple_ps.glsl");
         m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
 
         bindTo(mesh);
@@ -30,6 +30,14 @@ namespace Electric {
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleInstance), 0);
         glVertexAttribDivisor(1, 1);
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleInstance), BUFFER_OFFSET(3));
+        glVertexAttribDivisor(2, 1);
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleInstance), BUFFER_OFFSET(4));
+        glVertexAttribDivisor(3, 1);
 
         glBindVertexArray(0);
     }

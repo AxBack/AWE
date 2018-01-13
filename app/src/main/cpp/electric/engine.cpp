@@ -22,17 +22,17 @@ namespace Electric {
 
             GLushort indices[] = {0, 1, 2, 0, 2, 3};
             if (!m_particlesMesh.init(4, vertices, 6, indices)) {
-                LOGD("init( Failed to init PointMesh: %d )", m_id);
+                LOGD("init( Failed to init ParticleMesh: %d )", m_id);
                 return false;
             }
 
             if (!m_particleShader.init(pAssetManager, m_particlesMesh)) {
-                LOGD("init( Failed to init PointShader: %d )", m_id);
+                LOGD("init( Failed to init ParticleShader: %d )", m_id);
                 return false;
             }
         }
 
-        if(m_updater.init())
+        if(!m_updater.init())
             return false;
 
         LOGI("ElectricEngine( Init end: %d )", m_id);
@@ -41,16 +41,20 @@ namespace Electric {
 
     bool ElectricEngine::render()
     {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
+
         glDisable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
         glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
-        glClear(GL_COLOR_BUFFER_BIT);
+
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearDepthf(1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         Matrix vp;
         {
@@ -60,7 +64,10 @@ namespace Electric {
             vp = m_vp;
         }
 
+		m_updater.updateInstances(m_particlesMesh);
 
+        m_particleShader.bind(vp);
+        m_particlesMesh.render();
 
         return true;
     }
