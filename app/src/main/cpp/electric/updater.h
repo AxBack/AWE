@@ -30,9 +30,9 @@ namespace Electric {
 
         Updater()
         {
-            m_particles.push_back({{0,0,10}, 50, {1,0.5,0,0.5}});
             m_particles.push_back({{0,0,0},10,{1,1,1,1}});
-        }
+			m_particles.push_back({{0,0,10}, 50, {1,0.5,0,0.5}});
+		}
 
         void updateInstances(Engine::Mesh<Vertex, ParticleInstance>& mesh);
 

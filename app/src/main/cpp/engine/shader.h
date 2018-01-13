@@ -3,6 +3,9 @@
 #include <string>
 #include <android/asset_manager.h>
 #include "../pch.h"
+#include <sstream>
+#include <exception>
+#include <stdexcept>
 
 namespace Engine {
 
@@ -96,6 +99,18 @@ namespace Engine {
             }
 
             return program;
+        }
+
+        GLint getLocation(const char* uniform)
+        {
+            GLint location = glGetUniformLocation(m_program, uniform);
+            if(location < 0)
+            {
+                std::stringstream ss;
+                ss << uniform << " not found in shader";
+                throw std::invalid_argument(ss.str().c_str());
+            }
+            return location;
         }
 
     public:

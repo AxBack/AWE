@@ -3,15 +3,16 @@
 #include "../engine/shader.h"
 #include "../engine/matrix.h"
 #include "../engine/mesh.h"
+#include "../engine/camera.h"
 
 namespace Electric {
 
     class ParticleShader : public Engine::Shader {
     private:
 
-#define VIEW_PROJECTION "viewProjection"
-
-        GLint m_viewProjectionLocation;
+		GLint m_viewProjectionLocation;
+		GLint m_rightLocation;
+		GLint m_upLocation;
 
     public:
 
@@ -19,10 +20,12 @@ namespace Electric {
 
         void bindTo(const Engine::IMesh &mesh);
 
-        void bind(const Math::Matrix &viewProjection) {
+        void bind(const Engine::Camera& camera) {
             glUseProgram(m_program);
             glBindVertexArray(m_vao);
-            glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, viewProjection.data());
+            glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
+			glUniform3fv(m_upLocation, 1, camera.getUp().data());
+			glUniform3fv(m_rightLocation, 1, camera.getRight().data());
         }
     };
 }

@@ -3,10 +3,16 @@
 
 namespace Electric {
 
+#define VIEW_PROJECTION "viewProjection"
+#define UP "up"
+#define RIGHT "right"
+
     bool ParticleShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
 
         m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/Simple_ps.glsl");
-        m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
+        m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
+		m_upLocation = getLocation(UP);
+		m_rightLocation = getLocation(RIGHT);
 
         bindTo(mesh);
 

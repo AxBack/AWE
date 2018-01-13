@@ -78,14 +78,14 @@ namespace Connections {
                 m_pointInstances.resize(m_backupPoints.size());
 
             for (int i = 0; i < m_backupPoints.size(); ++i) {
-                m_pointInstances[i].x = m_backupPoints[i].position.x;
-                m_pointInstances[i].y = m_backupPoints[i].position.y;
-                m_pointInstances[i].z = m_backupPoints[i].position.z;
+                m_pointInstances[i].x = m_backupPoints[i].position.x();
+                m_pointInstances[i].y = m_backupPoints[i].position.y();
+                m_pointInstances[i].z = m_backupPoints[i].position.z();
                 m_pointInstances[i].size = m_backupPoints[i].size;
 
-                m_pointInstances[i].r = m_backupPoints[i].color.x;
-                m_pointInstances[i].g = m_backupPoints[i].color.y;
-                m_pointInstances[i].b = m_backupPoints[i].color.z;
+                m_pointInstances[i].r = m_backupPoints[i].color.x();
+                m_pointInstances[i].g = m_backupPoints[i].color.y();
+                m_pointInstances[i].b = m_backupPoints[i].color.z();
             }
 
             if (m_connectionInstances.size() != m_backupConnections.size())
@@ -95,23 +95,23 @@ namespace Connections {
                 const Point &p1 = m_backupPoints[m_backupConnections[i].i1];
                 const Point &p2 = m_backupPoints[m_backupConnections[i].i2];
 
-                m_connectionInstances[i].startx = p1.position.x;
-                m_connectionInstances[i].starty = p1.position.y;
-                m_connectionInstances[i].startz = p1.position.z;
+                m_connectionInstances[i].startx = p1.position.x();
+                m_connectionInstances[i].starty = p1.position.y();
+                m_connectionInstances[i].startz = p1.position.z();
 
-                m_connectionInstances[i].endx = p2.position.x;
-                m_connectionInstances[i].endy = p2.position.y;
-                m_connectionInstances[i].endz = p2.position.z;
+                m_connectionInstances[i].endx = p2.position.x();
+                m_connectionInstances[i].endy = p2.position.y();
+                m_connectionInstances[i].endz = p2.position.z();
 
                 m_connectionInstances[i].tension = m_backupConnections[i].tension;
 
-                m_connectionInstances[i].startr = p1.color.x;
-                m_connectionInstances[i].startg = p1.color.y;
-                m_connectionInstances[i].startb = p1.color.z;
+                m_connectionInstances[i].startr = p1.color.x();
+                m_connectionInstances[i].startg = p1.color.y();
+                m_connectionInstances[i].startb = p1.color.z();
 
-                m_connectionInstances[i].endr = p2.color.x;
-                m_connectionInstances[i].endg = p2.color.y;
-                m_connectionInstances[i].endb = p2.color.z;
+                m_connectionInstances[i].endr = p2.color.x();
+                m_connectionInstances[i].endg = p2.color.y();
+                m_connectionInstances[i].endb = p2.color.z();
             }
         }
 

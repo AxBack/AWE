@@ -3,86 +3,96 @@
 #include <math.h>
 namespace Math {
 
+#define X 0
+#define Y 1
+#define Z 2
+
 	struct Vector3 {
-		float x, y, z;
+		float m_data[3];
+
+		float x() const { return m_data[X]; }
+		float y() const { return m_data[Y]; }
+		float z() const { return m_data[Z]; }
 
 		Vector3 &operator=(const Vector3 &rhs) {
-			x = rhs.x;
-			y = rhs.y;
-			z = rhs.z;
+			m_data[X] = rhs.m_data[X];
+			m_data[Y] = rhs.m_data[Y];
+			m_data[Z] = rhs.m_data[Z];
 			return *this;
 		}
 
 		Vector3 operator*(const float scale) const {
-			return {x * scale, y * scale, z * scale};
+			return {m_data[X] * scale, m_data[Y] * scale, m_data[Z] * scale};
 		}
 
 		void operator*=(const float rhs) {
-			x *= rhs;
-			y *= rhs;
-			z *= rhs;
+			m_data[X] *= rhs;
+			m_data[Y] *= rhs;
+			m_data[Z] *= rhs;
 		}
 
 		Vector3 operator+(const Vector3 &rhs) const {
-			return {x + rhs.x, y + rhs.y, z + rhs.z};
+			return {m_data[X] + rhs.m_data[X], m_data[Y] + rhs.m_data[Y], m_data[Z] + rhs.m_data[Z]};
 		}
 
 		void operator+=(const Vector3 &rhs) {
-			x += rhs.x;
-			y += rhs.y;
-			z += rhs.z;
+			m_data[X] += rhs.m_data[X];
+			m_data[Y] += rhs.m_data[Y];
+			m_data[Z] += rhs.m_data[Z];
 		}
 
 		Vector3 operator-(const Vector3 &rhs) const {
-			return {x - rhs.x, y - rhs.y, z - rhs.z};
+			return {m_data[X] - rhs.m_data[X], m_data[Y] - rhs.m_data[Y], m_data[Z] - rhs.m_data[Z]};
 		}
 
 		void operator-=(const Vector3 &rhs) {
-			x -= rhs.x;
-			y -= rhs.y;
-			z -= rhs.z;
+			m_data[X] -= rhs.m_data[X];
+			m_data[Y] -= rhs.m_data[Y];
+			m_data[Z] -= rhs.m_data[Z];
 		}
 
 		Vector3 operator*(const Vector3 &rhs) const {
-			return {x * rhs.x, y * rhs.y, z * rhs.z};
+			return {m_data[X] * rhs.m_data[X], m_data[Y] * rhs.m_data[Y], m_data[Z] * rhs.m_data[Z]};
 		}
 
 		void operator*=(const Vector3 &rhs) {
-			x *= rhs.x;
-			y *= rhs.y;
-			z *= rhs.z;
+			m_data[X] *= rhs.m_data[X];
+			m_data[Y] *= rhs.m_data[Y];
+			m_data[Z] *= rhs.m_data[Z];
 		}
 
 		Vector3 operator/(const Vector3 &rhs) const {
-			return {x / rhs.x, y / rhs.y, z / rhs.z};
+			return {m_data[X] / rhs.m_data[X], m_data[Y] / rhs.m_data[Y], m_data[Z] / rhs.m_data[Z]};
 		}
 
 		void operator/=(const Vector3 &rhs) {
-			x /= rhs.x;
-			y /= rhs.y;
-			z /= rhs.z;
+			m_data[X] /= rhs.m_data[X];
+			m_data[Y] /= rhs.m_data[Y];
+			m_data[Z] /= rhs.m_data[Z];
 		}
+
+		const float* data() const { return &m_data[0]; }
 
 		float length() const {
 			return static_cast<float>(sqrt(lengthSq()));
 		}
 
 		float lengthSq() const {
-			return x * x + y * y + z * z;
+			return m_data[X] * m_data[X] + m_data[Y] * m_data[Y] + m_data[Z] * m_data[Z];
 		}
 
 		void normalize() {
 			float l = 1.f / length();
-			x *= l;
-			y *= l;
-			z *= l;
+			m_data[X] *= l;
+			m_data[Y] *= l;
+			m_data[Z] *= l;
 		}
 
 		Vector3 cross(const Vector3 &other) const {
 			return {
-					y * other.z - z * other.y,
-					z * other.x - x * other.z,
-					x * other.y - y * other.x
+					m_data[Y] * other.m_data[Z] - m_data[Z] * other.m_data[Y],
+					m_data[Z] * other.m_data[X] - m_data[X] * other.m_data[Z],
+					m_data[X] * other.m_data[Y] - m_data[Y] * other.m_data[X]
 			};
 		}
 	};

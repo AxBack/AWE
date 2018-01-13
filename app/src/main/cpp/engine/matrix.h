@@ -178,24 +178,24 @@ namespace Math {
 
 			Vector3 u = s.cross(f);
 
-			m[M00] = s.x;
-			m[M10] = u.x;
-			m[M20] = -f.x;
+			m[M00] = s.x();
+			m[M10] = u.x();
+			m[M20] = -f.x();
 			m[M30] = 0.0f;
-			m[M01] = s.y;
-			m[M11] = u.y;
-			m[M21] = -f.y;
+			m[M01] = s.y();
+			m[M11] = u.y();
+			m[M21] = -f.y();
 			m[M31] = 0.0f;
-			m[M02] = s.z;
-			m[M12] = u.z;
-			m[M22] = -f.z;
+			m[M02] = s.z();
+			m[M12] = u.z();
+			m[M22] = -f.z();
 			m[M32] = 0.0f;
 			m[M03] = 0.0f;
 			m[M13] = 0.0f;
 			m[M23] = 0.0f;
 			m[M33] = 1.0f;
 
-			return translate(m, -eye.x, -eye.y, -eye.z);
+			return translate(m, -eye.x(), -eye.y(), -eye.z());
 		}
 
 		static float determinant(const Matrix &m) {
@@ -360,17 +360,17 @@ namespace Math {
 		}
 
 		static Vector3 transform(const Matrix &m, const Vector3 &point) {
-			float x = point.x * m[M00] + point.y * m[M10] + point.z * m[M20] + m[M30];
-			float y = point.x * m[M01] + point.y * m[M11] + point.z * m[M21] + m[M31];
-			float z = point.x * m[M02] + point.y * m[M12] + point.z * m[M22] + m[M32];
+			float x = point.x() * m[M00] + point.y() * m[M10] + point.z() * m[M20] + m[M30];
+			float y = point.x() * m[M01] + point.y() * m[M11] + point.z() * m[M21] + m[M31];
+			float z = point.x() * m[M02] + point.y() * m[M12] + point.z() * m[M22] + m[M32];
 			return {x, y, z};
 		}
 
 		static Vector3 project(const Matrix &m, const Vector3 &point) {
-			float inv_w = 1.0f / (point.x * m[M30] + point.y * m[M31] + point.z * m[M32] + m[M33]);
-			float x = (point.x * m[M00] + point.y * m[M01] + point.z * m[M02] + m[M03]) * inv_w;
-			float y = (point.x * m[M10] + point.y * m[M11] + point.z * m[M12] + m[M13]) * inv_w;
-			float z = (point.x * m[M20] + point.y * m[M21] + point.z * m[M22] + m[M23]) * inv_w;
+			float inv_w = 1.0f / (point.x() * m[M30] + point.y() * m[M31] + point.z() * m[M32] + m[M33]);
+			float x = (point.x() * m[M00] + point.y() * m[M01] + point.z() * m[M02] + m[M03]) * inv_w;
+			float y = (point.x() * m[M10] + point.y() * m[M11] + point.z() * m[M12] + m[M13]) * inv_w;
+			float z = (point.x() * m[M20] + point.y() * m[M21] + point.z() * m[M22] + m[M23]) * inv_w;
 			return {x, y, z};
 		}
 	};

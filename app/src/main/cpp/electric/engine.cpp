@@ -56,20 +56,13 @@ namespace Electric {
         glClearDepthf(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Matrix vp;
-        {
-            std::lock_guard<std::mutex> _(m_matrixMutex);
-            if(m_vpDirty)
-                m_vp = m_projection * m_view;
-            vp = m_vp;
-        }
+		m_camera.update();
 
 		m_updater.updateInstances(m_particlesMesh);
 
-        m_particleShader.bind(vp);
+        m_particleShader.bind(m_camera);
         m_particlesMesh.render();
 
         return true;
     }
-
 }
