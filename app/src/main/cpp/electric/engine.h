@@ -6,18 +6,20 @@
 #include "../engine/mesh.h"
 #include "particle_shader.h"
 #include "node_shader.h"
+#include "charge_shader.h"
 
 namespace Electric {
 
-    typedef Engine::Mesh<Vertex, ParticleInstance> ParticleMesh;
-    typedef Engine::Mesh<Vertex, NodeInstance> NodeMesh;
+    typedef Engine::Mesh<PositionVertex, ParticleInstance> ParticleMesh;
+    typedef Engine::Mesh<PositionVertex, NodeInstance> NodeMesh;
+	typedef Engine::Mesh<ChargeVertex, ChargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
 
     class ElectricEngine : public Engine::Engine
     {
     private:
 
-        Camera 	m_camera;
+        Camera 			m_camera;
 
         Updater     	m_updater;
 
@@ -26,6 +28,9 @@ namespace Electric {
 
         NodeMesh        m_nodeMesh;
         NodeShader      m_nodeShader;
+
+		ChargeMesh		m_chargeMesh;
+		ChargeShader	m_chargeShader;
 
     public:
 

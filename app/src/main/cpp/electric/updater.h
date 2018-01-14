@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include "../engine/updater.h"
 #include "../engine/vector3.h"
 #include "../engine/color.h"
@@ -22,13 +23,25 @@ namespace Electric {
 		{
 			Math::Vector3 pos;
 			float charge;
+			float restitution;
 			std::vector<UINT> connections;
+		};
+
+		struct Charge
+		{
+			float time;
+			Math::Vector3 start;
+			Math::Vector3 end;
 		};
 
         typedef std::vector<Particle> particle_vec;
 
 		typedef std::vector<Node> node_vec;
 		typedef std::vector<NodeInstance> node_instance_vec;
+
+		typedef std::vector<Charge> charge_vec;
+
+		std::mt19937 m_generator;
 
 		std::mutex m_particleMutex;
         particle_vec m_particles;
@@ -37,16 +50,25 @@ namespace Electric {
 		node_vec m_nodes;
 		node_instance_vec m_nodeInstances;
 
+		std::mutex m_chargeMutex;
+		charge_vec m_charges;
+
     protected:
 
         virtual void advance(float dt) override;
 
     public:
 
+		Updater()
+				: m_generator(840331)
+		{
+		}
+
 		virtual bool init() override;
 
-        void updateInstances(Engine::Mesh<Vertex, ParticleInstance>& mesh);
-		void updateInstances(Engine::Mesh<Vertex, NodeInstance>& mesh);
+        void updateInstances(Engine::Mesh<PositionVertex, ParticleInstance>& mesh);
+		void updateInstances(Engine::Mesh<PositionVertex, NodeInstance>& mesh);
+		void updateInstances(Engine::Mesh<ChargeVertex, ChargeInstance>& mesh);
 
     };
 }

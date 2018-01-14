@@ -1,10 +1,15 @@
 #include "../pch.h"
 
 namespace Electric {
-    struct Vertex
+    struct PositionVertex
     {
         GLfloat x, y, z;
     };
+
+	struct ChargeVertex
+	{
+		GLfloat x, y, z, dt;
+	};
 
     struct ParticleInstance
     {
@@ -14,5 +19,10 @@ namespace Electric {
 	struct NodeInstance
 	{
 		GLfloat x,y,z,charge;
+	};
+
+	struct ChargeInstance
+	{
+		GLfloat sx,sy,sz, dx,dy,dz;
 	};
 };

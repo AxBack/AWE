@@ -1,10 +1,10 @@
 #version 300 es
-precision mediump float;
+ precision mediump float;
 
-in vec4 color;
+ in vec4 color;
 
-out vec4 finalColor;
+ out vec4 finalColor;
 
-void main() {
-    finalColor = color;
-}
+ void main() {
+     finalColor = color;
+ }
