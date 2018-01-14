@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include "../engine/updater.h"
 #include "../engine/vector3.h"
 #include "../engine/color.h"
@@ -30,6 +31,8 @@ namespace Electric {
 		typedef std::vector<Node> node_vec;
 		typedef std::vector<NodeInstance> node_instance_vec;
 
+		std::mt19937 m_generator;
+
 		std::mutex m_particleMutex;
         particle_vec m_particles;
 
@@ -42,6 +45,11 @@ namespace Electric {
         virtual void advance(float dt) override;
 
     public:
+
+		Updater()
+				: m_generator(840331)
+		{
+		}
 
 		virtual bool init() override;
 

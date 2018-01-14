@@ -1,48 +1,55 @@
 #include "updater.h"
 
-#include <random>
-
 namespace Electric {
+
+float CHARGE_FLOW_FACTOR = 0.125f;
+float DISCHARGE_FACTOR = 0.5f;
 
 	bool Updater::init()
 	{
 		{
 			int nrNodes = 500;
 
-			std::mt19937 gen(840331);
 			std::uniform_real_distribution<> pos(-1, 1);
 			std::uniform_real_distribution<> distance(0, 100.0);
-			std::uniform_real_distribution<> charge(0.0f, 2.0f);
+			std::uniform_real_distribution<> charge(0.0f, 1.0f);
 			for(int i = 0; i < nrNodes; ++i)
 			{
 				Math::Vector3 p = {
-						static_cast<float>(pos(gen)),
-						static_cast<float>(pos(gen)),
-						static_cast<float>(pos(gen))
+						static_cast<float>(pos(m_generator)),
+						static_cast<float>(pos(m_generator)),
+						static_cast<float>(pos(m_generator))
 				};
 
 				p.normalize();
-				p *= static_cast<float>(distance(gen));
+				p *= static_cast<float>(distance(m_generator));
 
-				float c = static_cast<float>(charge(gen));
+				float c = static_cast<float>(charge(m_generator));
 
 				m_nodes.push_back({p, c});
 				m_nodeInstances.push_back({p.x(), p.y(), p.z(), c});
 			}
 		}
 
-		float connectionMinSq = 10.0f * 10.0f;
-		for(UINT x=0; x<m_nodes.size(); ++x)
+		for(UINT x = 0; x < m_nodes.size(); ++x)
 		{
-			for(UINT y=x+1; y<m_nodes.size(); ++y)
+			float minDist = 10.0f;
+			do
 			{
-				Math::Vector3 distance = m_nodes[x].pos - m_nodes[y].pos;
-				if(distance.lengthSq() < connectionMinSq)
+				float connectionMinSq = minDist * minDist;
+				for(UINT y = x + 1; y < m_nodes.size(); ++y)
 				{
-					m_nodes[x].connections.push_back(y);
-					m_nodes[y].connections.push_back(x);
+					Math::Vector3 distance = m_nodes[x].pos - m_nodes[y].pos;
+					if(distance.lengthSq() < connectionMinSq)
+					{
+						m_nodes[x].connections.push_back(y);
+						m_nodes[y].connections.push_back(x);
+					}
 				}
-			}
+
+				minDist += 5.0f;
+
+			}while(m_nodes[x].connections.size() == 0);
 		}
 
 		return Engine::Updater::init();
@@ -50,7 +57,43 @@ namespace Electric {
 
     void Updater::advance(float dt)
     {
+		float flow = CHARGE_FLOW_FACTOR * dt;
+		for(auto& it : m_nodes)
+		{
+			float f = std::min(flow, it.charge);
+			it.charge -= f;
 
+			if(it.connections.size() > 0)
+			{
+				f /= static_cast<float>(it.connections.size());
+				for(auto& c : it.connections)
+					m_nodes[c].charge += f;
+
+				if(it.charge > 1.0f)
+				{
+					f = it.charge * DISCHARGE_FACTOR;
+					int index = 0;
+					float currMin = FLT_MAX;
+					for(int i=0; i<it.connections.size(); ++i)
+					{
+						if(currMin > m_nodes[it.connections[i]].charge)
+						{
+							index = i;
+							currMin = m_nodes[it.connections[i]].charge;
+						}
+					}
+
+					m_nodes[it.connections[index]].charge += f;
+					it.charge -= f;
+				}
+			}
+		}
+
+		{
+			std::lock_guard<std::mutex> _(m_nodeMutex);
+			for(int i=0; i<m_nodes.size(); ++i)
+				m_nodeInstances[i].charge = m_nodes[i].charge;
+		}
     }
 
     void Updater::updateInstances(Engine::Mesh<Vertex, ParticleInstance>& mesh)
@@ -66,15 +109,12 @@ namespace Electric {
                                 });
         }
 
-        mesh.updateInstances(static_cast<UINT>(particles.size()), &particles[0]);
+        mesh.updateInstances(particles.size(), &particles[0]);
     }
 
 	void Updater::updateInstances(Engine::Mesh<Vertex, NodeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_nodeMutex);
-		for(int i=0; i<m_nodes.size(); ++i)
-			m_nodeInstances[i].charge = m_nodes[i].charge;
-
-		mesh.updateInstances(static_cast<UINT>(m_nodeInstances.size()), &m_nodeInstances[0]);
+		mesh.updateInstances(m_nodeInstances.size(), &m_nodeInstances[0]);
 	}
 }
