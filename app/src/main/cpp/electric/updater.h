@@ -19,15 +19,21 @@ namespace Electric {
             Math::Color color;
         };
 
+		struct Connection
+		{
+			UINT index;
+			float lengthSq;
+		};
+
 		struct Node
 		{
 			Math::Vector3 pos;
 			float charge;
 			float restitution;
-			std::vector<UINT> connections;
+			std::vector<Connection> connections;
 		};
 
-		struct Charge
+		struct Discharge
 		{
 			float time;
 			Math::Vector3 start;
@@ -39,7 +45,7 @@ namespace Electric {
 		typedef std::vector<Node> node_vec;
 		typedef std::vector<NodeInstance> node_instance_vec;
 
-		typedef std::vector<Charge> charge_vec;
+		typedef std::vector<Discharge> discharge_vec;
 
 		std::mt19937 m_generator;
 
@@ -50,8 +56,14 @@ namespace Electric {
 		node_vec m_nodes;
 		node_instance_vec m_nodeInstances;
 
-		std::mutex m_chargeMutex;
-		charge_vec m_charges;
+		std::mutex m_dischargeMutex;
+		discharge_vec m_charges;
+
+		void setupCluster(int nrNodes, int nrConnectionsPerNode, float nodeOffsetFromCluster);
+
+		void updateCharges(float dt);
+		void updateNodes(float dt);
+		void updateNodeInstances();
 
     protected:
 
@@ -60,7 +72,7 @@ namespace Electric {
     public:
 
 		Updater()
-				: m_generator(840331)
+				: m_generator(time(nullptr))
 		{
 		}
 
