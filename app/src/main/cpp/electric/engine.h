@@ -5,10 +5,12 @@
 
 #include "../engine/mesh.h"
 #include "particle_shader.h"
+#include "node_shader.h"
 
 namespace Electric {
 
     typedef Engine::Mesh<Vertex, ParticleInstance> ParticleMesh;
+    typedef Engine::Mesh<Vertex, NodeInstance> NodeMesh;
     typedef Engine::Camera Camera;
 
     class ElectricEngine : public Engine::Engine
@@ -21,6 +23,9 @@ namespace Electric {
 
         ParticleMesh    m_particlesMesh;
         ParticleShader  m_particleShader;
+
+        NodeMesh        m_nodeMesh;
+        NodeShader      m_nodeShader;
 
     public:
 

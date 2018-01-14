@@ -32,6 +32,26 @@ namespace Electric {
             }
         }
 
+		{
+			Vertex vertices[] = {
+					{-0.5f, 0.5f,  0},
+					{0.5f,  0.5f,  0},
+					{0.5f,  -0.5f, 0},
+					{-0.5f, -0.5f, 0}
+			};
+
+			GLushort indices[] = {0, 1, 2, 0, 2, 3};
+			if (!m_nodeMesh.init(4, vertices, 6, indices)) {
+				LOGD("init( Failed to init NodeMesh: %d )", m_id);
+				return false;
+			}
+
+			if (!m_nodeShader.init(pAssetManager, m_nodeMesh)) {
+				LOGD("init( Failed to init NodeShader: %d )", m_id);
+				return false;
+			}
+		}
+
         if(!m_updater.init())
             return false;
 
@@ -59,9 +79,18 @@ namespace Electric {
 		m_camera.update();
 
 		m_updater.updateInstances(m_particlesMesh);
+		if(m_particlesMesh.hasInstances())
+		{
+			m_particleShader.bind(m_camera);
+			m_particlesMesh.render();
+		}
 
-        m_particleShader.bind(m_camera);
-        m_particlesMesh.render();
+		m_updater.updateInstances(m_nodeMesh);
+		if(m_nodeMesh.hasInstances())
+		{
+			m_nodeShader.bind(m_camera);
+			m_nodeMesh.render();
+		}
 
         return true;
     }

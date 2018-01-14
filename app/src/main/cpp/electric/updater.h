@@ -18,9 +18,24 @@ namespace Electric {
             Math::Color color;
         };
 
+		struct Node
+		{
+			Math::Vector3 pos;
+			float charge;
+			std::vector<UINT> connections;
+		};
+
         typedef std::vector<Particle> particle_vec;
 
+		typedef std::vector<Node> node_vec;
+		typedef std::vector<NodeInstance> node_instance_vec;
+
+		std::mutex m_particleMutex;
         particle_vec m_particles;
+
+		std::mutex m_nodeMutex;
+		node_vec m_nodes;
+		node_instance_vec m_nodeInstances;
 
     protected:
 
@@ -28,13 +43,10 @@ namespace Electric {
 
     public:
 
-        Updater()
-        {
-            m_particles.push_back({{0,0,0},10,{1,1,1,1}});
-			m_particles.push_back({{0,0,10}, 50, {1,0.5,0,0.5}});
-		}
+		virtual bool init() override;
 
         void updateInstances(Engine::Mesh<Vertex, ParticleInstance>& mesh);
+		void updateInstances(Engine::Mesh<Vertex, NodeInstance>& mesh);
 
     };
 }

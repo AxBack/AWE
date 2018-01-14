@@ -24,6 +24,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/electric/engine.cpp
              src/main/cpp/electric/updater.cpp
              src/main/cpp/electric/particle_shader.cpp
+             src/main/cpp/electric/node_shader.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

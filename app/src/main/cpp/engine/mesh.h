@@ -5,7 +5,8 @@
 
 namespace Engine {
 
-	class IMesh {
+	class IMesh
+	{
 	public:
 		virtual GLuint getIndexBuffer() const = 0;
 
@@ -15,7 +16,8 @@ namespace Engine {
 	};
 
 	template<class T, class K>
-	class Mesh : public IMesh {
+	class Mesh : public IMesh
+	{
 	private:
 
 #define NR_BUFFERS 3
@@ -31,14 +33,17 @@ namespace Engine {
 	public:
 
 		Mesh()
-				: m_nrIndices(0), m_nrInstances(0) {
+				: m_nrIndices(0), m_nrInstances(0)
+		{
 		}
 
-		virtual ~Mesh() {
+		virtual ~Mesh()
+		{
 			clean();
 		}
 
-		bool init(const UINT nrVertices, T *pVertices, const UINT nrIndices, GLushort *pIndices) {
+		bool init(const UINT nrVertices, T* pVertices, const UINT nrIndices, GLushort* pIndices)
+		{
 			glGenBuffers(NR_BUFFERS, m_buffers);
 
 			glBindBuffer(GL_ARRAY_BUFFER, m_buffers[STATIC_BUFFER_INDEX]);
@@ -55,33 +60,40 @@ namespace Engine {
 			return true;
 		}
 
-		void clean() {
+		void clean()
+		{
 			glDeleteBuffers(NR_BUFFERS, m_buffers);
 		}
 
-		void updateInstances(const UINT nrInstances, const K *pInstances) {
+		void updateInstances(const UINT nrInstances, const K* pInstances)
+		{
 			size_t size = nrInstances * sizeof(K);
+			if(size ==  0)
+			{
+				m_nrInstances = 0;
+				return;
+			}
 
 			glBindBuffer(GL_ARRAY_BUFFER, m_buffers[DYNAMIC_BUFFER_INDEX]);
 			glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-			K *p = static_cast<K *>(glMapBufferRange(GL_ARRAY_BUFFER, 0, size,
-													 GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
+			K* p = static_cast<K*>(glMapBufferRange(GL_ARRAY_BUFFER, 0, size,
+													GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
 			memcpy(p, pInstances, size);
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			m_nrInstances = nrInstances;
 		}
 
-		void render() {
+		void render()
+		{
 			glDrawElementsInstanced(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr,
 									m_nrInstances);
 		}
 
-		virtual GLuint getStaticBuffer() const override { return m_buffers[STATIC_BUFFER_INDEX]; }
-
-		virtual GLuint getDynamicBuffer() const override { return m_buffers[DYNAMIC_BUFFER_INDEX]; }
-
-		virtual GLuint getIndexBuffer() const override { return m_buffers[INDEX_BUFFER_INDEX]; }
+		GLuint getStaticBuffer() const override { return m_buffers[STATIC_BUFFER_INDEX]; }
+		GLuint getDynamicBuffer() const override { return m_buffers[DYNAMIC_BUFFER_INDEX]; }
+		GLuint getIndexBuffer() const override { return m_buffers[INDEX_BUFFER_INDEX]; }
+		bool hasInstances() { return m_nrInstances > 0; }
 
 	};
 }

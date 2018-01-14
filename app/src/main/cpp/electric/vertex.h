@@ -10,4 +10,9 @@ namespace Electric {
     {
         GLfloat x,y,z,size,r,g,b,a;
     };
-}
+
+	struct NodeInstance
+	{
+		GLfloat x,y,z,charge;
+	};
+};
