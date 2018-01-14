@@ -10,10 +10,11 @@
  layout (location = 2) in float charge;
 
  out float lumocity;
+ out vec2 uv;
 
  void main() {
      lumocity = charge;
+     uv = position.xy;
      vec3 pos = right * position.x + up * position.y;
      gl_Position = viewProjection * vec4((pos * 1.0) + offset, position.w);
-     //gl_Position = viewProjection * vec4((position.xyz * size) + offset, position.w);
  }
