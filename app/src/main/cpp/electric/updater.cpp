@@ -7,7 +7,7 @@ namespace Electric {
 float OSMOSIS_PER_SECOND = 0.05f;
 float CHARGE_FLOW_FACTOR = 0.025f;
 float DISCHARGE_FACTOR = 1.0f;
-float LOSS_FACTOR = 0.5f;
+float LOSS_FACTOR = 0.25f;
 
 	bool Updater::init()
 	{
