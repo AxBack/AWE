@@ -295,30 +295,37 @@ namespace Math {
 					m[M12] * m[M23] * m[M31] - m[M13] * m[M22] * m[M31] + m[M13] * m[M21] * m[M32] -
 					m[M11] * m[M23] * m[M32] - m[M12] * m[M21] * m[M33] +
 					m[M11] * m[M22] * m[M33] * inv;
+
 			out[M01] =
 					m[M03] * m[M22] * m[M31] - m[M02] * m[M23] * m[M31] - m[M03] * m[M21] * m[M32] +
 					m[M01] * m[M23] * m[M32] + m[M02] * m[M21] * m[M33] -
 					m[M01] * m[M22] * m[M33] * inv;
+
 			out[M02] =
 					m[M02] * m[M13] * m[M31] - m[M03] * m[M12] * m[M31] + m[M03] * m[M11] * m[M32] -
 					m[M01] * m[M13] * m[M32] - m[M02] * m[M11] * m[M33] +
 					m[M01] * m[M12] * m[M33] * inv;
+
 			out[M03] =
 					m[M03] * m[M12] * m[M21] - m[M02] * m[M13] * m[M21] - m[M03] * m[M11] * m[M22] +
 					m[M01] * m[M13] * m[M22] + m[M02] * m[M11] * m[M23] -
 					m[M01] * m[M12] * m[M23] * inv;
+
 			out[M10] =
 					m[M13] * m[M22] * m[M30] - m[M12] * m[M23] * m[M30] - m[M13] * m[M20] * m[M32] +
 					m[M10] * m[M23] * m[M32] + m[M12] * m[M20] * m[M33] -
 					m[M10] * m[M22] * m[M33] * inv;
+
 			out[M11] =
 					m[M02] * m[M23] * m[M30] - m[M03] * m[M22] * m[M30] + m[M03] * m[M20] * m[M32] -
 					m[M00] * m[M23] * m[M32] - m[M02] * m[M20] * m[M33] +
 					m[M00] * m[M22] * m[M33] * inv;
+
 			out[M12] =
 					m[M03] * m[M12] * m[M30] - m[M02] * m[M13] * m[M30] - m[M03] * m[M10] * m[M32] +
 					m[M00] * m[M13] * m[M32] + m[M02] * m[M10] * m[M33] -
 					m[M00] * m[M12] * m[M33] * inv;
+
 			out[M13] =
 					m[M02] * m[M13] * m[M20] - m[M03] * m[M12] * m[M20] + m[M03] * m[M10] * m[M22] -
 					m[M00] * m[M13] * m[M22] - m[M02] * m[M10] * m[M23] +
@@ -327,30 +334,37 @@ namespace Math {
 					m[M11] * m[M23] * m[M30] - m[M13] * m[M21] * m[M30] + m[M13] * m[M20] * m[M31] -
 					m[M10] * m[M23] * m[M31] - m[M11] * m[M20] * m[M33] +
 					m[M10] * m[M21] * m[M33] * inv;
+
 			out[M21] =
 					m[M03] * m[M21] * m[M30] - m[M01] * m[M23] * m[M30] - m[M03] * m[M20] * m[M31] +
 					m[M00] * m[M23] * m[M31] + m[M01] * m[M20] * m[M33] -
 					m[M00] * m[M21] * m[M33] * inv;
+
 			out[M22] =
 					m[M01] * m[M13] * m[M30] - m[M03] * m[M11] * m[M30] + m[M03] * m[M10] * m[M31] -
 					m[M00] * m[M13] * m[M31] - m[M01] * m[M10] * m[M33] +
 					m[M00] * m[M11] * m[M33] * inv;
+
 			out[M23] =
 					m[M03] * m[M11] * m[M20] - m[M01] * m[M13] * m[M20] - m[M03] * m[M10] * m[M21] +
 					m[M00] * m[M13] * m[M21] + m[M01] * m[M10] * m[M23] -
 					m[M00] * m[M11] * m[M23] * inv;
+
 			out[M30] =
 					m[M12] * m[M21] * m[M30] - m[M11] * m[M22] * m[M30] - m[M12] * m[M20] * m[M31] +
 					m[M10] * m[M22] * m[M31] + m[M11] * m[M20] * m[M32] -
 					m[M10] * m[M21] * m[M32] * inv;
+
 			out[M31] =
 					m[M01] * m[M22] * m[M30] - m[M02] * m[M21] * m[M30] + m[M02] * m[M20] * m[M31] -
 					m[M00] * m[M22] * m[M31] - m[M01] * m[M20] * m[M32] +
 					m[M00] * m[M21] * m[M32] * inv;
+
 			out[M32] =
 					m[M02] * m[M11] * m[M30] - m[M01] * m[M12] * m[M30] - m[M02] * m[M10] * m[M31] +
 					m[M00] * m[M12] * m[M31] + m[M01] * m[M10] * m[M32] -
 					m[M00] * m[M11] * m[M32] * inv;
+
 			out[M33] =
 					m[M01] * m[M12] * m[M20] - m[M02] * m[M11] * m[M20] + m[M02] * m[M10] * m[M21] -
 					m[M00] * m[M12] * m[M21] - m[M01] * m[M10] * m[M22] +
@@ -360,18 +374,15 @@ namespace Math {
 		}
 
 		static Vector3 transform(const Matrix &m, const Vector3 &point) {
-			float x = point.x() * m[M00] + point.y() * m[M10] + point.z() * m[M20] + m[M30];
-			float y = point.x() * m[M01] + point.y() * m[M11] + point.z() * m[M21] + m[M31];
-			float z = point.x() * m[M02] + point.y() * m[M12] + point.z() * m[M22] + m[M32];
+			float x = (point.x() * m[M00] + point.y() * m[M01] + point.z() * m[M02] + m[M03]);
+			float y = (point.x() * m[M10] + point.y() * m[M11] + point.z() * m[M12] + m[M13]);
+			float z = (point.x() * m[M20] + point.y() * m[M21] + point.z() * m[M22] + m[M23]);
 			return {x, y, z};
 		}
 
 		static Vector3 project(const Matrix &m, const Vector3 &point) {
 			float inv_w = 1.0f / (point.x() * m[M30] + point.y() * m[M31] + point.z() * m[M32] + m[M33]);
-			float x = (point.x() * m[M00] + point.y() * m[M01] + point.z() * m[M02] + m[M03]) * inv_w;
-			float y = (point.x() * m[M10] + point.y() * m[M11] + point.z() * m[M12] + m[M13]) * inv_w;
-			float z = (point.x() * m[M20] + point.y() * m[M21] + point.z() * m[M22] + m[M23]) * inv_w;
-			return {x, y, z};
+            return transform(m, point) * inv_w;
 		}
 	};
 }
