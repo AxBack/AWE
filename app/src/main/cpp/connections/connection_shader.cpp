@@ -4,7 +4,7 @@ namespace Connections {
 
     bool ConnectionShader::init(AAssetManager *pAssetManager, const Engine::IMesh &mesh) {
 
-        m_program = createProgram(pAssetManager, "shaders/ConnectionShader_vs.glsl", "shaders/Simple_ps.glsl");
+        m_program = createProgram(pAssetManager, "shaders/ConnectionShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
         m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
 
         bindTo(mesh);

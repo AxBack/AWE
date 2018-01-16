@@ -7,6 +7,8 @@
 #include "particle_shader.h"
 #include "node_shader.h"
 #include "charge_shader.h"
+#include "../engine/framebuffer.h"
+#include "bloom_shader.h"
 
 namespace Electric {
 
@@ -14,6 +16,7 @@ namespace Electric {
     typedef Engine::Mesh<PositionVertex, NodeInstance> NodeMesh;
 	typedef Engine::Mesh<ChargeVertex, ChargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
+	typedef Engine::Framebuffer Framebuffer;
 
     class ElectricEngine : public Engine::Engine
     {
@@ -32,9 +35,14 @@ namespace Electric {
 		ChargeMesh		m_chargeMesh;
 		ChargeShader	m_chargeShader;
 
+		std::atomic_bool m_sizeDirty;
+		std::mutex 		 m_sizeMutex;
+		Framebuffer		 m_rendertarget;
+
     public:
 
         ElectricEngine()
+		: m_sizeDirty(false)
         {
         }
 
@@ -47,9 +55,14 @@ namespace Electric {
 
         virtual void updateSize(int width, int height) override
         {
-            Engine::Engine::updateSize(width, height);
-            m_camera.updateProjection(static_cast<float>(width), static_cast<float>(height));
-        }
+			if(width != m_viewport[2] || height != m_viewport[3])
+			{
+				m_sizeDirty = true;
+				std::lock_guard<std::mutex> _(m_sizeMutex);
+				Engine::Engine::updateSize(width, height);
+				m_camera.updateProjection(static_cast<float>(width), static_cast<float>(height));
+			}
+		}
 
         virtual void setOffset(float x, float y) override
         {

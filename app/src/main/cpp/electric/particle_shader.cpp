@@ -9,7 +9,7 @@ namespace Electric {
 
     bool ParticleShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
 
-        m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/Simple_ps.glsl");
+        m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
         m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
         m_upLocation = getLocation(UP);
         m_rightLocation = getLocation(RIGHT);

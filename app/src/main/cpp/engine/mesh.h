@@ -86,8 +86,15 @@ namespace Engine {
 
 		void render()
 		{
-			glDrawElementsInstanced(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr,
-									m_nrInstances);
+			if(m_nrInstances > 0)
+			{
+				glDrawElementsInstanced(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr,
+										m_nrInstances);
+			}
+			else
+			{
+				glDrawElements(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr);
+			}
 		}
 
 		GLuint getStaticBuffer() const override { return m_buffers[STATIC_BUFFER_INDEX]; }

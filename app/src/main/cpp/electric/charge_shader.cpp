@@ -7,7 +7,7 @@ namespace Electric {
 
 	bool ChargeShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
 
-		m_program = createProgram(pAssetManager, "shaders/ChargeShader_vs.glsl", "shaders/Simple_ps.glsl");
+		m_program = createProgram(pAssetManager, "shaders/ChargeShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
 
 		bindTo(mesh);

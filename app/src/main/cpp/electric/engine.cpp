@@ -77,7 +77,11 @@ namespace Electric {
 				LOGD("init( Failed to init ChargeShader: %d )", m_id);
 				return false;
 			}
-		};
+		}
+
+		{
+
+		}
 
         if(!m_updater.init())
             return false;
@@ -88,6 +92,13 @@ namespace Electric {
 
     bool ElectricEngine::render()
     {
+		if(m_sizeDirty)
+		{
+			std::lock_guard<std::mutex> _(m_sizeMutex);
+			m_sizeDirty = false;
+			m_rendertarget.init(m_viewport[2], m_viewport[3], true, true);
+		}
+
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
@@ -104,6 +115,8 @@ namespace Electric {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_camera.update();
+
+		//m_rendertarget.set();
 
 		m_updater.updateInstances(m_nodeMesh);
 		if(m_nodeMesh.hasInstances())
@@ -125,6 +138,9 @@ namespace Electric {
 			m_particleShader.bind(m_camera);
 			m_particlesMesh.render();
 		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
 
         return true;
     }
