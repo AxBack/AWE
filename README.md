@@ -1,1 +1,1 @@
-# Connections
+# AWE (Another Wallpaper Engine)
