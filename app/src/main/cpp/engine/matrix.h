@@ -240,23 +240,23 @@ namespace Math {
             float sxsy = sx * sy;
 
             m[M00] = cy * cz;
-            m[M10] = -cy * sz;
-            m[M20] = sy;
-            m[M30] = 0;
-
-            m[M01] = cxsy * cz + cx * sz;
-            m[M11] = -cxsy * sy + cx * cz;
-            m[M21] = -sx * cy;
-            m[M31] = 0;
-
-            m[M02] = -sxsy * cz + sx * sz;
-            m[M12] = sxsy * sz + sx * cz;
-            m[M22] = cx * cy;
-            m[M32] = 0;
-
+            m[M01] = -cy * sz;
+            m[M02] = sy;
             m[M03] = 0;
+
+            m[M10] = cxsy * cz + cx * sz;
+            m[M11] = -cxsy * sy + cx * cz;
+            m[M12] = -sx * cy;
             m[M13] = 0;
+
+            m[M20] = -sxsy * cz + sx * sz;
+            m[M21] = sxsy * sz + sx * cz;
+            m[M22] = cx * cy;
             m[M23] = 0;
+
+            m[M30] = 0;
+            m[M31] = 0;
+            m[M32] = 0;
             m[M33] = 1;
 
             return m;
