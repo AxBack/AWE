@@ -151,6 +151,9 @@ namespace Engine {
 
         T traverse(float time)
         {
+            if(m_traversables.size() <= 0)
+                return T();
+
             for(auto& it : m_traversables)
             {
                 if(it->getLength() > time)
@@ -164,6 +167,8 @@ namespace Engine {
 
             return (*m_traversables.rbegin())->traverse(1.0f);
         }
+
+        float getLength() { return m_totalLength; }
     };
 
 }

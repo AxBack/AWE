@@ -114,7 +114,7 @@ namespace Electric {
         glClearDepthf(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_camera.update();
+		m_camera.update(1.0f/6.0f);
 
 		//m_renderTarget.set();
 

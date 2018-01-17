@@ -68,7 +68,7 @@ namespace Electric {
         virtual void setOffset(float x, float y) override
         {
             Engine::Engine::setOffset(x, y);
-            m_camera.updateView(x);
+            m_camera.updateOffset(x);
         }
     };
 
