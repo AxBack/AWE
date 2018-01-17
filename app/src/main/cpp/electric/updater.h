@@ -6,6 +6,7 @@
 #include "../engine/color.h"
 #include "vertex.h"
 #include "../engine/matrix.h"
+#include "../engine/path.h"
 
 namespace Electric {
 
@@ -31,9 +32,11 @@ namespace Electric {
 		struct Node
 		{
 			UINT instanceId;
-			Math::Vector3 pos;
+			Math::Vector3 offset;
+			Math::Vector3 position;
 			float charge;
 			float restitution;
+			bool dirty;
 			std::vector<Connection> connections;
 		};
 
@@ -41,8 +44,11 @@ namespace Electric {
 
 		struct Cluster
 		{
-			Math::Matrix transform;
 			node_vec nodes;
+			bool dirty;
+			Math::Vector3 rotation;
+			Math::Vector3 position;
+			Math::Matrix transform;
 		};
 
 		struct Discharge
@@ -72,11 +78,14 @@ namespace Electric {
 		discharge_vec m_charges;
 
 
-		void setupCluster(Math::Matrix offset, int nrNodes, float nodeOffsetFromCluster);
+		void setupCluster(int nrNodes, float nodeOffsetFromCluster, const Math::Vector3& pos,
+						  const Math::Vector3& rotation);
 		void connectNodes(int nrConnectionsPerNode);
 
 		void updateCharges(float dt);
 		void updateCluster(cluster_ptr pCluster, float dt);
+		void updateNode(Node* pNode, float dt);
+		void discharge(Node* pNode);
 		void updateNodeInstances();
 
     protected:
@@ -86,7 +95,7 @@ namespace Electric {
     public:
 
 		Updater()
-				: m_generator(time(nullptr))
+				: m_generator(840331)
 		{
 		}
 

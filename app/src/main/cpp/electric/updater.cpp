@@ -8,27 +8,26 @@ float OSMOSIS_PER_SECOND = 0.05f;
 float CHARGE_FLOW_FACTOR = 0.025f;
 float DISCHARGE_FACTOR = 1.0f;
 float LOSS_FACTOR = 0.25f;
+float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
-		Math::Matrix offset;
-		Math::Matrix::identity(offset);
-		setupCluster(offset, 400, 100);
-		Math::Matrix::translate(offset, -25, -25, -25);
-		setupCluster(offset, 300, 30);
-
-		Math::Matrix::translate(offset, 50, 50, 50);
-		setupCluster(offset, 300, 30);
+		setupCluster(400, 100, {0,0,0}, {0,0,0});
+		setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
+		setupCluster(300, 30, {25, 25, 25}, {0,0,0});
 
 		connectNodes(5);
 
 		return Engine::Updater::init();
 	}
 
-	void Updater::setupCluster(Math::Matrix offset, int nrNodes, float nodeOffsetFromCluster)
+	void Updater::setupCluster(int nrNodes, float nodeOffsetFromCluster, const Math::Vector3& pos,
+								const Math::Vector3& rotation)
 	{
 		cluster_ptr pCluster(new Cluster);
-		pCluster->transform = offset;
+		pCluster->dirty = true;
+		pCluster->position = pos;
+		pCluster->rotation = rotation;
 
 		std::uniform_real_distribution<> posDist(-1, 1);
 		std::uniform_real_distribution<> distanceDist(-nodeOffsetFromCluster, nodeOffsetFromCluster);
@@ -45,11 +44,9 @@ float LOSS_FACTOR = 0.25f;
 			p.normalize();
 			p *= static_cast<float>(distanceDist(m_generator));
 
-			p = offset.transform(p);
-
 			float c = static_cast<float>(chargeDist(m_generator));
 
-			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, c, 0.0f});
+			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
 			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c});
 		}
 
@@ -64,7 +61,7 @@ float LOSS_FACTOR = 0.25f;
 			{
 				for(UINT j=i+1; j<m_clusters[x]->nodes.size(); ++j)
 				{
-					Math::Vector3 distance = m_clusters[x]->nodes[i].pos - m_clusters[x]->nodes[j].pos;
+					Math::Vector3 distance = m_clusters[x]->nodes[i].offset - m_clusters[x]->nodes[j].offset;
 					float l2 = distance.lengthSq();
 
 					Node* p1 = & m_clusters[x]->nodes[i];
@@ -72,21 +69,6 @@ float LOSS_FACTOR = 0.25f;
 
 					p1->connections.push_back({p2, l2});
 					p2->connections.push_back({p1, l2});
-				}
-
-				for(UINT y=x+1; y<m_clusters.size(); ++y)
-				{
-					for(UINT j=i+1; j<m_clusters[y]->nodes.size(); ++j)
-					{
-						Math::Vector3 distance = m_clusters[x]->nodes[i].pos - m_clusters[y]->nodes[j].pos;
-						float l2 = distance.lengthSq();
-
-						Node* p1 = & m_clusters[x]->nodes[i];
-						Node* p2 = & m_clusters[y]->nodes[j];
-
-						p1->connections.push_back({p2, l2});
-						p2->connections.push_back({p1, l2});
-					}
 				}
 
 				std::sort(m_clusters[x]->nodes[i].connections.begin(), m_clusters[x]->nodes[i].connections.end(),
@@ -113,62 +95,106 @@ float LOSS_FACTOR = 0.25f;
 
 	void Updater::updateCluster(cluster_ptr pCluster, float dt)
 	{
-		float flow = CHARGE_FLOW_FACTOR * dt;
+		bool dirty = pCluster->dirty;
+		if(dirty)
+		{
+			Math::Matrix::setRotate(pCluster->transform,
+									pCluster->rotation.x(),
+									pCluster->rotation.y(),
+									pCluster->rotation.z());
+
+			Math::Matrix::translate(pCluster->transform,
+									pCluster->position.x(),
+									pCluster->position.y(),
+									pCluster->position.z());
+		}
+
 		for(auto& it : pCluster->nodes)
 		{
-			it.charge += dt * OSMOSIS_PER_SECOND;
-
-			if(it.restitution > 0.0f)
-				it.restitution -= dt;
-
-			float f = std::min(flow, it.charge);
-			it.charge -= f;
-
-			if(it.connections.size() > 0)
+			if(dirty)
 			{
-				std::vector<Node*> lowerNodes;
-				for(auto& c : it.connections)
+				it.dirty = dirty;
+				it.position = pCluster->transform.transform(it.offset);
+			}
+			updateNode(&it, dt);
+		}
+	}
+
+	void Updater::updateNode(Node* pNode, float dt)
+	{
+		float flow = CHARGE_FLOW_FACTOR * dt;
+		pNode->charge += dt * OSMOSIS_PER_SECOND;
+
+		if(pNode->restitution > 0.0f)
+			pNode->restitution -= dt;
+
+		float f = std::min(flow, pNode->charge);
+		pNode->charge -= f;
+
+		if(pNode->connections.size() > 0)
+		{
+			std::vector<Node*> lowerNodes;
+			for(auto& c : pNode->connections)
+			{
+				if(pNode->charge < c.pNode->charge)
+					lowerNodes.push_back(c.pNode);
+			}
+
+			if(lowerNodes.size() > 0)
+			{
+				f /= static_cast<float>(lowerNodes.size());
+				for(auto& c : lowerNodes)
 				{
-					if(it.charge < c.pNode->charge)
-						lowerNodes.push_back(c.pNode);
-				}
-
-				if(lowerNodes.size() > 0)
-				{
-					f /= static_cast<float>(lowerNodes.size());
-					for(auto& c : lowerNodes)
-					{
-						c->charge += f;
-						it.charge -= f;
-					}
-				}
-
-				if(it.charge > 1.0f)
-				{
-					f = it.charge * DISCHARGE_FACTOR;
-					int index = -1;
-					float currMin = FLT_MAX;
-					for(int i=0; i<it.connections.size(); ++i)
-					{
-						if(it.connections[i].pNode->restitution <= 0.0f
-						   && currMin > it.connections[i].pNode->charge)
-						{
-							index = i;
-							currMin = it.connections[i].pNode->charge;
-						}
-					}
-
-					if(index >= 0)
-					{
-						it.connections[index].pNode->charge += f * LOSS_FACTOR;
-						it.charge -= f;
-
-						it.restitution = 1.0f;
-						std::lock_guard<std::mutex> _(m_dischargeMutex);
-						m_charges.push_back({0.1f, it.pos, it.connections[index].pNode->pos});
-					}
+					c->charge += f;
+					pNode->charge -= f;
 				}
 			}
+
+			if(pNode->charge > 1.0f)
+				discharge(pNode);
+		}
+	}
+
+	void Updater::discharge(Node* pNode)
+	{
+		float radius = DISCHARGE_RADIUS_SQ * pNode->charge;
+		std::vector<Node*> near;
+		for(auto& cluster : m_clusters)
+		{
+			for(auto& node : cluster->nodes)
+			{
+				if(&node != pNode)
+				{
+					if((node.position - pNode->position).lengthSq() <=  radius)
+						near.push_back(&node);
+				}
+			}
+		}
+
+		if(near.size() == 0)
+			return;
+
+		float f = pNode->charge * DISCHARGE_FACTOR;
+		Node* p = nullptr;
+		float currMin = FLT_MAX;
+		for(int i=0; i<near.size(); ++i)
+		{
+			if(near[i]->restitution <= 0.0f
+			   && currMin > near[i]->charge)
+			{
+				p = near[i];
+				currMin = near[i]->charge;
+			}
+		}
+
+		if(p)
+		{
+			p->charge += f * LOSS_FACTOR;
+			pNode->charge -= f;
+
+			pNode->restitution = 1.0f;
+			std::lock_guard<std::mutex> _(m_dischargeMutex);
+			m_charges.push_back({0.1f, pNode->position, p->position});
 		}
 	}
 
@@ -178,7 +204,17 @@ float LOSS_FACTOR = 0.25f;
 		for(auto& cluster : m_clusters)
 		{
 			for(auto& node : cluster->nodes)
-				m_nodeInstances[node.instanceId].charge = node.charge;
+			{
+				NodeInstance* pInstance = &m_nodeInstances[node.instanceId];
+				pInstance->charge = node.charge;
+				if(node.dirty)
+				{
+					node.dirty = false;
+					pInstance->x = node.position.x();
+					pInstance->y = node.position.y();
+					pInstance->z = node.position.z();
+				}
+			}
 		}
 	}
 

@@ -100,6 +100,10 @@ namespace Electric {
             m_camera.updateProjection(m_viewport[2], m_viewport[3]);
 		}
 
+		m_updater.updateInstances(m_chargeMesh);
+		m_updater.updateInstances(m_nodeMesh);
+		m_updater.updateInstances(m_particlesMesh);
+
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
@@ -120,25 +124,22 @@ namespace Electric {
 
         //create update on demand
         m_camera.updateView(m_positionPath.traverse(m_posTime), m_rotationPath.traverse(m_offset));
-        m_camera.update(1.0f/6.0f);
+        m_camera.update();
 
 		//m_renderTarget.set();
 
-        m_updater.updateInstances(m_chargeMesh);
         if(m_chargeMesh.hasInstances())
         {
             m_chargeShader.bind(m_camera);
             m_chargeMesh.render();
         }
 
-		m_updater.updateInstances(m_nodeMesh);
 		if(m_nodeMesh.hasInstances())
 		{
 			m_nodeShader.bind(m_camera);
 			m_nodeMesh.render();
 		}
 
-		m_updater.updateInstances(m_particlesMesh);
 		if(m_particlesMesh.hasInstances())
 		{
 			m_particleShader.bind(m_camera);

@@ -37,7 +37,7 @@ namespace Engine {
 		{
 		}
 
-		void update(float dt)
+		void update()
 		{
 			if(m_vpDirty)
 			{

@@ -55,10 +55,13 @@ namespace Electric {
         {
             {
                 Math::Vector3 points[] = {
-                        {0, 0, -1.0f},
+                        {0, 0, -1100.0f},
+						{0, 0, -500.0f},
+						{0, 0, -120.0f},
+						{0, 0, -105.0f},
                         {0, 0, -100.0f}
                 };
-                m_positionPath.add(10.0f, 2, points);
+                m_positionPath.add(5.0f, 5, points);
             }
 
             {
