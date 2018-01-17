@@ -136,6 +136,7 @@ namespace Engine {
                     return;
                 case 1:
                     p = traversable_ptr(new Single<T>(length, pControlPoints[0]));
+                    break;
                 case 2:
                     p = traversable_ptr(new Linear<T>(length, pControlPoints[0], pControlPoints[1]));
                     break;
