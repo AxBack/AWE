@@ -10,6 +10,18 @@ namespace Math {
 	struct Vector3 {
 		float m_data[3];
 
+		Vector3()
+		{
+			memset(m_data, 0, sizeof(m_data));
+		}
+
+		Vector3(float x, float y, float z)
+		{
+			m_data[X] = x;
+			m_data[Y] = y;
+			m_data[Z] = z;
+		}
+
 		float x() const { return m_data[X]; }
 		float y() const { return m_data[Y]; }
 		float z() const { return m_data[Z]; }

@@ -97,6 +97,7 @@ namespace Electric {
 			std::lock_guard<std::mutex> _(m_sizeMutex);
 			m_sizeDirty = false;
 			m_renderTarget.init(m_viewport[2], m_viewport[3], true, true);
+            m_camera.updateProjection(m_viewport[2], m_viewport[3]);
 		}
 
         glEnable(GL_DEPTH_TEST);
@@ -114,22 +115,27 @@ namespace Electric {
         glClearDepthf(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_camera.update(1.0f/6.0f);
+        if(m_posTime < m_positionPath.getLength())
+            m_posTime += 1.0f/60.0f;
+
+        //create update on demand
+        m_camera.updateView(m_positionPath.traverse(m_posTime), m_rotationPath.traverse(m_offset));
+        m_camera.update(1.0f/6.0f);
 
 		//m_renderTarget.set();
+
+        m_updater.updateInstances(m_chargeMesh);
+        if(m_chargeMesh.hasInstances())
+        {
+            m_chargeShader.bind(m_camera);
+            m_chargeMesh.render();
+        }
 
 		m_updater.updateInstances(m_nodeMesh);
 		if(m_nodeMesh.hasInstances())
 		{
 			m_nodeShader.bind(m_camera);
 			m_nodeMesh.render();
-		}
-
-		m_updater.updateInstances(m_chargeMesh);
-		if(m_chargeMesh.hasInstances())
-		{
-			m_chargeShader.bind(m_camera);
-			m_chargeMesh.render();
 		}
 
 		m_updater.updateInstances(m_particlesMesh);

@@ -18,11 +18,17 @@ namespace Electric {
 	typedef Engine::Mesh<ChargeVertex, ChargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
 	typedef Engine::Framebuffer Framebuffer;
+    typedef Engine::Path<Math::Vector3> vec3_path;
 
     class ElectricEngine : public Engine::Engine
     {
     private:
 
+        //temp
+        float           m_posTime;
+        std::atomic<float> m_offset;
+        vec3_path       m_positionPath;
+        vec3_path	    m_rotationPath;
         Camera 			m_camera;
 
         Updater     	m_updater;
@@ -44,7 +50,24 @@ namespace Electric {
 
         ElectricEngine()
 		: m_sizeDirty(false)
+        , m_posTime(0.0f)
+        , m_offset(0.5f)
         {
+            {
+                Math::Vector3 points[] = {
+                        {0, 0, -1.0f},
+                        {0, 0, -100.0f}
+                };
+                m_positionPath.add(10.0f, 2, points);
+            }
+
+            {
+                Math::Vector3 points[] = {
+                        {0, -180.0f, 0},
+                        {0, 180.0f,  0}
+                };
+                m_rotationPath.add(1.0f, 2, points);
+            }
         }
 
         virtual void clear() override;
@@ -68,7 +91,7 @@ namespace Electric {
         virtual void setOffset(float x, float y) override
         {
             Engine::Engine::setOffset(x, y);
-            m_camera.updateOffset(x);
+            m_offset = x;
         }
     };
 
