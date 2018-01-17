@@ -96,7 +96,7 @@ namespace Electric {
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
 			m_sizeDirty = false;
-			m_rendertarget.init(m_viewport[2], m_viewport[3], true, true);
+			m_renderTarget.init(m_viewport[2], m_viewport[3], true, true);
 		}
 
         glEnable(GL_DEPTH_TEST);
@@ -116,7 +116,7 @@ namespace Electric {
 
 		m_camera.update();
 
-		//m_rendertarget.set();
+		//m_renderTarget.set();
 
 		m_updater.updateInstances(m_nodeMesh);
 		if(m_nodeMesh.hasInstances())

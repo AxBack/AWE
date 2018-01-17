@@ -8,7 +8,8 @@
 #include "node_shader.h"
 #include "charge_shader.h"
 #include "../engine/framebuffer.h"
-#include "bloom_shader.h"
+#include "../engine/path.h"
+#include "../engine/vector3.h"
 
 namespace Electric {
 
@@ -37,7 +38,7 @@ namespace Electric {
 
 		std::atomic_bool m_sizeDirty;
 		std::mutex 		 m_sizeMutex;
-		Framebuffer		 m_rendertarget;
+		Framebuffer		 m_renderTarget;
 
     public:
 

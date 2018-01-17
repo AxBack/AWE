@@ -2,7 +2,7 @@
 
 #include <mutex>
 #include "matrix.h"
-
+#include "path.h"
 
 namespace Engine {
 
@@ -12,6 +12,7 @@ namespace Engine {
 
 		typedef Math::Matrix Matrix;
 		typedef Math::Vector3 Vector3;
+		typedef Path<Vector3> vec3_path;
 
 		bool        m_vpDirty;
 		Matrix		m_viewProjection;
@@ -24,10 +25,18 @@ namespace Engine {
 		Matrix      m_view;
 		Matrix      m_projection;
 
+		//temp
+		vec3_path	m_rotationPath;
+
 	public:
 
 		Camera()
 		{
+			Vector3 points[] = {
+					{0,-180.0f, 0},
+					{0, 180.0f, 0}
+			};
+			m_rotationPath.add(1.0f, 2, points);
 			updateView(0.5f);
 			updateProjection(1, 1);
 		}
@@ -56,8 +65,9 @@ namespace Engine {
 
 		void updateView(float offset)
 		{
+			Vector3 angles = m_rotationPath.traverse(offset);
 			Matrix rotation;
-			Matrix::setRotate(rotation, 0, 360.0f * (offset - 0.5f), 0);
+			Matrix::setRotate(rotation, angles.x(), angles.y(), angles.z());
 			m_position = Matrix::transform(rotation, {0,0,-100.0f});
 			{
 				std::lock_guard<std::mutex> _(m_matrixMutex);
