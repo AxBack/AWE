@@ -50,6 +50,8 @@ namespace Engine {
         }
 
         virtual void touch(float /*x*/, float /*y*/) {}
+        virtual void pinch(float /*diff*/) {}
+		virtual void rotate(float /*angle*/) {}
         virtual void setOffset(float /*x*/, float /*y*/) {}
     };
 }

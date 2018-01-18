@@ -54,12 +54,10 @@ namespace Engine {
 		const Vector3& getUp() const { return m_up; }
 		const Vector3& getRight() const { return m_right; }
 
-        void updateView(const Vector3& position, const Vector3& rotation)
+        void updateView(const Vector3& position, const Vector3& at, const Vector3& up)
         {
-            Matrix transform;
-            Matrix::setRotate(transform, rotation.x(), rotation.y(), rotation.z());
-            m_position = Matrix::transform(transform, position);
-            Matrix::lookAt(m_view, m_position, {0, 0, 0}, {0, 1, 0});
+            m_position = position;
+            Matrix::lookAt(m_view, m_position, at, up);
             m_vpDirty = true;
         }
 

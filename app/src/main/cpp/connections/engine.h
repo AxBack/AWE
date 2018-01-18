@@ -13,6 +13,7 @@ namespace Connections {
 
     typedef Engine::Mesh <Vertex, PointInstance> PointMesh;
     typedef Engine::Mesh <Vertex, ConnectionInstance> ConnectionMesh;
+	typedef Engine::Camera Camera;
 
     class ConnectionsEngine : public Engine::Engine {
     private:
@@ -27,23 +28,17 @@ namespace Connections {
 
         std::mutex m_matrixMutex;
 
-        Math::Matrix m_view;
-        Math::Matrix m_projection;
+		float m_offset;
 
-        Math::Matrix m_viewProjection;
-        Math::Matrix m_inverseViewProjection;
+        Camera m_camera;
 
-        void updateProjection(float w, float h);
         void updateView(float offset);
-        void updateViewProjection();
 
     public:
 
         ConnectionsEngine()
         {
             updateView(0.25f);
-            updateProjection(1.0f,1.0f);
-            updateViewProjection();
         }
 
         virtual void clear() override;
@@ -53,7 +48,6 @@ namespace Connections {
         virtual bool render() override;
 
         virtual void resume() override { m_updater.resume(); }
-
         virtual void pause() override { m_updater.pause(); }
 
         virtual void updateSize(int width, int height) override;

@@ -2,8 +2,6 @@ package com.wallpaper.axb.engine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.Rect;
 import android.opengl.GLSurfaceView;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -70,6 +68,18 @@ class Renderer implements GLSurfaceView.Renderer {
     public void onTouch(float x, float y) {
         if(mNativeId >= 0) {
             mRenderEngine.onTouch(mNativeId,x,y);
+        }
+    }
+
+    public void onPinch(float diff) {
+        if(mNativeId >= 0) {
+            mRenderEngine.onPinch(mNativeId, diff);
+        }
+    }
+
+    public void onRotation(float angle) {
+        if(mNativeId >= 0) {
+            mRenderEngine.onRotation(mNativeId, angle);
         }
     }
 

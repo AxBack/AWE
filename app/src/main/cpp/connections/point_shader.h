@@ -4,6 +4,7 @@
 #include "../engine/matrix.h"
 #include "vertex.h"
 #include "../engine/mesh.h"
+#include "../engine/camera.h"
 
 namespace Connections {
 
@@ -20,10 +21,12 @@ namespace Connections {
 
 		void bindTo(const Engine::IMesh &mesh);
 
-		void bind(const Math::Matrix &viewProjection) {
+		void render(const Engine::Camera& camera, const Engine::IMesh& mesh)
+		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);
-			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, viewProjection.data());
+			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
+			mesh.render();
 		}
 	};
 }

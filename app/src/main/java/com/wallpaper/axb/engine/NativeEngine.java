@@ -12,6 +12,8 @@ class NativeEngine {
     public native void pause(int id);
     public native void setSize(int id, int w, int h);
     public native void onTouch(int id, float x, float y);
+    public native void onPinch(int id, float factor);
+    public native void onRotation(int id, float angle);
     public native void onOffsetChanged(int id, float x, float y);
 
 

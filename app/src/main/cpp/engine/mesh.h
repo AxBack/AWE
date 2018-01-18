@@ -9,10 +9,9 @@ namespace Engine {
 	{
 	public:
 		virtual GLuint getIndexBuffer() const = 0;
-
 		virtual GLuint getStaticBuffer() const = 0;
-
 		virtual GLuint getDynamicBuffer() const = 0;
+		virtual void render() const = 0;
 	};
 
 	template<class T, class K>
@@ -84,7 +83,7 @@ namespace Engine {
 			m_nrInstances = nrInstances;
 		}
 
-		void render()
+		virtual void render() const override
 		{
 			if(m_nrInstances > 0)
 			{

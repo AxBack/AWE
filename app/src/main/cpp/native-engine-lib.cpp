@@ -100,6 +100,26 @@ Java_com_wallpaper_axb_engine_NativeEngine_onTouch(JNIEnv* /*pEnv*/, jobject /*t
 }
 
 JNIEXPORT void JNICALL
+Java_com_wallpaper_axb_engine_NativeEngine_onPinch(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float diff)
+{
+	auto it = engines.find(id);
+	if(it != engines.end())
+		it->second->pinch(diff);
+	else
+		LOGE("No Engine to touch");
+}
+
+JNIEXPORT void JNICALL
+Java_com_wallpaper_axb_engine_NativeEngine_onRotation(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float angle)
+{
+	auto it = engines.find(id);
+	if(it != engines.end())
+		it->second->rotate(angle);
+	else
+		LOGE("No Engine to touch");
+}
+
+JNIEXPORT void JNICALL
 Java_com_wallpaper_axb_engine_NativeEngine_onOffsetChanged(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, float x, float y)
 {
     auto it = engines.find(id);

@@ -19,16 +19,26 @@ namespace Electric {
     typedef Engine::Camera Camera;
 	typedef Engine::Framebuffer Framebuffer;
     typedef Engine::Path<Math::Vector3> vec3_path;
+	typedef Engine::Path<float> float_path;
+	typedef std::atomic<float> atomic_float;
 
     class ElectricEngine : public Engine::Engine
     {
     private:
 
         //temp
-        float           m_posTime;
-        std::atomic<float> m_offset;
+        float           m_scaleTime;
+		float_path		m_scalePath;
+
+		atomic_float 	m_pinch;
         vec3_path       m_positionPath;
-        vec3_path	    m_rotationPath;
+
+		atomic_float 	m_offset;
+        float_path	    m_yawPath;
+
+		atomic_float	m_rotation;
+		float_path		m_rollPath;
+
         Camera 			m_camera;
 
         Updater     	m_updater;
@@ -50,27 +60,33 @@ namespace Electric {
 
         ElectricEngine()
 		: m_sizeDirty(false)
-        , m_posTime(0.0f)
+        , m_scaleTime(0.0f)
         , m_offset(0.5f)
+		, m_pinch(0.5f)
+		, m_rotation(0.0f)
         {
             {
                 Math::Vector3 points[] = {
-                        {0, 0, -1100.0f},
-						{0, 0, -500.0f},
-						{0, 0, -120.0f},
-						{0, 0, -105.0f},
-                        {0, 0, -100.0f}
+                        {0, 0, -100},
+						{0, 0, -1000.0f}
                 };
-                m_positionPath.add(5.0f, 5, points);
+                m_positionPath.add(5.0f, 2, points);
             }
 
+			{
+				float scales[] = {0.0f, 0.75f, 0.90f, 0.95f, 1.0f };
+				m_scalePath.add(5, 5, scales);
+			};
+
             {
-                Math::Vector3 points[] = {
-                        {0, -180.0f, 0},
-                        {0, 180.0f,  0}
-                };
-                m_rotationPath.add(1.0f, 2, points);
+                float points[] = { -180.0f, 180.0f};
+                m_yawPath.add(1.0f, 2, points);
             }
+
+			{
+				float points[] = { 0, -360};
+				m_yawPath.add(360, 2, points);
+			}
         }
 
         virtual void clear() override;
@@ -96,6 +112,19 @@ namespace Electric {
             Engine::Engine::setOffset(x, y);
             m_offset = x;
         }
+
+		virtual void pinch(float diff) override
+		{
+			Engine::Engine::pinch(diff);
+			float c = m_pinch;
+			m_pinch = std::max(0.0f, std::min(m_positionPath.getLength(), c + diff));
+		}
+
+		virtual void rotate(float angle) override
+		{
+			Engine::Engine::rotate(angle);
+			m_rotation = angle;
+		}
     };
 
 }

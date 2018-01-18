@@ -119,32 +119,31 @@ namespace Electric {
         glClearDepthf(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(m_posTime < m_positionPath.getLength())
-            m_posTime += 1.0f/60.0f;
+		{
+			Math::Matrix r;
+			Math::Matrix::setRotate(r, 0,0, m_yawPath.traverse(m_rotation));
+			Math::Vector3 up = Math::Matrix::transform(r, {0,1,0});
 
-        //create update on demand
-        m_camera.updateView(m_positionPath.traverse(m_posTime), m_rotationPath.traverse(m_offset));
+			//TODO:create update on demand
+			Math::Matrix y;
+			Math::Matrix::setRotate(y, 0,m_yawPath.traverse(m_offset), 0);
+			y = r * y;
+			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
+
+			m_camera.updateView(pos, {1,0,0}, up);
+		}
         m_camera.update();
 
 		//m_renderTarget.set();
 
         if(m_chargeMesh.hasInstances())
-        {
-            m_chargeShader.bind(m_camera);
-            m_chargeMesh.render();
-        }
+            m_chargeShader.render(m_camera, m_chargeMesh);
 
 		if(m_nodeMesh.hasInstances())
-		{
-			m_nodeShader.bind(m_camera);
-			m_nodeMesh.render();
-		}
+			m_nodeShader.render(m_camera, m_nodeMesh);
 
 		if(m_particlesMesh.hasInstances())
-		{
-			m_particleShader.bind(m_camera);
-			m_particlesMesh.render();
-		}
+			m_particleShader.render(m_camera, m_particlesMesh);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);

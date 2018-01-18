@@ -18,11 +18,12 @@ namespace Electric {
 
 		void bindTo(const Engine::IMesh &mesh);
 
-		void bind(const Engine::Camera& camera)
+		void render(const Engine::Camera& camera, const Engine::IMesh& mesh)
 		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);
 			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
+			mesh.render();
 		}
 	};
 }

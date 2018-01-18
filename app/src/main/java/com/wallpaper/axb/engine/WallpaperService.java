@@ -2,7 +2,10 @@ package com.wallpaper.axb.engine;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
@@ -55,6 +58,11 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         }
 
         @Override
+        public void onTouchEvent(MotionEvent event) {
+            mSurfaceView.onTouchEvent(event);
+        }
+
+        @Override
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
 
@@ -72,9 +80,17 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             mSurfaceView.onOffsetsChanged(xOffset, yOffset);
         }
 
-        private class WallpaperView extends GLSurfaceView {
+        private class WallpaperView extends GLSurfaceView implements
+                ScaleGestureDetector.OnScaleGestureListener,
+                GestureDetector.OnGestureListener
+                //RotationGestureDetector.OnRotationGestureListener
+        {
 
             private com.wallpaper.axb.engine.Renderer mRenderer;
+
+            private ScaleGestureDetector mScaleGestureDetector;
+            private GestureDetectorCompat mGestureDetector;
+            //private RotationGestureDetector mRotationDetector;
 
             public WallpaperView(Context context) {
                 super(context);
@@ -89,6 +105,10 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 mRenderer = new com.wallpaper.axb.engine.Renderer(WallpaperService.this);
                 setRenderer(mRenderer);
                 setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+
+                mScaleGestureDetector = new ScaleGestureDetector(WallpaperService.this, this);
+                mGestureDetector = new GestureDetectorCompat(WallpaperService.this, this);
+                //mRotationDetector = new RotationGestureDetector(this, this);
             }
 
             @Override
@@ -121,7 +141,65 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
 
             @Override
+            public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+            }
+
+            @Override
+            public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+                float diff = 1.0f - scaleGestureDetector.getScaleFactor();
+                if(diff != 0.0f)
+                    mRenderer.onPinch(diff);
+                return true;
+            }
+
+           /* @Override
+            public void onRotation(RotationGestureDetector rotationDetector) {
+                float rotation = rotationDetector.getAngle();
+                mRenderer.onRotation(rotation);
+            }*/
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return false;
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                return true;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return true;
+            }
+
+            @Override
             public boolean onTouchEvent(MotionEvent event) {
+
+                mScaleGestureDetector.onTouchEvent(event);
+                mGestureDetector.onTouchEvent(event);
+                //mRotationDetector.onTouchEvent(event);
+
                 final float x = event.getX();
                 final float y = event.getY();
 
