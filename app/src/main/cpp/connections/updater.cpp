@@ -69,8 +69,8 @@ namespace Connections {
     }
 
 
-    bool Updater::updateInstances(Engine::Mesh <Vertex, PointInstance> &pointMesh,
-                                             Engine::Mesh <Vertex, ConnectionInstance> &connectionMesh) {
+    bool Updater::updateInstances(Engine::InstancedMesh<Vertex, PointInstance> &pointMesh,
+                                  Engine::InstancedMesh <Vertex, ConnectionInstance> &connectionMesh) {
         {
             std::lock_guard<std::mutex> _(m_pointMutex);
 

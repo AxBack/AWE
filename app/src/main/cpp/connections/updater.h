@@ -66,8 +66,8 @@ namespace Connections {
             LOGI("Engine( Created: %d )", m_id);
         }
 
-        bool updateInstances(Engine::Mesh <Vertex, PointInstance> &pointMesh,
-                             Engine::Mesh <Vertex, ConnectionInstance> &connectionMesh);
+        bool updateInstances(Engine::InstancedMesh <Vertex, PointInstance> &pointMesh,
+                             Engine::InstancedMesh <Vertex, ConnectionInstance> &connectionMesh);
 
         void rayTest(const Math::Vector3 &start, const Math::Vector3 &end);
     };

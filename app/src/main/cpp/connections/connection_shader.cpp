@@ -2,7 +2,8 @@
 
 namespace Connections {
 
-    bool ConnectionShader::init(AAssetManager *pAssetManager, const Engine::IMesh &mesh) {
+    bool ConnectionShader::init(AAssetManager *pAssetManager, const Engine::InstancedMesh<Vertex, ConnectionInstance>& mesh)
+    {
 
         m_program = createProgram(pAssetManager, "shaders/ConnectionShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
         m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
@@ -12,7 +13,8 @@ namespace Connections {
         return true;
     }
 
-    void ConnectionShader::bindTo(const Engine::IMesh &mesh) {
+    void ConnectionShader::bindTo(const Engine::InstancedMesh<Vertex, ConnectionInstance>& mesh)
+    {
         if (m_vao <= 0)
             glGenVertexArrays(1, &m_vao);
 

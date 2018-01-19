@@ -7,7 +7,7 @@ namespace Electric {
 #define UP "up"
 #define RIGHT "right"
 
-	bool NodeShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
+	bool NodeShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
 
 		m_program = createProgram(pAssetManager, "shaders/NodeShader_vs.glsl", "shaders/NodeShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
@@ -19,7 +19,7 @@ namespace Electric {
 		return true;
 	}
 
-	void NodeShader::bindTo(const Engine::IMesh &mesh) {
+	void NodeShader::bindTo(const Mesh &mesh) {
 		if (m_vao <= 0)
 			glGenVertexArrays(1, &m_vao);
 

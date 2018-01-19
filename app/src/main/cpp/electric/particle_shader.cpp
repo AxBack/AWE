@@ -7,7 +7,7 @@ namespace Electric {
 #define UP "up"
 #define RIGHT "right"
 
-    bool ParticleShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
+    bool ParticleShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
 
         m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
         m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
@@ -19,7 +19,7 @@ namespace Electric {
         return true;
     }
 
-    void ParticleShader::bindTo(const Engine::IMesh &mesh) {
+    void ParticleShader::bindTo(const Mesh &mesh) {
         if (m_vao <= 0)
             glGenVertexArrays(1, &m_vao);
 

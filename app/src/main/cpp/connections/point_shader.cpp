@@ -2,7 +2,7 @@
 
 namespace Connections {
 
-	bool PointShader::init(AAssetManager *pAssetManager, const Engine::IMesh &mesh) {
+	bool PointShader::init(AAssetManager *pAssetManager, const Mesh &mesh) {
 
 		m_program = createProgram(pAssetManager, "shaders/PointShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
 		m_viewProjectionLocation = glGetUniformLocation(m_program, VIEW_PROJECTION);
@@ -12,7 +12,7 @@ namespace Connections {
 		return true;
 	}
 
-	void PointShader::bindTo(const Engine::IMesh &mesh) {
+	void PointShader::bindTo(const Mesh &mesh) {
 		if (m_vao <= 0)
 			glGenVertexArrays(1, &m_vao);
 

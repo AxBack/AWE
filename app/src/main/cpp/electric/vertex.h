@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../pch.h"
 
 namespace Electric {
@@ -5,6 +7,11 @@ namespace Electric {
     {
         GLfloat x, y, z;
     };
+
+	struct TexturedVertex
+	{
+		GLfloat x,y,z,u,v;
+	};
 
 	struct ChargeVertex
 	{

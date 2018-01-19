@@ -11,8 +11,8 @@
 
 namespace Connections {
 
-    typedef Engine::Mesh <Vertex, PointInstance> PointMesh;
-    typedef Engine::Mesh <Vertex, ConnectionInstance> ConnectionMesh;
+    typedef Engine::InstancedMesh<Vertex, PointInstance> PointMesh;
+    typedef Engine::InstancedMesh<Vertex, ConnectionInstance> ConnectionMesh;
 	typedef Engine::Camera Camera;
 
     class ConnectionsEngine : public Engine::Engine {

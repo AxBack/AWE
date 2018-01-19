@@ -5,34 +5,20 @@
 
 namespace Engine {
 
-	class IMesh
+	template<class T>
+	class Mesh
 	{
-	public:
-		virtual GLuint getIndexBuffer() const = 0;
-		virtual GLuint getStaticBuffer() const = 0;
-		virtual GLuint getDynamicBuffer() const = 0;
-		virtual void render() const = 0;
-	};
+	protected:
 
-	template<class T, class K>
-	class Mesh : public IMesh
-	{
-	private:
-
-#define NR_BUFFERS 3
-#define STATIC_BUFFER_INDEX 0
-#define INDEX_BUFFER_INDEX 1
-#define DYNAMIC_BUFFER_INDEX 2
-
-		GLuint m_buffers[NR_BUFFERS];
+		GLuint m_vertexBuffer;
+		GLuint m_indexBuffer;
 
 		GLuint m_nrIndices;
-		GLuint m_nrInstances;
 
 	public:
 
 		Mesh()
-				: m_nrIndices(0), m_nrInstances(0)
+			: m_nrIndices(0)
 		{
 		}
 
@@ -41,17 +27,19 @@ namespace Engine {
 			clean();
 		}
 
-		bool init(const UINT nrVertices, T* pVertices, const UINT nrIndices, GLushort* pIndices)
+		virtual bool init(const UINT nrVertices, T* pVertices, const UINT nrIndices, GLushort* pIndices)
 		{
-			glGenBuffers(NR_BUFFERS, m_buffers);
+			GLuint buffers[2];
+			glGenBuffers(2, buffers);
+			m_vertexBuffer = buffers[0];
+			m_indexBuffer = buffers[1];
 
-			glBindBuffer(GL_ARRAY_BUFFER, m_buffers[STATIC_BUFFER_INDEX]);
+			glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(T) * nrVertices, pVertices, GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffers[INDEX_BUFFER_INDEX]);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * nrIndices, pIndices,
-						 GL_STATIC_DRAW);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * nrIndices, pIndices, GL_STATIC_DRAW);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 			m_nrIndices = nrIndices;
@@ -59,9 +47,48 @@ namespace Engine {
 			return true;
 		}
 
-		void clean()
+		virtual void clean()
 		{
-			glDeleteBuffers(NR_BUFFERS, m_buffers);
+			GLuint buffers[] = {m_vertexBuffer, m_indexBuffer };
+			glDeleteBuffers(2, buffers);
+		}
+
+		virtual void render() const
+		{
+			glDrawElements(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr);
+		}
+
+		GLuint getStaticBuffer() const { return m_vertexBuffer; }
+		GLuint getIndexBuffer() const { return m_indexBuffer; }
+
+	};
+
+	template<class T, class K>
+	class InstancedMesh : public Mesh<T>
+	{
+	private:
+
+		GLuint m_instanceBuffer;
+		GLuint m_nrInstances;
+
+	public:
+
+		InstancedMesh()
+				: Mesh<T>()
+				, m_nrInstances(0)
+		{
+		}
+
+		virtual bool init(const UINT nrVertices, T* pVertices, const UINT nrIndices, GLushort* pIndices) override
+		{
+			glGenBuffers(1, &m_instanceBuffer);
+			return Mesh<T>::init(nrVertices, pVertices, nrIndices, pIndices);
+		}
+
+		virtual void clean() override
+		{
+			glDeleteBuffers(1, &m_instanceBuffer);
+			Mesh<T>::clean();
 		}
 
 		void updateInstances(const UINT nrInstances, const K* pInstances)
@@ -73,7 +100,7 @@ namespace Engine {
 				return;
 			}
 
-			glBindBuffer(GL_ARRAY_BUFFER, m_buffers[DYNAMIC_BUFFER_INDEX]);
+			glBindBuffer(GL_ARRAY_BUFFER, m_instanceBuffer);
 			glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 			K* p = static_cast<K*>(glMapBufferRange(GL_ARRAY_BUFFER, 0, size,
 													GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT));
@@ -85,21 +112,11 @@ namespace Engine {
 
 		virtual void render() const override
 		{
-			if(m_nrInstances > 0)
-			{
-				glDrawElementsInstanced(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr,
-										m_nrInstances);
-			}
-			else
-			{
-				glDrawElements(GL_TRIANGLES, m_nrIndices, GL_UNSIGNED_SHORT, nullptr);
-			}
+			glDrawElementsInstanced(GL_TRIANGLES, Mesh<T>::m_nrIndices, GL_UNSIGNED_SHORT, nullptr, m_nrInstances);
 		}
 
-		GLuint getStaticBuffer() const override { return m_buffers[STATIC_BUFFER_INDEX]; }
-		GLuint getDynamicBuffer() const override { return m_buffers[DYNAMIC_BUFFER_INDEX]; }
-		GLuint getIndexBuffer() const override { return m_buffers[INDEX_BUFFER_INDEX]; }
 		bool hasInstances() { return m_nrInstances > 0; }
-
+		GLuint getDynamicBuffer() const { return m_instanceBuffer; }
 	};
-}
+
+};

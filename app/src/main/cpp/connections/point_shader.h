@@ -11,17 +11,19 @@ namespace Connections {
 	class PointShader : public Engine::Shader {
 	private:
 
+		typedef Engine::InstancedMesh<Vertex, PointInstance> Mesh;
+
 #define VIEW_PROJECTION "viewProjection"
 
 		GLint m_viewProjectionLocation;
 
 	public:
 
-		bool init(AAssetManager *pAssetManager, const Engine::IMesh &mesh);
+		bool init(AAssetManager *pAssetManager, const Mesh &mesh);
 
-		void bindTo(const Engine::IMesh &mesh);
+		void bindTo(const Mesh &mesh);
 
-		void render(const Engine::Camera& camera, const Engine::IMesh& mesh)
+		void render(const Engine::Camera& camera, const Mesh& mesh)
 		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);

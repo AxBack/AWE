@@ -13,9 +13,9 @@
 
 namespace Electric {
 
-    typedef Engine::Mesh<PositionVertex, ParticleInstance> ParticleMesh;
-    typedef Engine::Mesh<PositionVertex, NodeInstance> NodeMesh;
-	typedef Engine::Mesh<ChargeVertex, ChargeInstance> ChargeMesh;
+    typedef Engine::InstancedMesh<PositionVertex, ParticleInstance> ParticleMesh;
+    typedef Engine::InstancedMesh<PositionVertex, NodeInstance> NodeMesh;
+	typedef Engine::InstancedMesh<ChargeVertex, ChargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
 	typedef Engine::Framebuffer Framebuffer;
     typedef Engine::Path<Math::Vector3> vec3_path;

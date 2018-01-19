@@ -226,7 +226,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		updateNodeInstances();
     }
 
-    void Updater::updateInstances(Engine::Mesh<PositionVertex, ParticleInstance>& mesh)
+    void Updater::updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh)
     {
 		std::lock_guard<std::mutex> _(m_particleMutex);
         std::vector<ParticleInstance> particles;
@@ -242,13 +242,13 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
         mesh.updateInstances(static_cast<UINT>(particles.size()), particles.size() == 0 ? nullptr : &particles[0]);
     }
 
-	void Updater::updateInstances(Engine::Mesh<PositionVertex, NodeInstance>& mesh)
+	void Updater::updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_nodeMutex);
 		mesh.updateInstances(static_cast<UINT>(m_nodeInstances.size()), m_nodeInstances.size() == 0 ? nullptr : &m_nodeInstances[0]);
 	}
 
-	void Updater::updateInstances(Engine::Mesh<ChargeVertex, ChargeInstance>& mesh)
+	void Updater::updateInstances(Engine::InstancedMesh<ChargeVertex, ChargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
 		std::vector<ChargeInstance> charges;

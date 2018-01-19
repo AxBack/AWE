@@ -5,7 +5,7 @@ namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
 
-	bool ChargeShader::init(AAssetManager* pAssetManager, const Engine::IMesh& mesh) {
+	bool ChargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
 
 		m_program = createProgram(pAssetManager, "shaders/ChargeShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
@@ -15,7 +15,7 @@ namespace Electric {
 		return true;
 	}
 
-	void ChargeShader::bindTo(const Engine::IMesh &mesh) {
+	void ChargeShader::bindTo(const Mesh &mesh) {
 		if (m_vao <= 0)
 			glGenVertexArrays(1, &m_vao);
 

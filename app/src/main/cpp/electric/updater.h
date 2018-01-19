@@ -95,15 +95,15 @@ namespace Electric {
     public:
 
 		Updater()
-				: m_generator(840331)
+			: m_generator(840331)
 		{
 		}
 
 		virtual bool init() override;
 
-        void updateInstances(Engine::Mesh<PositionVertex, ParticleInstance>& mesh);
-		void updateInstances(Engine::Mesh<PositionVertex, NodeInstance>& mesh);
-		void updateInstances(Engine::Mesh<ChargeVertex, ChargeInstance>& mesh);
+        void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
+		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);
+		void updateInstances(Engine::InstancedMesh<ChargeVertex, ChargeInstance>& mesh);
 
     };
 }
