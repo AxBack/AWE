@@ -156,7 +156,7 @@ namespace Engine {
 
             for(auto& it : m_traversables)
             {
-                if(it->getLength() > time)
+                if(it->getLength() >= time)
                 {
                     float dt = time / it->getLength();
                     return it->traverse(dt);

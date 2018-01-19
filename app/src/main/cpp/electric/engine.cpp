@@ -12,6 +12,22 @@ namespace Electric {
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
+		{
+			TexturedVertex vertices[] = {
+					{-1,-1,0,0,0},
+					{ 1,-1,0,1,0},
+					{ 1, 1,0,1,1},
+					{-1, 1,0,0,1}
+			};
+
+			GLushort indices[] = {0,1,2,0,2,3};
+			if(!m_screenMesh.init(4, vertices, 6, indices))
+			{
+				LOGD("init( Failed to init ScreenMesh: %d )", m_id);
+				return false;
+			}
+		};
+
         {
             PositionVertex vertices[] = {
                     {-0.5f, 0.5f,  0},
@@ -79,10 +95,6 @@ namespace Electric {
 			}
 		}
 
-		{
-
-		}
-
         if(!m_updater.init())
             return false;
 
@@ -121,7 +133,7 @@ namespace Electric {
 
 		{
 			Math::Matrix r;
-			Math::Matrix::setRotate(r, 0,0, m_yawPath.traverse(m_rotation));
+			Math::Matrix::setRotate(r, 0,0, m_rollPath.traverse(m_rotation));
 			Math::Vector3 up = Math::Matrix::transform(r, {0,1,0});
 
 			//TODO:create update on demand

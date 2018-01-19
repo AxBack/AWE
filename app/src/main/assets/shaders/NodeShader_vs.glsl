@@ -8,12 +8,13 @@
  layout (location = 0) in vec4 position;
  layout (location = 1) in vec3 offset;
  layout (location = 2) in float charge;
+ layout (location = 3) in vec3 baseColor;
 
- out float lumocity;
+ out vec4 color;
  out vec2 uv;
 
  void main() {
-     lumocity = charge;
+     color = mix(vec4(baseColor, 1), vec4(1,1,1,1), charge);
      uv = position.xy;
      vec3 pos = right * position.x + up * position.y;
      gl_Position = viewProjection * vec4((pos * 1.0) + offset, position.w);

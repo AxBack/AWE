@@ -48,7 +48,7 @@ namespace Engine {
 
         while (true) {
             std::this_thread::sleep_until(next);
-            next += framerate{1};
+            next = next + framerate{1};
 
             advance(dt);
 

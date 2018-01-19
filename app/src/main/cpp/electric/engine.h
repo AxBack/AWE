@@ -13,6 +13,7 @@
 
 namespace Electric {
 
+	typedef Engine::Mesh<TexturedVertex> ScreenMesh;
     typedef Engine::InstancedMesh<PositionVertex, ParticleInstance> ParticleMesh;
     typedef Engine::InstancedMesh<PositionVertex, NodeInstance> NodeMesh;
 	typedef Engine::InstancedMesh<ChargeVertex, ChargeInstance> ChargeMesh;
@@ -42,6 +43,8 @@ namespace Electric {
         Camera 			m_camera;
 
         Updater     	m_updater;
+
+		ScreenMesh		m_screenMesh;
 
         ParticleMesh    m_particlesMesh;
         ParticleShader  m_particleShader;

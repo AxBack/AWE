@@ -41,6 +41,10 @@ namespace Electric {
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(3));
 		glVertexAttribDivisor(2, 1);
 
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(4));
+		glVertexAttribDivisor(3, 1);
+
 		glBindVertexArray(0);
 	}
 }

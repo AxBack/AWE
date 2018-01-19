@@ -1,6 +1,7 @@
 #include "updater.h"
 
 #include <algorithm>
+#include <float.h>
 
 namespace Electric {
 
@@ -32,6 +33,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		std::uniform_real_distribution<> posDist(-1, 1);
 		std::uniform_real_distribution<> distanceDist(-nodeOffsetFromCluster, nodeOffsetFromCluster);
 		std::uniform_real_distribution<> chargeDist(0.0f, 1.0f);
+		std::uniform_real_distribution<> colorDist(0.0f, 1.0f);
 
 		for(int i = 0; i < nrNodes; ++i)
 		{
@@ -46,8 +48,14 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 			float c = static_cast<float>(chargeDist(m_generator));
 
+			Math::Color color = {
+					static_cast<float>(colorDist(m_generator)),
+					static_cast<float>(colorDist(m_generator)),
+					static_cast<float>(colorDist(m_generator)),
+					1
+			};
 			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
-			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c});
+			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c, color.r(), color.g(), color.b()});
 		}
 
 		m_clusters.push_back(pCluster);

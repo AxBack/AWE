@@ -25,7 +25,7 @@ namespace Electric {
 
 	struct NodeInstance
 	{
-		GLfloat x,y,z,charge;
+		GLfloat x,y,z,charge,r,g,b;
 	};
 
 	struct ChargeInstance
