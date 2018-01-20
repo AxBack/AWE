@@ -115,6 +115,7 @@ namespace Electric {
 			std::lock_guard<std::mutex> _(m_sizeMutex);
 			m_sizeDirty = false;
 			m_renderTarget.init(m_viewport[2], m_viewport[3], true, true);
+			m_bloomShader.updateSize(m_viewport[2], m_viewport[3]);
             m_camera.updateProjection(m_viewport[2], m_viewport[3]);
 		}
 

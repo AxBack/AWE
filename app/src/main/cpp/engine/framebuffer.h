@@ -17,20 +17,6 @@ namespace Engine {
 		GLuint m_texture;
 		GLuint m_depth;
 
-		static void createTexture(GLuint texture, GLsizei width, GLsizei height, GLenum format)
-		{
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, 0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		}
-
-		static void createDepthTexture(GLuint texture, GLsizei width, GLsizei height)
-		{
-			glBindRenderbuffer(GL_RENDERBUFFER, texture);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-		}
-
 	public:
 
 		Framebuffer()

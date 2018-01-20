@@ -7,6 +7,9 @@ in vec2 uv;
 
 out vec4 finalColor;
 
+const float magnitude = 1.0f;
+
 void main() {
     finalColor = texture(uTexture, uv);
+    finalColor = mix(vec4(0,0,0,0), finalColor, length(finalColor.xyz) / 1.0f);
 }

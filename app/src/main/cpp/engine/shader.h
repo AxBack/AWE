@@ -105,10 +105,10 @@ namespace Engine {
             GLint location = glGetUniformLocation(program, uniform);
             if(location < 0)
             {
+				LOGD("Shader", "uniform (%s) not found, .", uniform);
                 std::stringstream ss;
                 ss << uniform << " not found in shader";
-				LOGD("Shader", ss.str().c_str());
-                throw std::invalid_argument(ss.str().c_str());
+				return -1;
             }
             return location;
         }

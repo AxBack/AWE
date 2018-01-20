@@ -19,9 +19,23 @@ namespace Electric {
 			GLuint program;
 			GLuint vao;
 			GLint textureLocation;
+			GLint overlayLocation;
 		};
 
-		Pass m_pass;
+		Pass m_thresholdPass;
+
+		Pass m_horizontalBlurPass;
+
+		Pass m_verticalBlurPass;
+
+		Pass m_finalPass;
+
+		Framebuffer m_framebuffer1;
+		Framebuffer m_framebuffer2;
+
+		static Pass setupPass(GLuint vs, GLuint ps, const Mesh& mesh);
+		static void preparePass(const Pass& pass, const Framebuffer& texture);
+		static void preparePass(const Pass& pass, const Framebuffer& texture, const Framebuffer& overlay);
 
 	public:
 
@@ -32,10 +46,29 @@ namespace Electric {
 
 		virtual void release() override {
 
-			glDeleteProgram(m_pass.program);
-			glDeleteVertexArrays(1, &m_pass.vao);
+			glDeleteProgram(m_thresholdPass.program);
+			glDeleteProgram(m_horizontalBlurPass.program);
+			glDeleteProgram(m_verticalBlurPass.program);
+			glDeleteProgram(m_finalPass.program);
+
+			GLuint handles[] = {m_thresholdPass.vao,
+								m_horizontalBlurPass.vao,
+								m_verticalBlurPass.vao,
+								m_finalPass.vao};
+			glDeleteVertexArrays(4, handles);
+
+			m_framebuffer2.release();
+			m_framebuffer1.release();
 		}
 
 		void render(const Mesh& mesh, const Framebuffer& framebuffer);
+
+		void updateSize(GLsizei width, GLsizei height)
+		{
+			GLsizei w = static_cast<GLsizei>( static_cast<float>(width) * 0.2f);
+			GLsizei h = static_cast<GLsizei>( static_cast<float>(height) * 0.2f);
+			m_framebuffer1.init(w, h, true, false);
+			m_framebuffer2.init(w, h, true, false);
+		}
 	};
 };
