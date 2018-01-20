@@ -26,6 +26,12 @@ namespace Electric {
 				LOGD("init( Failed to init ScreenMesh: %d )", m_id);
 				return false;
 			}
+
+			if(!m_bloomShader.init(pAssetManager, m_screenMesh))
+			{
+				LOGD("init( Failed to init BloomShader: %d )", m_id);
+				return false;
+			}
 		};
 
         {
@@ -146,7 +152,8 @@ namespace Electric {
 		}
         m_camera.update();
 
-		//m_renderTarget.set();
+		m_renderTarget.set();
+		m_renderTarget.clear();
 
         if(m_chargeMesh.hasInstances())
             m_chargeShader.render(m_camera, m_chargeMesh);
@@ -159,6 +166,8 @@ namespace Electric {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
+
+		m_bloomShader.render(m_screenMesh, m_renderTarget);
 
         return true;
     }

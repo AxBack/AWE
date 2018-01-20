@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AWE.iml" filepath="$PROJECT_DIR$/AWE.iml" />
-      <module fileurl="file://F:\android\projects\Connections\AWE.iml" filepath="F:\android\projects\Connections\AWE.iml" />
-      <module fileurl="file://F:\Wallpaper Projects\AWE\Connections.iml" filepath="F:\Wallpaper Projects\AWE\Connections.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -5,19 +5,13 @@ namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
 
-	bool ChargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
+	bool ChargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
+	{
 
 		m_program = createProgram(pAssetManager, "shaders/ChargeShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
-		m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
+		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
 
-		bindTo(mesh);
-
-		return true;
-	}
-
-	void ChargeShader::bindTo(const Mesh &mesh) {
-		if (m_vao <= 0)
-			glGenVertexArrays(1, &m_vao);
+		glGenVertexArrays(1, &m_vao);
 
 		glBindVertexArray(m_vao);
 
@@ -41,5 +35,7 @@ namespace Electric {
 		glVertexAttribDivisor(3, 1);
 
 		glBindVertexArray(0);
+
+		return true;
 	}
 }

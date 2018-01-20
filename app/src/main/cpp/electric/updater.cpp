@@ -48,14 +48,14 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 			float c = static_cast<float>(chargeDist(m_generator));
 
-			Math::Color color = {
+			Math::Vector3 color = {
 					static_cast<float>(colorDist(m_generator)),
 					static_cast<float>(colorDist(m_generator)),
-					static_cast<float>(colorDist(m_generator)),
-					1
+					static_cast<float>(colorDist(m_generator))
 			};
+			color.normalize();
 			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
-			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c, color.r(), color.g(), color.b()});
+			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c, color.x(), color.y(), color.z()});
 		}
 
 		m_clusters.push_back(pCluster);

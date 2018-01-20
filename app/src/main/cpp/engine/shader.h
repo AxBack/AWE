@@ -12,11 +12,6 @@ namespace Engine {
     class Shader {
     protected:
 
-        GLuint m_program;
-        GLuint m_vao;
-
-    protected:
-
         static bool verifyShader(GLuint shader) {
             GLint param = 0;
             glGetShaderiv(shader, GL_COMPILE_STATUS, &param);
@@ -52,62 +47,67 @@ namespace Engine {
             return true;
         }
 
+        static GLuint createShader(AAssetManager* pAssetManager, const char* file, GLint type)
+        {
+            std::string f;
+            if (!loadFile(pAssetManager, file, f))
+                return GL_FALSE;
+
+            const char *pFile = f.c_str();
+
+            GLuint handle = glCreateShader(type);
+            glShaderSource(handle, 1, &pFile, nullptr);
+            glCompileShader(handle);
+            if (!verifyShader(handle))
+                return GL_FALSE;
+
+            return handle;
+        }
+
         static GLuint createProgram(AAssetManager *pAssetManager, const char* vsFile, const char* psFile)        {
-            std::string file;
-            if (!loadFile(pAssetManager, vsFile, file))
-                return GL_FALSE;
 
-            const char *pFile = file.c_str();
+            GLuint vs = createShader(pAssetManager, vsFile, GL_VERTEX_SHADER);
+            GLuint ps = createShader(pAssetManager, psFile, GL_FRAGMENT_SHADER);
 
-            GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(vs, 1, &pFile, nullptr);
-            glCompileShader(vs);
-            if (!verifyShader(vs))
-                return GL_FALSE;
+			GLuint program = createProgram(vs, ps);
 
-            if (!loadFile(pAssetManager, psFile, file))
-                return GL_FALSE;
-
-            pFile = file.c_str();
-
-            GLuint ps = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(ps, 1, &pFile, nullptr);
-            glCompileShader(ps);
-            if (!verifyShader(ps))
-                return GL_FALSE;
-
-            GLuint program = glCreateProgram();
-            glAttachShader(program, vs);
-            glAttachShader(program, ps);
-            glLinkProgram(program);
-
-            glDetachShader(program, vs);
-            glDetachShader(program, ps);
-
-            glDeleteShader(vs);
-            glDeleteShader(ps);
-
-            GLint param = 0;
-            glGetProgramiv(program, GL_LINK_STATUS, &param);
-            if (param == GL_FALSE) {
-                glGetProgramiv(program, GL_INFO_LOG_LENGTH, &param);
-                GLchar *pLog = new GLchar[param];
-                glGetProgramInfoLog(program, param, nullptr, pLog);
-                LOGE("init( %s )", pLog);
-                SAFE_DELETE_ARRAY(pLog);
-                return GL_FALSE;
-            }
+			glDeleteShader(vs);
+			glDeleteShader(ps);
 
             return program;
         }
 
-        GLint getLocation(const char* uniform)
+		static GLuint createProgram(GLuint vs, GLuint ps)
+		{
+			GLuint program = glCreateProgram();
+			glAttachShader(program, vs);
+			glAttachShader(program, ps);
+			glLinkProgram(program);
+
+			glDetachShader(program, vs);
+			glDetachShader(program, ps);
+
+			GLint param = 0;
+			glGetProgramiv(program, GL_LINK_STATUS, &param);
+			if (param == GL_FALSE) {
+				glGetProgramiv(program, GL_INFO_LOG_LENGTH, &param);
+				GLchar *pLog = new GLchar[param];
+				glGetProgramInfoLog(program, param, nullptr, pLog);
+				LOGE("init( %s )", pLog);
+				SAFE_DELETE_ARRAY(pLog);
+				return GL_FALSE;
+			}
+			return program;
+		}
+
+        static GLint getLocation(GLuint program, const char* uniform)
         {
-            GLint location = glGetUniformLocation(m_program, uniform);
+            GLint location = glGetUniformLocation(program, uniform);
             if(location < 0)
             {
                 std::stringstream ss;
                 ss << uniform << " not found in shader";
+				LOGD("Shader", ss.str().c_str());
                 throw std::invalid_argument(ss.str().c_str());
             }
             return location;
@@ -116,8 +116,6 @@ namespace Engine {
     public:
 
         Shader()
-            : m_program(0)
-            , m_vao(0)
         {
         }
 
@@ -125,16 +123,6 @@ namespace Engine {
             release();
         }
 
-        void release() {
-            if (m_program > 0) {
-                glDeleteProgram(m_program);
-                m_program = 0;
-            }
-
-            if (m_vao > 0) {
-                glDeleteVertexArrays(1, &m_vao);
-                m_vao = 0;
-            }
-        }
+        virtual void release() {};
     };
 }

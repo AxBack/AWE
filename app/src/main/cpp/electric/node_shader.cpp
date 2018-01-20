@@ -7,21 +7,15 @@ namespace Electric {
 #define UP "up"
 #define RIGHT "right"
 
-	bool NodeShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
+	bool NodeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
+	{
 
 		m_program = createProgram(pAssetManager, "shaders/NodeShader_vs.glsl", "shaders/NodeShader_ps.glsl");
-		m_viewProjectionLocation = getLocation(VIEW_PROJECTION);
-		m_upLocation = getLocation(UP);
-		m_rightLocation = getLocation(RIGHT);
+		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
+		m_upLocation = getLocation(m_program, UP);
+		m_rightLocation = getLocation(m_program, RIGHT);
 
-		bindTo(mesh);
-
-		return true;
-	}
-
-	void NodeShader::bindTo(const Mesh &mesh) {
-		if (m_vao <= 0)
-			glGenVertexArrays(1, &m_vao);
+		glGenVertexArrays(1, &m_vao);
 
 		glBindVertexArray(m_vao);
 
@@ -46,5 +40,7 @@ namespace Electric {
 		glVertexAttribDivisor(3, 1);
 
 		glBindVertexArray(0);
+
+		return true;
 	}
 }

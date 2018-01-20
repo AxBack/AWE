@@ -10,6 +10,7 @@
 #include "../engine/framebuffer.h"
 #include "../engine/path.h"
 #include "../engine/vector3.h"
+#include "bloom_shader.h"
 
 namespace Electric {
 
@@ -45,6 +46,7 @@ namespace Electric {
         Updater     	m_updater;
 
 		ScreenMesh		m_screenMesh;
+		BloomShader		m_bloomShader;
 
         ParticleMesh    m_particlesMesh;
         ParticleShader  m_particleShader;
@@ -112,7 +114,6 @@ namespace Electric {
 
         virtual void setOffset(float x, float y) override
         {
-            Engine::Engine::setOffset(x, y);
             m_offset = x;
         }
 

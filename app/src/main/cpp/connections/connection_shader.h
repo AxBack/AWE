@@ -13,14 +13,33 @@ namespace Connections {
 
 #define VIEW_PROJECTION "viewProjection"
 
+		GLuint m_program;
+		GLuint m_vao;
 		GLint m_viewProjectionLocation;
 
 	public:
+
+		ConnectionShader()
+				: m_program(0)
+				, m_vao(0)
+				, m_viewProjectionLocation(0)
+		{}
 
 		bool init(AAssetManager *pAssetManager, const Engine::InstancedMesh<Vertex, ConnectionInstance>& mesh);
 
 		void bindTo(const Engine::InstancedMesh<Vertex, ConnectionInstance>& mesh);
 
+		virtual void release() override {
+			if (m_program > 0) {
+				glDeleteProgram(m_program);
+				m_program = 0;
+			}
+
+			if (m_vao > 0) {
+				glDeleteVertexArrays(1, &m_vao);
+				m_vao = 0;
+			}
+		}
 
 		void render(const Engine::Camera& camera, const Engine::InstancedMesh<Vertex, ConnectionInstance>& mesh) {
 			glUseProgram(m_program);

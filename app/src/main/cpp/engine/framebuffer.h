@@ -50,18 +50,27 @@ namespace Engine {
 		void release()
 		{
 			if(m_texture > 0)
+			{
 				glDeleteTextures(1, &m_texture);
+				m_texture = 0;
+			}
 
 			if(m_depth > 0)
-				glDeleteTextures(1, &m_texture);
+			{
+				glDeleteTextures(1, &m_depth);
+				m_depth = 0;
+			}
 
 			if(m_handle > 0)
+			{
 				glDeleteFramebuffers(1, &m_handle);
+				m_handle = 0;
+			}
 		}
 
 		bool init(int width, int height, bool alpha, bool depth);
 
-		void set()
+		void set() const
 		{
 			if(m_handle > 0)
 			{
@@ -70,10 +79,21 @@ namespace Engine {
 			}
 		}
 
-		void bind()
+		void clear()
+		{
+			if(m_depth > 0)
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			else
+				glClear(GL_COLOR_BUFFER_BIT);
+		}
+
+		void bind() const
 		{
 			if(m_texture > 0)
 				glBindTexture(GL_TEXTURE_2D, m_texture);
 		}
+
+		GLsizei getWidth() const { return m_width; }
+		GLsizei getHeight() const { return m_height; }
 	};
 };
