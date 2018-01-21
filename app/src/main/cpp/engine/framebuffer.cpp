@@ -1,6 +1,7 @@
 #include "framebuffer.h"
 
 namespace Engine {
+
     bool Framebuffer::init(int width, int height, bool alpha, DepthType depthType)
     {
         GLint formats[] = {alpha ? GL_RGBA : GL_RGB };
