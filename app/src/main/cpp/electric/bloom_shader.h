@@ -65,8 +65,8 @@ namespace Electric {
 
 		void updateSize(GLsizei width, GLsizei height)
 		{
-			GLsizei w = static_cast<GLsizei>( static_cast<float>(width) * 0.2f);
-			GLsizei h = static_cast<GLsizei>( static_cast<float>(height) * 0.2f);
+			GLsizei w = static_cast<GLsizei>( static_cast<float>(width) * 0.25f);
+			GLsizei h = static_cast<GLsizei>( static_cast<float>(height) * 0.25f);
 			m_framebuffer1.init(w, h, true, false);
 			m_framebuffer2.init(w, h, true, false);
 		}
