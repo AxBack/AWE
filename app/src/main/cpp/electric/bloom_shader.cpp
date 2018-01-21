@@ -40,10 +40,9 @@ namespace Electric {
 
 	auto BloomShader::setupPass(GLuint vs, GLuint ps, const Mesh& mesh)->Pass
 	{
-		Pass pass = {0,0,-1,-1};
+		Pass pass = {0,0,-1};
 		pass.program = createProgram(vs, ps);
 		pass.textureLocation = getLocation(pass.program, TEXTURE);
-		pass.overlayLocation = getLocation(pass.program, OVERLAY);
 
 		glGenVertexArrays(1, &pass.vao);
 		glBindVertexArray(pass.vao);
@@ -61,52 +60,48 @@ namespace Electric {
 		return pass;
 	}
 
-	void BloomShader::render(const Mesh& mesh, const Framebuffer& framebuffer)
+	void BloomShader::render(const Mesh& mesh, const Framebuffer& framebuffer, UINT index)
 	{
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
+		glDisable(GL_BLEND);
 
 		m_framebuffer2.set();
 		m_framebuffer2.clear();
 
-		preparePass(m_thresholdPass, framebuffer);
+		preparePass(m_thresholdPass, framebuffer, index);
 		mesh.render();
 
 		m_framebuffer1.set();
 		m_framebuffer1.clear();
 
-		preparePass(m_horizontalBlurPass, m_framebuffer2);
+		preparePass(m_horizontalBlurPass, m_framebuffer2, 0);
 		mesh.render();
 
 		m_framebuffer2.set();
 		m_framebuffer2.clear();
 
-		preparePass(m_verticalBlurPass, m_framebuffer1);
+		preparePass(m_verticalBlurPass, m_framebuffer1, 0);
 		mesh.render();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
 		glViewport(0,0,framebuffer.getWidth(), framebuffer.getHeight());
 
-		preparePass(m_finalPass, framebuffer, m_framebuffer2);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+		glBlendEquation(GL_FUNC_ADD);
+
+		preparePass(m_finalPass, m_framebuffer2, 0);
 		mesh.render();
 	}
 
-	void BloomShader::preparePass(const Pass& pass, const Framebuffer& texture)
+	void BloomShader::preparePass(const Pass& pass, const Framebuffer& texture, UINT index)
 	{
 		glUseProgram(pass.program);
 		glBindVertexArray(pass.vao);
 
 		glActiveTexture(GL_TEXTURE0);
-		texture.bind();
+		texture.bind(index);
 		glUniform1i(pass.textureLocation, 0);
-	}
-
-	void BloomShader::preparePass(const Pass& pass, const Framebuffer& texture, const Framebuffer& overlay)
-	{
-		preparePass(pass, texture);
-		glActiveTexture(GL_TEXTURE1);
-		overlay.bind();
-		glUniform1i(pass.overlayLocation, 1);
 	}
 }

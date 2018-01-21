@@ -32,6 +32,12 @@ namespace Electric {
 				LOGD("init( Failed to init BloomShader: %d )", m_id);
 				return false;
 			}
+
+			if(!m_dofShader.init(pAssetManager, m_screenMesh))
+			{
+				LOGD("init( Failed to init DofShader: %d )", m_id);
+				return false;
+			}
 		};
 
         {
@@ -96,7 +102,7 @@ namespace Electric {
 
 			if(!m_chargeShader.init(pAssetManager, m_chargeMesh))
 			{
-				LOGD("init( Failed to init ChargeShader: %d )", m_id);
+				LOGD("init( Failed to init DischargeShader: %d )", m_id);
 				return false;
 			}
 		}
@@ -114,8 +120,10 @@ namespace Electric {
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
 			m_sizeDirty = false;
-			m_renderTarget.init(m_viewport[2], m_viewport[3], true, Framebuffer::READ_WRITE);
+			GLint formats[] = {GL_RGB, GL_RGB};
+			m_renderTarget.init(m_viewport[2], m_viewport[3], 2, formats, Framebuffer::READ_WRITE);
 			m_bloomShader.updateSize(m_viewport[2], m_viewport[3]);
+			m_dofShader.updateSize(m_viewport[2], m_viewport[3]);
             m_camera.updateProjection(m_viewport[2], m_viewport[3]);
 		}
 
@@ -130,8 +138,10 @@ namespace Electric {
         glDisable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+		glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -168,7 +178,8 @@ namespace Electric {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
 
-		m_bloomShader.render(m_screenMesh, m_renderTarget);
+		m_dofShader.render(m_screenMesh, m_renderTarget, 0);
+		m_bloomShader.render(m_screenMesh, m_renderTarget, 1);
 
         return true;
     }

@@ -7,7 +7,7 @@
 
 namespace Electric {
 
-	class BloomShader : public Engine::Shader
+	class DofShader : public Engine::Shader
 	{
 	private:
 
@@ -21,52 +21,35 @@ namespace Electric {
 			GLint textureLocation;
 		};
 
-		Pass m_thresholdPass;
-
-		Pass m_horizontalBlurPass;
-
-		Pass m_verticalBlurPass;
-
-		Pass m_finalPass;
-
-		Framebuffer m_framebuffer1;
-		Framebuffer m_framebuffer2;
+		Pass m_pass;
 
 		static Pass setupPass(GLuint vs, GLuint ps, const Mesh& mesh);
 		static void preparePass(const Pass& pass, const Framebuffer& texture, UINT index);
 
 	public:
 
-		BloomShader()
+		DofShader()
 		{}
 
 		bool init(AAssetManager *pAssetManager, const Mesh& mesh);
 
 		virtual void release() override {
 
-			glDeleteProgram(m_thresholdPass.program);
-			glDeleteProgram(m_horizontalBlurPass.program);
-			glDeleteProgram(m_verticalBlurPass.program);
-			glDeleteProgram(m_finalPass.program);
-
-			GLuint handles[] = {m_thresholdPass.vao,
-								m_horizontalBlurPass.vao,
-								m_verticalBlurPass.vao,
-								m_finalPass.vao};
-			glDeleteVertexArrays(4, handles);
-
-			m_framebuffer2.release();
-			m_framebuffer1.release();
+			glDeleteProgram(m_pass.program);
+			GLuint handles[] = {m_pass.vao};
+			glDeleteVertexArrays(1, handles);
 		}
 
 		void render(const Mesh& mesh, const Framebuffer& framebuffer, UINT index);
 
 		void updateSize(GLsizei width, GLsizei height)
 		{
+			/*
 			GLsizei w = static_cast<GLsizei>( static_cast<float>(width) * 0.25f);
 			GLsizei h = static_cast<GLsizei>( static_cast<float>(height) * 0.25f);
 			m_framebuffer1.init(w, h, true, Framebuffer::NONE);
 			m_framebuffer2.init(w, h, true, Framebuffer::NONE);
+			 */
 		}
 	};
 };

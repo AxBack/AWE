@@ -8,7 +8,7 @@
 
 namespace Electric {
 
-	class ChargeShader : public Engine::Shader {
+	class DischargeShader : public Engine::Shader {
 	private:
 
 		typedef Engine::InstancedMesh<ChargeVertex, ChargeInstance> Mesh;
@@ -19,7 +19,7 @@ namespace Electric {
 
 	public:
 
-		ChargeShader()
+		DischargeShader()
 				: m_program(0)
 				, m_vao(0)
 				, m_viewProjectionLocation(0)
