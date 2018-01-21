@@ -63,7 +63,7 @@ namespace Engine {
 
 		void updateProjection(float w, float h)
 		{
-			Matrix::perspective(m_projection, 90.0f, w / h, 10, 1000);
+			Matrix::perspective(m_projection, 90.0f, w / h, 1, 1000);
 			m_vpDirty = true;
 		}
 	};

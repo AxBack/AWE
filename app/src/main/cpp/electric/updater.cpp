@@ -34,6 +34,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		std::uniform_real_distribution<> distanceDist(-nodeOffsetFromCluster, nodeOffsetFromCluster);
 		std::uniform_real_distribution<> chargeDist(0.0f, 1.0f);
 		std::uniform_real_distribution<> colorDist(0.0f, 1.0f);
+		std::uniform_real_distribution<> sizeDist(1.0f, 3.0f);
 
 		for(int i = 0; i < nrNodes; ++i)
 		{
@@ -46,6 +47,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 			p.normalize();
 			p *= static_cast<float>(distanceDist(m_generator));
 
+			float s = static_cast<float>(sizeDist(m_generator));
 			float c = static_cast<float>(chargeDist(m_generator));
 
 			Math::Vector3 color = {
@@ -55,7 +57,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 			};
 			color.normalize();
 			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
-			m_nodeInstances.push_back({p.x(), p.y(), p.z(), c, color.x(), color.y(), color.z()});
+			m_nodeInstances.push_back({p.x(), p.y(), p.z(), s, c, color.x(), color.y(), color.z()});
 		}
 
 		m_clusters.push_back(pCluster);
@@ -166,15 +168,16 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 	void Updater::discharge(Node* pNode)
 	{
 		float radius = DISCHARGE_RADIUS_SQ * pNode->charge;
-		std::vector<Node*> near;
+		std::vector<SearchResult> near;
 		for(auto& cluster : m_clusters)
 		{
 			for(auto& node : cluster->nodes)
 			{
-				if(&node != pNode)
+				if(node.restitution <= 0.0f && &node != pNode)
 				{
-					if((node.position - pNode->position).lengthSq() <=  radius)
-						near.push_back(&node);
+					float l2 = (node.position - pNode->position).lengthSq();
+					if(l2 <=  radius)
+						near.push_back({ &node, l2 });
 				}
 			}
 		}
@@ -182,27 +185,27 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		if(near.size() == 0)
 			return;
 
-		float f = pNode->charge * DISCHARGE_FACTOR;
-		Node* p = nullptr;
+		SearchResult* p = nullptr;
 		float currMin = FLT_MAX;
 		for(int i=0; i<near.size(); ++i)
 		{
-			if(near[i]->restitution <= 0.0f
-			   && currMin > near[i]->charge)
+			float v = (near[i].lengthSq / radius) + (pNode->charge - near[i].pNode->charge);
+			if(currMin > v)
 			{
-				p = near[i];
-				currMin = near[i]->charge;
+				p = &near[i];
+				currMin = v;
 			}
 		}
 
 		if(p)
 		{
-			p->charge += f * LOSS_FACTOR;
+			float f = pNode->charge * DISCHARGE_FACTOR;
+			p->pNode->charge += f * LOSS_FACTOR;
 			pNode->charge -= f;
 
 			pNode->restitution = 1.0f;
 			std::lock_guard<std::mutex> _(m_dischargeMutex);
-			m_charges.push_back({0.1f, pNode->position, p->position});
+			m_charges.push_back({0.1f, pNode->position, p->pNode->position});
 		}
 	}
 

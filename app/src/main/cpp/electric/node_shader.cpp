@@ -22,22 +22,26 @@ namespace Electric {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.getIndexBuffer());
 		glBindBuffer(GL_ARRAY_BUFFER, mesh.getStaticBuffer());
 
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(0); // position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PositionVertex), 0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, mesh.getDynamicBuffer());
 
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(1); //offset
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), 0);
 		glVertexAttribDivisor(1, 1);
 
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(2); // size
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(3));
 		glVertexAttribDivisor(2, 1);
 
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(4));
+		glEnableVertexAttribArray(3); // charge
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(4));
 		glVertexAttribDivisor(3, 1);
+
+		glEnableVertexAttribArray(4); // color
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(5));
+		glVertexAttribDivisor(4, 1);
 
 		glBindVertexArray(0);
 

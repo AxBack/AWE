@@ -58,6 +58,12 @@ namespace Electric {
 			Math::Vector3 end;
 		};
 
+		struct SearchResult
+		{
+			Node* pNode;
+			float lengthSq;
+		};
+
 		typedef std::shared_ptr<Cluster> cluster_ptr;
 		typedef std::vector<cluster_ptr> cluster_vec;
         typedef std::vector<Particle> particle_vec;
