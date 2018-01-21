@@ -19,10 +19,13 @@ namespace Engine {
 		glGenFramebuffers(1, &m_handle);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 
+		std::vector<GLenum> attachments;
 		for(UINT i=0; i<nrAttachments; ++i)
 		{
+			GLenum a = GL_COLOR_ATTACHMENT0+i;
+			attachments.push_back(a);
 			m_textures.push_back(createTexture(pFormats[i], static_cast<GLenum>(pFormats[i]), GL_UNSIGNED_BYTE,
-											   width, height, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0+i));
+											   width, height, GL_LINEAR, GL_CLAMP_TO_EDGE, a));
 		}
 
 		switch(m_depthType)
@@ -42,8 +45,7 @@ namespace Engine {
 				break;
 		}
 
-		GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0};
-		glDrawBuffers(1, drawBuffers);
+		glDrawBuffers(static_cast<GLsizei>(attachments.size()), &attachments[0]);
 
 		return glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
 	}

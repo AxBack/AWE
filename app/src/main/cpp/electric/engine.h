@@ -11,6 +11,7 @@
 #include "../engine/path.h"
 #include "../engine/vector3.h"
 #include "bloom_shader.h"
+#include "dof_shader.h"
 
 namespace Electric {
 
@@ -47,6 +48,7 @@ namespace Electric {
 
 		ScreenMesh		m_screenMesh;
 		BloomShader		m_bloomShader;
+		DofShader		m_dofShader;
 
         ParticleMesh    m_particlesMesh;
         ParticleShader  m_particleShader;
@@ -55,7 +57,7 @@ namespace Electric {
         NodeShader      m_nodeShader;
 
 		ChargeMesh		m_chargeMesh;
-		ChargeShader	m_chargeShader;
+		DischargeShader	m_chargeShader;
 
 		std::atomic_bool m_sizeDirty;
 		std::mutex 		 m_sizeMutex;

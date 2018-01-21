@@ -5,10 +5,10 @@ namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
 
-	bool ChargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
+	bool DischargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
 	{
 
-		m_program = createProgram(pAssetManager, "shaders/ChargeShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
+		m_program = createProgram(pAssetManager, "shaders/DischargeShader_vs.glsl", "shaders/DischargeShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
 
 		glGenVertexArrays(1, &m_vao);
