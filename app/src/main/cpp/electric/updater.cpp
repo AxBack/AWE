@@ -13,9 +13,9 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
-		setupCluster(400, 100, {0,0,0}, {0,0,0});
-		setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
-		setupCluster(300, 30, {25, 25, 25}, {0,0,0});
+		setupCluster(1000, 150, {0,0,0}, {0,15,0});
+		//setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
+		//setupCluster(300, 30, {25, 25, 25}, {0,0,0});
 
 		connectNodes(5);
 

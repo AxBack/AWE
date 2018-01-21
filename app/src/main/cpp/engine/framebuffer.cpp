@@ -1,39 +1,50 @@
 #include "framebuffer.h"
 
 namespace Engine {
-    bool Framebuffer::init(int width, int height, bool alpha, bool depth)
+    bool Framebuffer::init(int width, int height, bool alpha, DepthType depthType)
     {
-        release();
+        GLint formats[] = {alpha ? GL_RGBA : GL_RGB };
+		return init(width, height, 1, formats, depthType);
+    };
 
-        m_width = width;
-        m_height = height;
+	bool Framebuffer::init(int width, int height, UINT nrAttachments, GLint* pFormats,
+						   DepthType depthType)
+	{
+		release();
 
-        glGenFramebuffers(1, &m_handle);
-        glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
+		m_width = width;
+		m_height = height;
+		m_depthType = depthType;
 
-        m_format = alpha ? GL_RGBA : GL_RGB;
+		glGenFramebuffers(1, &m_handle);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 
-        glGenTextures(1, &m_texture);
-		glBindTexture(GL_TEXTURE_2D, m_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, m_format, width, height, 0, m_format, GL_UNSIGNED_BYTE, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
+		for(UINT i=0; i<nrAttachments; ++i)
+		{
+			m_textures.push_back(createTexture(pFormats[i], static_cast<GLenum>(pFormats[i]), GL_UNSIGNED_BYTE,
+											   width, height, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0+i));
+		}
 
-        if(depth)
-        {
-            glGenRenderbuffers(1, &m_depth);
-			glBindRenderbuffer(GL_RENDERBUFFER, m_depth);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
-        }
+		switch(m_depthType)
+		{
+			default:
+			case NONE:
+				break;
+			case WRITE:
+				glGenRenderbuffers(1, &m_depth);
+				glBindRenderbuffer(GL_RENDERBUFFER, m_depth);
+				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
+				break;
+			case READ_WRITE:
+				m_depth = createTexture(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, width, height,
+										GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_ATTACHMENT);
+				break;
+		}
 
-        GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0};
-        glDrawBuffers(1, drawBuffers);
+		GLenum drawBuffers[] = {GL_COLOR_ATTACHMENT0};
+		glDrawBuffers(1, drawBuffers);
 
-        return glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
-    }
+		return glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
+	}
 }
