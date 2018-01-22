@@ -58,6 +58,21 @@ namespace Electric {
 			Math::Vector3 end;
 		};
 
+		struct ClusterCreator
+		{
+			typedef Engine::Path<Math::Vector3> vec3_path;
+			typedef Engine::Path<float> float_path;
+
+			vec3_path positionPath;
+			vec3_path rotationPath;
+			float_path offsetPath;
+			float_path chargePath;
+			vec3_path colorPath;
+			float_path sizePath;
+			float_path spreadYawPath;
+			float_path spreadPitchPath;
+		};
+
 		struct SearchResult
 		{
 			Node* pNode;
@@ -84,8 +99,8 @@ namespace Electric {
 		discharge_vec m_charges;
 
 
-		void setupCluster(int nrNodes, float nodeOffsetFromCluster, const Math::Vector3& pos,
-						  const Math::Vector3& rotation);
+		void setupCluster(int nrNodes, const Math::Vector3& pos,
+						  const Math::Vector3& rotation, ClusterCreator& cc);
 		void connectNodes(int nrConnectionsPerNode);
 
 		void updateCharges(float dt);
