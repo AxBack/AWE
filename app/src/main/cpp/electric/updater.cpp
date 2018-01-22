@@ -16,8 +16,8 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		ClusterCreator cc;
 		{
 			Math::Vector3 points[] = {
-					{0,100,0},
-					{0,-100,0}
+					{0,150,0},
+					{0,-150,0}
 			};
 			cc.positionPath.add(1.0f, 2, points);
 		}
@@ -31,8 +31,13 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		}
 
 		{
-			float points[] = {0, 50, 150};
-			cc.offsetPath.add(1.0f, 3, points);
+			float points[] = {-100};
+			cc.minOffsetPath.add(1.0f, 1, points);
+		}
+
+		{
+			float points[] = {100};
+			cc.maxOffsetPath.add(1.0f, 1, points);
 		}
 
 		{
@@ -43,7 +48,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		{
 			Math::Vector3 points[] = {
 					{0,0,1},
-					{0.5f,0.5f,1},
+					{1,0,0},
 			};
 			cc.colorPath.add(1.0f, 2, points);
 		}
@@ -54,13 +59,13 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		}
 
 		{
-			float points[] = {45, 5};
-			cc.spreadYawPath.add(1.0f, 2, points);
+			float points[] = {45};
+			cc.spreadYawPath.add(1.0f, 1, points);
 		}
 
 		{
-			float points[] = {5, 45};
-			cc.spreadPitchPath.add(1.0f, 2, points);
+			float points[] = {45};
+			cc.spreadPitchPath.add(1.0f, 1, points);
 		}
 
 		setupCluster(1000, {0,0,0}, {0,15,0}, cc);
@@ -112,16 +117,17 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 			Math::Vector3 p = rotSpread.transform({0,0,-1});
 
-			float maxOffset = clusterCreator.offsetPath.traverse(d);
-			std::uniform_real_distribution<> offsetDist(0, maxOffset);
+			float minOffset = clusterCreator.minOffsetPath.traverse(d);
+			float maxOffset = clusterCreator.maxOffsetPath.traverse(d);
+			std::uniform_real_distribution<> offsetDist(minOffset, maxOffset);
 
 			p *= static_cast<float>(offsetDist(m_generator));
 			p += clusterCreator.positionPath.traverse(d);
 
-			float s = clusterCreator.sizePath.traverse(static_cast<float>(dist(m_generator)));
+			float s = clusterCreator.sizePath.traverse(d);
 			float c = clusterCreator.chargePath.traverse(static_cast<float>(dist(m_generator)));
 
-			Math::Vector3 color = clusterCreator.colorPath.traverse(static_cast<float>(dist(m_generator)));
+			Math::Vector3 color = clusterCreator.colorPath.traverse(d);
 			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
 			m_nodeInstances.push_back({p.x(), p.y(), p.z(), s, c, color.x(), color.y(), color.z()});
 		}

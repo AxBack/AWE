@@ -65,7 +65,8 @@ namespace Electric {
 
 			vec3_path positionPath;
 			vec3_path rotationPath;
-			float_path offsetPath;
+			float_path minOffsetPath;
+			float_path maxOffsetPath;
 			float_path chargePath;
 			vec3_path colorPath;
 			float_path sizePath;
