@@ -69,7 +69,7 @@ namespace Electric {
 		: m_sizeDirty(false)
         , m_scaleTime(0.0f)
         , m_offset(0.5f)
-		, m_pinch(0.5f)
+		, m_pinch(0.75f)
 		, m_rotation(0.0f)
         {
             {

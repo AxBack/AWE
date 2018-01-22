@@ -13,7 +13,38 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
-		setupCluster(1000, 150, {0,0,0}, {0,15,0});
+		ClusterCreator cc;
+		{
+			Math::Vector3 points[] = {
+					{0,0,0}
+			};
+			cc.positionPath.add(1.0f, 1, points);
+		}
+
+		{
+			float points[] = {0, 50, 150};
+			cc.offsetPath.add(1.0f, 3, points);
+		}
+
+		{
+			float points[] = {0,1};
+			cc.chargePath.add(1.0f, 2, points);
+		}
+
+		{
+			Math::Vector3 points[] = {
+					{0,0,1},
+					{0.5f,0.5f,1},
+			};
+			cc.colorPath.add(1.0f, 2, points);
+		}
+
+		{
+			float points[] = {1,2};
+			cc.sizePath.add(1.0f, 2, points);
+		}
+
+		setupCluster(1000, {0,0,0}, {0,15,0}, cc);
 		//setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
 		//setupCluster(300, 30, {25, 25, 25}, {0,0,0});
 
@@ -22,19 +53,17 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		return Engine::Updater::init();
 	}
 
-	void Updater::setupCluster(int nrNodes, float nodeOffsetFromCluster, const Math::Vector3& pos,
-								const Math::Vector3& rotation)
+	void Updater::setupCluster(int nrNodes, const Math::Vector3& pos,
+							   const Math::Vector3& rotation, ClusterCreator& clusterCreator)
 	{
 		cluster_ptr pCluster(new Cluster);
 		pCluster->dirty = true;
 		pCluster->position = pos;
 		pCluster->rotation = rotation;
 
+		std::uniform_real_distribution<> dist(0.0f, 1.0f);
+
 		std::uniform_real_distribution<> posDist(-1, 1);
-		std::uniform_real_distribution<> distanceDist(-nodeOffsetFromCluster, nodeOffsetFromCluster);
-		std::uniform_real_distribution<> chargeDist(0.0f, 1.0f);
-		std::uniform_real_distribution<> colorDist(0.0f, 1.0f);
-		std::uniform_real_distribution<> sizeDist(1.0f, 3.0f);
 
 		for(int i = 0; i < nrNodes; ++i)
 		{
@@ -44,18 +73,18 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 					static_cast<float>(posDist(m_generator))
 			};
 
+			float d = static_cast<float>(dist(m_generator));
+			float maxOffset = clusterCreator.offsetPath.traverse(d);
+			std::uniform_real_distribution<> offsetDist(-maxOffset, maxOffset);
+
 			p.normalize();
-			p *= static_cast<float>(distanceDist(m_generator));
+			p *= static_cast<float>(offsetDist(m_generator));
+			p += clusterCreator.positionPath.traverse(d);
 
-			float s = static_cast<float>(sizeDist(m_generator));
-			float c = static_cast<float>(chargeDist(m_generator));
+			float s = clusterCreator.sizePath.traverse(static_cast<float>(dist(m_generator)));
+			float c = clusterCreator.chargePath.traverse(static_cast<float>(dist(m_generator)));
 
-			Math::Vector3 color = {
-					static_cast<float>(colorDist(m_generator)),
-					static_cast<float>(colorDist(m_generator)),
-					static_cast<float>(colorDist(m_generator))
-			};
-			color.normalize();
+			Math::Vector3 color = clusterCreator.colorPath.traverse(static_cast<float>(dist(m_generator)));
 			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
 			m_nodeInstances.push_back({p.x(), p.y(), p.z(), s, c, color.x(), color.y(), color.z()});
 		}
