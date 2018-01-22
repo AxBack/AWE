@@ -82,8 +82,6 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 		std::uniform_real_distribution<> dist(0.0f, 1.0f);
 
-		std::uniform_real_distribution<> posDist(0, 1000);
-
 		for(int i = 0; i < nrNodes; ++i)
 		{
 			float d = static_cast<float>(dist(m_generator));
