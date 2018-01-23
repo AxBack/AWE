@@ -29,6 +29,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/electric/charge_shader.cpp
              src/main/cpp/electric/bloom_shader.cpp
              src/main/cpp/electric/dof_shader.cpp
+             src/main/cpp/electric/cluster.cpp
+             src/main/cpp/electric/node.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

@@ -7,10 +7,11 @@
 #include "vertex.h"
 #include "../engine/matrix.h"
 #include "../engine/path.h"
+#include "cluster.h"
 
 namespace Electric {
 
-    class Updater : public Engine::Updater
+    class Updater : public Engine::Updater, DischargeListener
     {
     private:
 
@@ -21,36 +22,6 @@ namespace Electric {
             Math::Color color;
         };
 
-		struct Node;
-
-		struct Connection
-		{
-			Node* pNode;
-			float lengthSq;
-		};
-
-		struct Node
-		{
-			UINT instanceId;
-			Math::Vector3 offset;
-			Math::Vector3 position;
-			float charge;
-			float restitution;
-			bool dirty;
-			std::vector<Connection> connections;
-		};
-
-		typedef std::vector<Node> node_vec;
-
-		struct Cluster
-		{
-			node_vec nodes;
-			bool dirty;
-			Math::Vector3 rotation;
-			Math::Vector3 position;
-			Math::Matrix transform;
-		};
-
 		struct Discharge
 		{
 			float time;
@@ -58,27 +29,6 @@ namespace Electric {
 			Math::Vector3 end;
 		};
 
-		struct ClusterCreator
-		{
-			typedef Engine::Path<Math::Vector3> vec3_path;
-			typedef Engine::Path<float> float_path;
-
-			vec3_path positionPath;
-			vec3_path rotationPath;
-			float_path minOffsetPath;
-			float_path maxOffsetPath;
-			float_path chargePath;
-			vec3_path colorPath;
-			float_path sizePath;
-			float_path spreadYawPath;
-			float_path spreadPitchPath;
-		};
-
-		struct SearchResult
-		{
-			Node* pNode;
-			float lengthSq;
-		};
 
 		typedef std::shared_ptr<Cluster> cluster_ptr;
 		typedef std::vector<cluster_ptr> cluster_vec;
@@ -100,14 +50,11 @@ namespace Electric {
 		discharge_vec m_charges;
 
 
-		void setupCluster(int nrNodes, const Math::Vector3& pos,
-						  const Math::Vector3& rotation, ClusterCreator& cc);
-		void connectNodes(int nrConnectionsPerNode);
+		void createCluster(int nrNodes, const Math::Vector3& pos,
+						  const Math::Vector3& rotation);
 
 		void updateCharges(float dt);
-		void updateCluster(cluster_ptr pCluster, float dt);
-		void updateNode(Node* pNode, float dt);
-		void discharge(Node* pNode);
+		void updateCluster(cluster_ptr pCluster, float dt);;
 		void updateNodeInstances();
 
     protected:
@@ -126,6 +73,8 @@ namespace Electric {
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<ChargeVertex, ChargeInstance>& mesh);
+
+		void onDischarge(Node* pNode) override;
 
     };
 }
