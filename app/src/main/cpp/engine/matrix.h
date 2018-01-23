@@ -48,7 +48,7 @@ namespace Math {
 			return m_data[index];
 		}
 
-		Vector3 transform(const Vector3 &point) {
+		Vector3 transform(const Vector3 &point) const {
 			return Matrix::transform(*this, point);
 		}
 

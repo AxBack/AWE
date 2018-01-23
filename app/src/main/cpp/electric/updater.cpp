@@ -5,161 +5,26 @@
 
 namespace Electric {
 
-float OSMOSIS_PER_SECOND = 0.05f;
-float CHARGE_FLOW_FACTOR = 0.025f;
 float DISCHARGE_FACTOR = 1.0f;
 float LOSS_FACTOR = 0.25f;
 float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
-		ClusterCreator cc;
-		{
-			Math::Vector3 points[] = {
-					{0,150,0},
-					{0,-150,0}
-			};
-			cc.positionPath.add(1.0f, 2, points);
-		}
 
-		{
-			Math::Vector3 points[] = {
-					{0,-90,0},
-					{0,90,0}
-			};
-			cc.rotationPath.add(1.0f, 2, points);
-		}
-
-		{
-			float points[] = {-100};
-			cc.minOffsetPath.add(1.0f, 1, points);
-		}
-
-		{
-			float points[] = {100};
-			cc.maxOffsetPath.add(1.0f, 1, points);
-		}
-
-		{
-			float points[] = {0,1};
-			cc.chargePath.add(1.0f, 2, points);
-		}
-
-		{
-			Math::Vector3 points[] = {
-					{0,0,1},
-					{1,0,0},
-			};
-			cc.colorPath.add(1.0f, 2, points);
-		}
-
-		{
-			float points[] = {1,2};
-			cc.sizePath.add(1.0f, 2, points);
-		}
-
-		{
-			float points[] = {45};
-			cc.spreadYawPath.add(1.0f, 1, points);
-		}
-
-		{
-			float points[] = {45};
-			cc.spreadPitchPath.add(1.0f, 1, points);
-		}
-
-		setupCluster(1000, {0,0,0}, {0,15,0}, cc);
+		createCluster(1000, {0,0,0}, {0,15,0});
 		//setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
 		//setupCluster(300, 30, {25, 25, 25}, {0,0,0});
-
-		connectNodes(5);
 
 		return Engine::Updater::init();
 	}
 
-	void Updater::setupCluster(int nrNodes, const Math::Vector3& pos,
-							   const Math::Vector3& rotation, ClusterCreator& clusterCreator)
+	void Updater::createCluster(int nrNodes, const Math::Vector3& pos,
+							   const Math::Vector3& rotation)
 	{
 		cluster_ptr pCluster(new Cluster);
-		pCluster->dirty = true;
-		pCluster->position = pos;
-		pCluster->rotation = rotation;
-
-		std::uniform_real_distribution<> dist(0.0f, 1.0f);
-
-		for(int i = 0; i < nrNodes; ++i)
-		{
-			float d = static_cast<float>(dist(m_generator));
-
-			Math::Matrix rot;
-			{
-				Math::Vector3 r = clusterCreator.rotationPath.traverse(d);
-				Math::Matrix::setRotate(rot, r.x(), r.y(), r.z());
-			}
-
-			float yaw = clusterCreator.spreadYawPath.traverse(d);
-			std::uniform_real_distribution<> yawDist(-yaw, yaw);
-			yaw = static_cast<float>(yawDist(m_generator));
-
-			float pitch = clusterCreator.spreadPitchPath.traverse(d);
-			std::uniform_real_distribution<> pitchDist(-pitch, pitch);
-			pitch = static_cast<float>(pitchDist(m_generator));
-
-			float a = static_cast<float>(dist(m_generator)) * 2.0f * static_cast<float>(M_PI);
-			float r = static_cast<float>(sqrt(dist(m_generator)));
-
-			yaw = r * static_cast<float>(cos(a)) * yaw;
-			pitch = r * static_cast<float>(sin(a)) * pitch;
-
-			Math::Matrix rotSpread;
-			Math::Matrix::setRotate(rotSpread, yaw, pitch, 0);
-			rotSpread = rotSpread * rot;
-
-			Math::Vector3 p = rotSpread.transform({0,0,-1});
-
-			float minOffset = clusterCreator.minOffsetPath.traverse(d);
-			float maxOffset = clusterCreator.maxOffsetPath.traverse(d);
-			std::uniform_real_distribution<> offsetDist(minOffset, maxOffset);
-
-			p *= static_cast<float>(offsetDist(m_generator));
-			p += clusterCreator.positionPath.traverse(d);
-
-			float s = clusterCreator.sizePath.traverse(d);
-			float c = clusterCreator.chargePath.traverse(static_cast<float>(dist(m_generator)));
-
-			Math::Vector3 color = clusterCreator.colorPath.traverse(d);
-			pCluster->nodes.push_back({static_cast<UINT>(m_nodeInstances.size()), p, p, c, 0.0f, true});
-			m_nodeInstances.push_back({p.x(), p.y(), p.z(), s, c, color.x(), color.y(), color.z()});
-		}
-
+		pCluster->init(m_generator, nrNodes, pos, rotation, m_nodeInstances, this);
 		m_clusters.push_back(pCluster);
-	}
-
-	void Updater::connectNodes(int nrConnectionsPerNode)
-	{
-		for(UINT x=0; x<m_clusters.size(); ++x)
-		{
-			for(UINT i=0; i<m_clusters[x]->nodes.size(); ++i)
-			{
-				for(UINT j=i+1; j<m_clusters[x]->nodes.size(); ++j)
-				{
-					Math::Vector3 distance = m_clusters[x]->nodes[i].offset - m_clusters[x]->nodes[j].offset;
-					float l2 = distance.lengthSq();
-
-					Node* p1 = & m_clusters[x]->nodes[i];
-					Node* p2 = & m_clusters[x]->nodes[j];
-
-					p1->connections.push_back({p2, l2});
-					p2->connections.push_back({p1, l2});
-				}
-
-				std::sort(m_clusters[x]->nodes[i].connections.begin(), m_clusters[x]->nodes[i].connections.end(),
-						  [](const Connection& lhs, const Connection& rhs) {
-							  return lhs.lengthSq < rhs.lengthSq;
-						  });
-				m_clusters[x]->nodes[i].connections.resize(nrConnectionsPerNode);
-			}
-		}
 	}
 
 	void Updater::updateCharges(float dt)
@@ -177,81 +42,16 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	void Updater::updateCluster(cluster_ptr pCluster, float dt)
 	{
-		bool dirty = pCluster->dirty;
-		if(dirty)
-		{
-			Math::Matrix::setRotate(pCluster->transform,
-									pCluster->rotation.x(),
-									pCluster->rotation.y(),
-									pCluster->rotation.z());
-
-			Math::Matrix::translate(pCluster->transform,
-									pCluster->position.x(),
-									pCluster->position.y(),
-									pCluster->position.z());
-		}
-
-		for(auto& it : pCluster->nodes)
-		{
-			if(dirty)
-			{
-				it.dirty = dirty;
-				it.position = pCluster->transform.transform(it.offset);
-			}
-			updateNode(&it, dt);
-		}
+		pCluster->update(dt);
 	}
 
-	void Updater::updateNode(Node* pNode, float dt)
+	void Updater::onDischarge(Node* pNode)
 	{
-		float flow = CHARGE_FLOW_FACTOR * dt;
-		pNode->charge += dt * OSMOSIS_PER_SECOND;
-
-		if(pNode->restitution > 0.0f)
-			pNode->restitution -= dt;
-
-		float f = std::min(flow, pNode->charge);
-		pNode->charge -= f;
-
-		if(pNode->connections.size() > 0)
-		{
-			std::vector<Node*> lowerNodes;
-			for(auto& c : pNode->connections)
-			{
-				if(pNode->charge < c.pNode->charge)
-					lowerNodes.push_back(c.pNode);
-			}
-
-			if(lowerNodes.size() > 0)
-			{
-				f /= static_cast<float>(lowerNodes.size());
-				for(auto& c : lowerNodes)
-				{
-					c->charge += f;
-					pNode->charge -= f;
-				}
-			}
-
-			if(pNode->charge > 1.0f)
-				discharge(pNode);
-		}
-	}
-
-	void Updater::discharge(Node* pNode)
-	{
-		float radius = DISCHARGE_RADIUS_SQ * pNode->charge;
+		float radius = DISCHARGE_RADIUS_SQ * pNode->getCharge();
 		std::vector<SearchResult> near;
 		for(auto& cluster : m_clusters)
 		{
-			for(auto& node : cluster->nodes)
-			{
-				if(node.restitution <= 0.0f && &node != pNode)
-				{
-					float l2 = (node.position - pNode->position).lengthSq();
-					if(l2 <=  radius)
-						near.push_back({ &node, l2 });
-				}
-			}
+			cluster->search(pNode->getPosition(), radius, near);
 		}
 
 		if(near.size() == 0)
@@ -261,7 +61,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		float currMin = FLT_MAX;
 		for(int i=0; i<near.size(); ++i)
 		{
-			float v = (near[i].lengthSq / radius) + (pNode->charge - near[i].pNode->charge);
+			float v = (near[i].lengthSq / radius) + (pNode->getCharge() - near[i].pNode->getCharge());
 			if(currMin > v)
 			{
 				p = &near[i];
@@ -271,13 +71,12 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 		if(p)
 		{
-			float f = pNode->charge * DISCHARGE_FACTOR;
-			p->pNode->charge += f * LOSS_FACTOR;
-			pNode->charge -= f;
+			float f = pNode->getCharge() * DISCHARGE_FACTOR;
+			p->pNode->modifyCharge( f * LOSS_FACTOR );
+			pNode->modifyCharge(-f);
 
-			pNode->restitution = 1.0f;
 			std::lock_guard<std::mutex> _(m_dischargeMutex);
-			m_charges.push_back({0.1f, pNode->position, p->pNode->position});
+			m_charges.push_back({0.1f, pNode->getPosition(), p->pNode->getPosition()});
 		}
 	}
 
@@ -286,18 +85,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		std::lock_guard<std::mutex> _(m_nodeMutex);
 		for(auto& cluster : m_clusters)
 		{
-			for(auto& node : cluster->nodes)
-			{
-				NodeInstance* pInstance = &m_nodeInstances[node.instanceId];
-				pInstance->charge = node.charge;
-				if(node.dirty)
-				{
-					node.dirty = false;
-					pInstance->x = node.position.x();
-					pInstance->y = node.position.y();
-					pInstance->z = node.position.z();
-				}
-			}
+			cluster->update(m_nodeInstances);
 		}
 	}
 
