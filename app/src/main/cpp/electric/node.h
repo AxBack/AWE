@@ -4,6 +4,8 @@
 #include "../pch.h"
 #include "../engine/vector3.h"
 #include "vertex.h"
+#include "../engine/color.h"
+#include "../engine/path.h"
 
 namespace Electric {
 
@@ -19,28 +21,45 @@ namespace Electric {
 	class Node
 	{
 	private:
+
+		typedef Engine::Path<Math::Vector3> vec3_path;
+		typedef Engine::Path<float> float_path;
+		typedef std::shared_ptr<vec3_path> vec3_path_ptr;
+		typedef std::shared_ptr<float_path> float_path_ptr;
+
 		UINT m_instanceId;
+
 		Math::Vector3 m_offset;
 		Math::Vector3 m_position;
+		Math::Vector3 m_color;
+		float m_scale;
 		float m_charge;
 		float m_restitution;
 		bool m_dirty;
-		float m_dt;
+		float m_delta;
+
+		float m_transitionTime;
+		vec3_path_ptr m_pOffsetPath;
+		vec3_path_ptr m_pColorPath;
+		float_path_ptr m_pScalePath;
 
 		DischargeListener* m_pListener;
 
 	public:
 
-		Node(UINT instanceId, Math::Vector3 position, float charge, float dt,
-			 DischargeListener* pListener)
+		Node(UINT instanceId, Math::Vector3 position, Math::Vector3 color, float scale, float charge,
+			 float dt, DischargeListener* pListener)
 				: m_instanceId(instanceId)
 				, m_position(position)
 				, m_offset(position)
+				, m_color(color)
+				, m_scale(scale)
 				, m_charge(charge)
-				, m_dt(dt)
+				, m_delta(dt)
 				, m_dirty(true)
 				, m_restitution(0.0f)
 				, m_pListener(pListener)
+				, m_transitionTime(0.0f)
 		{
 		}
 
@@ -55,14 +74,31 @@ namespace Electric {
 				pInstance->x = m_position.x();
 				pInstance->y = m_position.y();
 				pInstance->z = m_position.z();
+				pInstance->size = m_scale;
+				pInstance->r = m_color.x();
+				pInstance->g = m_color.y();
+				pInstance->b = m_color.z();
 			}
+		}
+
+		void transition(vec3_path_ptr pOffsetPath, vec3_path_ptr pColorPath, float_path_ptr pScalePath)
+		{
+			m_transitionTime = 0;
+			m_pOffsetPath = pOffsetPath;
+			m_pColorPath = pColorPath;
+			m_pScalePath = pScalePath;
 		}
 
 		float getCharge() const { return m_charge; }
 		void modifyCharge(float modifier) { m_charge += modifier; }
 
 		const Math::Vector3& getPosition() const {return m_position; }
+		const Math::Vector3& getOffset() const { return m_offset; }
+		const Math::Vector3& getColor() const {return m_color; }
+		float getScale() const { return m_scale; }
 		bool resting() { return m_restitution > 0.0f; }
+
+		float getDelta() { return m_delta; }
 	};
 
 }

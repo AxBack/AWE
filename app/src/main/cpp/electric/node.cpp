@@ -8,6 +8,31 @@ namespace Electric {
 
 	void Node::update(Cluster* pOwner, bool dirty, float dt)
 	{
+		m_transitionTime += dt;
+		if(m_pOffsetPath != nullptr)
+		{
+			m_offset = m_pOffsetPath->traverse(m_transitionTime);
+			m_dirty = true;
+			if(m_transitionTime > m_pOffsetPath->getLength())
+				m_pOffsetPath = nullptr;
+		}
+
+		if(m_pColorPath != nullptr)
+		{
+			m_color = m_pColorPath->traverse(m_transitionTime);
+			m_dirty = true;
+			if(m_transitionTime > m_pColorPath->getLength())
+				m_pColorPath = nullptr;
+		}
+
+		if(m_pScalePath!= nullptr)
+		{
+			m_scale = m_pScalePath->traverse(m_transitionTime);
+			m_dirty = true;
+			if(m_transitionTime > m_pScalePath->getLength())
+				m_pScalePath = nullptr;
+		}
+
 		if(dirty)
 		{
 			m_dirty = dirty;

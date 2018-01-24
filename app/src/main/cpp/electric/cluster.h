@@ -35,14 +35,31 @@ namespace Electric {
 			vec3_path rotationPath;
 			float_path minOffsetPath;
 			float_path maxOffsetPath;
-			float_path chargePath;
 			vec3_path colorPath;
 			float_path sizePath;
 			float_path spreadYawPath;
 			float_path spreadPitchPath;
 		};
 
+		std::mt19937 m_generator;
+
+		float m_time;
+		UINT m_state;
+
+		std::vector<State> m_states;
+
+		void toState(State& state, float transitionTime);
+
+		State createState1();
+		State createState2();
+
 	public:
+
+		Cluster()
+			: m_time(10.0f)
+			, m_state(0)
+		{
+		}
 
 		void init(std::mt19937& generator, int nrNodes, const Math::Vector3& pos,
 				  const Math::Vector3& rotation, std::vector<NodeInstance>& nodeInstances,
