@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +40,10 @@ public class MainActivity extends ListActivity {
 
         String type = mListValues.get(position);
         if(type.equals("Electric")) {
-            createBinary();
+
+            List<Cluster> clusters = new ArrayList<>();
+            clusters.add(new Cluster());
+            createBinary(clusters);
         }
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
@@ -55,87 +59,17 @@ public class MainActivity extends ListActivity {
         startActivity(intent);
     }
 
-    private void createBinary() {
+    private void createBinary(List<Cluster> clusters) {
 
         try {
             String name = this.getFilesDir().getAbsolutePath() + "/WAE.dat";
             FileOutputStream file = new FileOutputStream(name, false);
             DataOutputStream data = new DataOutputStream(file);
-            data.writeInt(1); // nr clusters
 
-            data.writeFloat(0); // x
-            data.writeFloat(0); // y
-            data.writeFloat(0); // y
+            data.writeInt(clusters.size()); // nr clusters
 
-            data.writeFloat(0); // yaw
-            data.writeFloat(0); // pitch
-            data.writeFloat(0); // roll
-
-            data.writeInt(1); //nr parts in charge path;
-            data.writeFloat(1.0f); // roll
-            data.writeInt(3); // nr points in charge path
-            data.writeFloat(0); // point 1
-            data.writeFloat(0.2f); // point 2
-            data.writeFloat(1.0f); // point 2
-
-            data.writeInt(500); // nr nodes
-
-            data.writeInt(1); // nr states
-
-            data.writeInt(1); // nr parts of cluster positions path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(1); // nr points in part
-            data.writeFloat(0); // x component of point
-            data.writeFloat(0); // y component of point
-            data.writeFloat(0); // z component of point
-
-            data.writeInt(1); // nr parts of cluster rotation path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(1); // nr points in part
-            data.writeFloat(0); // x component of point
-            data.writeFloat(0); // y component of point
-            data.writeFloat(0); // z component of point
-
-            data.writeInt(1); // nr parts of cluster minOffset path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(3); // nr points in part
-            data.writeFloat(0); // point 1
-            data.writeFloat(-20); // point 1
-            data.writeFloat(-150); // point 1
-
-            data.writeInt(1); // nr parts of cluster maxOffset path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(3); // nr points in part
-            data.writeFloat(0); // point 1
-            data.writeFloat(20); // point 1
-            data.writeFloat(150); // point 1
-
-            data.writeInt(1); // nr parts of cluster color path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(2); // nr points in part
-            data.writeFloat(1); // r component of point 1
-            data.writeFloat(1); // g component of point 1
-            data.writeFloat(0); // b component of point 1
-            data.writeFloat(0); // r component of point 2
-            data.writeFloat(0.2f); // g component of point 2
-            data.writeFloat(1); // b component of point 2
-
-            data.writeInt(1); // nr parts of cluster size path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(3); // nr points in part
-            data.writeFloat(2); // point 1
-            data.writeFloat(2); // point 1
-            data.writeFloat(3); // point 1
-
-            data.writeInt(1); // nr parts of cluster yaw spread path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(1); // nr points in part
-            data.writeFloat(180); // point 1
-
-            data.writeInt(1); // nr parts of cluster pitch spread path parts
-            data.writeFloat(1.0f); // time of path part
-            data.writeInt(1); // nr points in part
-            data.writeFloat(180); // point 1
+            for(Cluster c : clusters)
+                c.write(data);
 
             file.flush();
             file.close();

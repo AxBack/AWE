@@ -10,10 +10,9 @@ namespace Engine {
 
 		std::ifstream m_file;
 
-
 	public:
 
-		BinaryReader(const char* file)
+		BinaryReader(const char* file, bool swapEndian = true)
 			:m_file(file, std::ios::in | std::ios::binary)
 		{
 		}
@@ -43,13 +42,14 @@ namespace Engine {
 		};
 
 		template <typename T>
-		T read()
+		T read(bool swapEndian = true)
 		{
 			if(!m_file.good())
 				return T();
 			T t;
 			m_file.read(reinterpret_cast<char*>(&t), sizeof(T));
-			t = swap_endian(t);
+			if(swapEndian)
+				t = swap_endian(t);
 			return t;
 		}
 
