@@ -1,7 +1,9 @@
 #include "updater.h"
+#include "../engine/binary_reader.h"
 
 #include <algorithm>
-#include <float.h>
+#include <bits/ios_base.h>
+#include <fstream>
 
 namespace Electric {
 
@@ -11,19 +13,23 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
+		Engine::BinaryReader reader((m_internalFilesPath + "/WAE.dat").c_str());
+		int nrClusters = reader.read<int>();
 
-		createCluster(1000, {0,0,0}, {0,15,0});
+		for(int i=0; i<nrClusters; ++i)
+		{
+			loadCluster(reader);
+		}
 		//setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
 		//setupCluster(300, 30, {25, 25, 25}, {0,0,0});
 
 		return Engine::Updater::init();
 	}
 
-	void Updater::createCluster(int nrNodes, const Math::Vector3& pos,
-							   const Math::Vector3& rotation)
+	void Updater::loadCluster(Engine::BinaryReader& reader)
 	{
 		cluster_ptr pCluster(new Cluster);
-		pCluster->init(m_generator, nrNodes, pos, rotation, m_nodeInstances, this);
+		pCluster->init(m_generator, reader, m_nodeInstances, this);
 		m_clusters.push_back(pCluster);
 	}
 

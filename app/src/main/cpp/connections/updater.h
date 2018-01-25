@@ -4,6 +4,7 @@
 #include "../engine/vector3.h"
 #include "point.h"
 #include "vertex.h"
+#include "../engine/mesh.h"
 
 namespace Connections {
 

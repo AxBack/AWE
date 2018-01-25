@@ -12,9 +12,11 @@ std::map<int, Engine::Engine*> engines;
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type, jobject assetManager)
+Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type,
+												  jstring internalFiles, jobject assetManager)
 {
     const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
+	const char* internalPath = pEnv->GetStringUTFChars(internalFiles, (jboolean*)0);
     Engine::Engine* pEngine = nullptr;
     if(strcmp(str, "Connections") == 0)
         pEngine = new Connections::ConnectionsEngine;
@@ -24,7 +26,7 @@ Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/
         return -1;
 
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
-	if(!pEngine->init(pAssetManager))
+	if(!pEngine->init(internalPath, pAssetManager))
 	{
 		SAFE_DELETE(pEngine);
 		return -1;

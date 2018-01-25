@@ -3,17 +3,16 @@
 #include "../engine/engine.h"
 #include "updater.h"
 
-#include "../engine/mesh.h"
 #include "particle_shader.h"
 #include "node_shader.h"
 #include "charge_shader.h"
 #include "../engine/framebuffer.h"
-#include "../engine/path.h"
-#include "../engine/vector3.h"
 #include "bloom_shader.h"
 #include "dof_shader.h"
 
 namespace Electric {
+
+	class Updater;
 
 	typedef Engine::Mesh<TexturedVertex> ScreenMesh;
     typedef Engine::InstancedMesh<PositionVertex, ParticleInstance> ParticleMesh;
@@ -44,7 +43,7 @@ namespace Electric {
 
         Camera 			m_camera;
 
-        Updater     	m_updater;
+		Updater 		m_updater;
 
 		ScreenMesh		m_screenMesh;
 		BloomShader		m_bloomShader;
@@ -97,7 +96,7 @@ namespace Electric {
         }
 
         virtual void clear() override;
-        virtual bool init(AAssetManager* pAssetManager) override;
+        virtual bool init(const char* internalFilesPath, AAssetManager* pAssetManager) override;
         virtual bool render() override;
 
         virtual void resume() override { m_updater.resume(); }

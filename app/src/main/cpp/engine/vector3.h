@@ -1,6 +1,8 @@
 #pragma once
 
 #include <math.h>
+#include "binary_reader.h"
+
 namespace Math {
 
 #define X 0
@@ -25,6 +27,17 @@ namespace Math {
 		float x() const { return m_data[X]; }
 		float y() const { return m_data[Y]; }
 		float z() const { return m_data[Z]; }
+
+		void x(float v) { m_data[X] = v; }
+		void y(float v) { m_data[Y] = v; }
+		void z(float v) { m_data[Z] = v; }
+
+		void read(Engine::BinaryReader& in)
+		{
+			m_data[X] = in.read<float>();
+			m_data[Y] = in.read<float>();
+			m_data[Z] = in.read<float>();
+		}
 
 		Vector3 &operator=(const Vector3 &rhs) {
 			m_data[X] = rhs.m_data[X];

@@ -1,13 +1,10 @@
 #pragma once
 
-#include <random>
 #include "../engine/updater.h"
-#include "../engine/vector3.h"
-#include "../engine/color.h"
-#include "vertex.h"
-#include "../engine/matrix.h"
-#include "../engine/path.h"
 #include "cluster.h"
+#include "../engine/mesh.h"
+
+#include <random>
 
 namespace Electric {
 
@@ -29,12 +26,13 @@ namespace Electric {
 			Math::Vector3 end;
 		};
 
-
 		typedef std::shared_ptr<Cluster> cluster_ptr;
 		typedef std::vector<cluster_ptr> cluster_vec;
         typedef std::vector<Particle> particle_vec;
 		typedef std::vector<NodeInstance> node_instance_vec;
 		typedef std::vector<Discharge> discharge_vec;
+
+		std::string m_internalFilesPath;
 
 		std::mt19937 m_generator;
 
@@ -50,8 +48,7 @@ namespace Electric {
 		discharge_vec m_charges;
 
 
-		void createCluster(int nrNodes, const Math::Vector3& pos,
-						  const Math::Vector3& rotation);
+		void loadCluster(Engine::BinaryReader& reader);
 
 		void updateCharges(float dt);
 		void updateCluster(cluster_ptr pCluster, float dt);;
@@ -59,6 +56,7 @@ namespace Electric {
 
     protected:
 
+		virtual bool init() override;
         virtual void advance(float dt) override;
 
     public:
@@ -68,7 +66,11 @@ namespace Electric {
 		{
 		}
 
-		virtual bool init() override;
+		virtual bool init(const char* internalFilesPath)
+		{
+			m_internalFilesPath = internalFilesPath;
+			return init();
+		}
 
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);

@@ -33,7 +33,7 @@ namespace Engine {
 
         virtual void clear() {};
 
-        virtual bool init(AAssetManager *pAssetManager) = 0;
+        virtual bool init(const char* internalFilesPath, AAssetManager *pAssetManager) = 0;
 
         virtual bool render() = 0;
 

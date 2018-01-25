@@ -43,7 +43,7 @@ namespace Connections {
 
         virtual void clear() override;
 
-        virtual bool init(AAssetManager *pAssetManager) override;
+        virtual bool init(const char* internalFilesPath, AAssetManager *pAssetManager) override;
 
         virtual bool render() override;
 

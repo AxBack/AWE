@@ -1,10 +1,10 @@
 #pragma once
 
-#include "mesh.h"
 #include <vector>
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include "../pch.h"
 
 namespace Engine {
 

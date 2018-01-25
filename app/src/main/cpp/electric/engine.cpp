@@ -8,7 +8,7 @@ namespace Electric {
         LOGI("ElectricEngine( Cleared: %d )", m_id);
     }
 
-    bool ElectricEngine::init(AAssetManager* pAssetManager)
+    bool ElectricEngine::init(const char* internalFilesPath, AAssetManager* pAssetManager)
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
@@ -107,7 +107,7 @@ namespace Electric {
 			}
 		}
 
-        if(!m_updater.init())
+        if(!m_updater.init(internalFilesPath))
             return false;
 
         LOGI("ElectricEngine( Init end: %d )", m_id);

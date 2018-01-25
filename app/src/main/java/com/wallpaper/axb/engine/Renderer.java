@@ -89,7 +89,7 @@ class Renderer implements GLSurfaceView.Renderer {
 
         final SharedPreferences preferences = mContext.getSharedPreferences("AxB", MODE_PRIVATE);
         String type = preferences.getString("WallpaperType", "Connections");
-        mNativeId = mRenderEngine.create(type, mContext.getAssets());
+        mNativeId = mRenderEngine.create(type, mContext.getFilesDir().getAbsolutePath(), mContext.getAssets());
         if(mIsActive)
             mRenderEngine.resume(mNativeId);
 

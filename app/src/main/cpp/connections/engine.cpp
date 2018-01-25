@@ -9,7 +9,7 @@ namespace Connections {
         LOGI("ConnectionsEngine( Cleared: %d )", m_id);
     }
 
-    bool ConnectionsEngine::init(AAssetManager *pAssetManager) {
+    bool ConnectionsEngine::init(const char*, AAssetManager *pAssetManager) {
         clear();
 
         LOGI("ConnectionsEngine( Init begin: %d )", m_id);

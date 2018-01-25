@@ -19,6 +19,8 @@ namespace Electric {
 	private:
 
 		typedef std::vector<Node> node_vec;
+		typedef Engine::Path<Math::Vector3> vec3_path;
+		typedef Engine::Path<float> float_path;
 
 		node_vec m_nodes;
 		bool m_dirty;
@@ -26,11 +28,9 @@ namespace Electric {
 		Math::Vector3 m_position;
 		Math::Matrix m_transform;
 
+
 		struct State
 		{
-			typedef Engine::Path<Math::Vector3> vec3_path;
-			typedef Engine::Path<float> float_path;
-
 			vec3_path positionPath;
 			vec3_path rotationPath;
 			float_path minOffsetPath;
@@ -53,6 +53,10 @@ namespace Electric {
 		State createState1();
 		State createState2();
 
+		static void read(Engine::BinaryReader& reader, vec3_path& path);
+		static void read(Engine::BinaryReader& reader, float_path& path);
+		static void read(Engine::BinaryReader& reader, State& state);
+
 	public:
 
 		Cluster()
@@ -61,8 +65,7 @@ namespace Electric {
 		{
 		}
 
-		void init(std::mt19937& generator, int nrNodes, const Math::Vector3& pos,
-				  const Math::Vector3& rotation, std::vector<NodeInstance>& nodeInstances,
+		void init(std::mt19937& generator, Engine::BinaryReader& reader, std::vector<NodeInstance>& nodeInstances,
 				  DischargeListener* pDischargeListener);
 
 		void update(float dt);
