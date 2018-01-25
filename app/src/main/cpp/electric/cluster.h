@@ -50,9 +50,6 @@ namespace Electric {
 
 		void toState(State& state, float transitionTime);
 
-		State createState1();
-		State createState2();
-
 		static void read(Engine::BinaryReader& reader, vec3_path& path);
 		static void read(Engine::BinaryReader& reader, float_path& path);
 		static void read(Engine::BinaryReader& reader, State& state);
