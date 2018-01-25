@@ -7,16 +7,16 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class RotationGestureDetector {
+class RotationGestureDetector {
 
     private static final int INVALID_POINTER_ID = -1;
-    private PointF mFPoint = new PointF();
-    private PointF mSPoint = new PointF();
+    private final PointF mFPoint = new PointF();
+    private final PointF mSPoint = new PointF();
     private int mPtrID1, mPtrID2;
     private float mAngle = 0;
-    private View mView;
+    private final View mView;
 
-    private OnRotationGestureListener mListener;
+    private final OnRotationGestureListener mListener;
 
     public float getAngle() {
         return mAngle;
@@ -29,6 +29,7 @@ public class RotationGestureDetector {
         mPtrID2 = INVALID_POINTER_ID;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public boolean onTouchEvent(MotionEvent event){
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_OUTSIDE:
@@ -75,7 +76,7 @@ public class RotationGestureDetector {
         return true;
     }
 
-    void getRawPoint(MotionEvent ev, int index, PointF point){
+    private void getRawPoint(MotionEvent ev, int index, PointF point){
         final int[] location = { 0, 0 };
         mView.getLocationOnScreen(location);
 

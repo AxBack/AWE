@@ -4,7 +4,6 @@ import android.R.layout;
 import android.app.ListActivity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,17 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +55,7 @@ public class MainActivity extends ListActivity {
         startActivity(intent);
     }
 
-    protected void createBinary() {
+    private void createBinary() {
 
         try {
             String name = this.getFilesDir().getAbsolutePath() + "/WAE.dat";

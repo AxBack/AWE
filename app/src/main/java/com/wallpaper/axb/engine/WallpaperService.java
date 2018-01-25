@@ -10,7 +10,7 @@ import android.view.SurfaceHolder;
 
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
 
-    private static boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     private Engine mEngine;
 
@@ -88,8 +88,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
 
             private com.wallpaper.axb.engine.Renderer mRenderer;
 
-            private ScaleGestureDetector mScaleGestureDetector;
-            private GestureDetectorCompat mGestureDetector;
+            private final ScaleGestureDetector mScaleGestureDetector;
+            private final GestureDetectorCompat mGestureDetector;
             //private RotationGestureDetector mRotationDetector;
 
             public WallpaperView(Context context) {
