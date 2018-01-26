@@ -45,7 +45,7 @@ namespace Electric {
 		node_instance_vec m_nodeInstances;
 
 		std::mutex m_dischargeMutex;
-		discharge_vec m_charges;
+		discharge_vec m_discharges;
 
 
 		void loadCluster(Engine::BinaryReader& reader);
@@ -71,6 +71,9 @@ namespace Electric {
 			m_internalFilesPath = internalFilesPath;
 			return init();
 		}
+
+		void restart();
+		void clear();
 
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);

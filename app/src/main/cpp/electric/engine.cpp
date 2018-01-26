@@ -114,6 +114,11 @@ namespace Electric {
         return true;
     }
 
+	void ElectricEngine::restart()
+	{
+		m_updater.restart();
+	}
+
     bool ElectricEngine::render()
     {
 		if(m_sizeDirty)

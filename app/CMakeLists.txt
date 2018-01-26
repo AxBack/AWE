@@ -18,10 +18,6 @@ add_library( # Sets the name of the library.
              src/main/cpp/engine/engine.cpp
              src/main/cpp/engine/updater.cpp
              src/main/cpp/engine/framebuffer.cpp
-             src/main/cpp/connections/engine.cpp
-             src/main/cpp/connections/updater.cpp
-             src/main/cpp/connections/point_shader.cpp
-             src/main/cpp/connections/connection_shader.cpp
              src/main/cpp/electric/engine.cpp
              src/main/cpp/electric/updater.cpp
              src/main/cpp/electric/particle_shader.cpp

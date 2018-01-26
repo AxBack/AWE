@@ -156,7 +156,7 @@ namespace Electric {
 		m_time -= dt;
 		if(m_time <= 0.0f)
 		{
-			m_state = ++m_state % m_states.size();
+			m_state = ++m_state % static_cast<UINT>(m_states.size());
 			m_time = 10.0f;
 			toState(m_states[m_state], 5.0f);
 		}

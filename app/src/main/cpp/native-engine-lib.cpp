@@ -1,6 +1,5 @@
 #include <jni.h>
 
-#include "connections/engine.h"
 #include "electric/engine.h"
 
 #include <map>
@@ -18,9 +17,7 @@ Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/
     const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
 	const char* internalPath = pEnv->GetStringUTFChars(internalFiles, (jboolean*)0);
     Engine::Engine* pEngine = nullptr;
-    if(strcmp(str, "Connections") == 0)
-        pEngine = new Connections::ConnectionsEngine;
-    else if(strcmp(str, "Electric") == 0)
+    if(strcmp(str, "Electric") == 0)
         pEngine = new Electric::ElectricEngine;
     else
         return -1;
@@ -37,6 +34,17 @@ Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/
 	++id;
 	return static_cast<jint>(i);
 }
+
+JNIEXPORT void JNICALL
+Java_com_wallpaper_axb_engine_NativeEngine_restart(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+{
+	auto it = engines.find(id);
+	if(it == engines.end())
+		return;
+
+	it->second->restart();
+}
+
 
 JNIEXPORT void JNICALL
 Java_com_wallpaper_axb_engine_NativeEngine_destroy(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)

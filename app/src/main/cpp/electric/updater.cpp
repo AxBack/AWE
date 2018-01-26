@@ -26,6 +26,36 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		return Engine::Updater::init();
 	}
 
+	void Updater::restart()
+	{
+		bool running = isRunning();
+		if(running)
+			stop();
+
+		clear();
+		init();
+
+		if(running)
+			start();
+	}
+
+	void Updater::clear()
+	{
+		{
+			std::lock_guard<std::mutex> _(m_particleMutex);
+			m_particles.clear();
+		}
+
+		{
+			std::lock_guard<std::mutex> _(m_nodeMutex);
+			m_nodeInstances.clear();
+			m_clusters.clear();
+		}
+
+		std::lock_guard<std::mutex> _(m_dischargeMutex);
+		m_discharges.clear();
+	}
+
 	void Updater::loadCluster(Engine::BinaryReader& reader)
 	{
 		cluster_ptr pCluster(new Cluster);
@@ -36,11 +66,11 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 	void Updater::updateCharges(float dt)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		for(auto it = m_charges.begin(); it != m_charges.end(); )
+		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
 		{
 			it->time -= dt;
 			if(it->time <= 0.0f)
-				it = m_charges.erase(it);
+				it = m_discharges.erase(it);
 			else
 				++it;
 		}
@@ -82,7 +112,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 			pNode->modifyCharge(-f);
 
 			std::lock_guard<std::mutex> _(m_dischargeMutex);
-			m_charges.push_back({0.1f, pNode->getPosition(), p->pNode->getPosition()});
+			m_discharges.push_back({0.1f, pNode->getPosition(), p->pNode->getPosition()});
 		}
 	}
 
@@ -129,7 +159,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
 		std::vector<ChargeInstance> charges;
-		for(auto& it : m_charges)
+		for(auto& it : m_discharges)
 		{
 			charges.push_back({
 							  it.start.x(), it.start.y(), it.start.z(),

@@ -1,6 +1,8 @@
 package com.wallpaper.axb.engine;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
@@ -13,6 +15,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private static final boolean DEBUG = true;
 
     private Engine mEngine;
+    private static Engine mLiveEngine;
 
     @Override
     public void onCreate() {
@@ -21,13 +24,25 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
 
     @Override
     public void onDestroy() {
+        if(MainActivity.sWallpaperService == this)
+            MainActivity.sWallpaperService = null;
         super.onDestroy();
+    }
+
+    private void onLive(Engine engine) {
+        MainActivity.sWallpaperService = this;
+        mLiveEngine = engine;
     }
 
     @Override
     public android.service.wallpaper.WallpaperService.Engine onCreateEngine() {
         mEngine = new Engine();
         return mEngine;
+    }
+
+    public void restart() {
+        if(mLiveEngine != null)
+            mLiveEngine.restart();
     }
 
     private class Engine extends android.service.wallpaper.WallpaperService.Engine {
@@ -42,6 +57,14 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             super.onCreate(surfaceHolder);
 
             mSurfaceView = new WallpaperView(WallpaperService.this);
+
+            if(!isPreview()) {
+                onLive(this);
+            }
+        }
+
+        public void restart() {
+            mSurfaceView.restart();
         }
 
         @Override
@@ -83,14 +106,12 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         private class WallpaperView extends GLSurfaceView implements
                 ScaleGestureDetector.OnScaleGestureListener,
                 GestureDetector.OnGestureListener
-                //RotationGestureDetector.OnRotationGestureListener
         {
 
             private com.wallpaper.axb.engine.Renderer mRenderer;
 
             private final ScaleGestureDetector mScaleGestureDetector;
             private final GestureDetectorCompat mGestureDetector;
-            //private RotationGestureDetector mRotationDetector;
 
             public WallpaperView(Context context) {
                 super(context);
@@ -109,6 +130,10 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 mScaleGestureDetector = new ScaleGestureDetector(WallpaperService.this, this);
                 mGestureDetector = new GestureDetectorCompat(WallpaperService.this, this);
                 //mRotationDetector = new RotationGestureDetector(this, this);
+            }
+
+            public void restart() {
+                mRenderer.restart();
             }
 
             @Override

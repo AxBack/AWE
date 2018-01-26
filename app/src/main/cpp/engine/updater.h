@@ -18,6 +18,7 @@ namespace Engine {
         std::atomic_bool m_running;
         std::thread m_workThread;
 
+	protected:
         void start();
 
         void stop();
@@ -48,5 +49,7 @@ namespace Engine {
         void pause() {
             stop();
         }
+
+		bool isRunning() { return m_running; }
     };
 }

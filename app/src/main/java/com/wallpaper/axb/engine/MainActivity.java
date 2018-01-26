@@ -23,6 +23,8 @@ public class MainActivity extends ListActivity {
 
     private List<String> mListValues;
 
+    static WallpaperService sWallpaperService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +37,18 @@ public class MainActivity extends ListActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        String type = mListValues.get(position);
-        if(type.equals("Electric")) {
 
-            List<Cluster> clusters = new ArrayList<>();
-            clusters.add(new Cluster());
-            createBinary(clusters);
-        }
+        List<Cluster> clusters = new ArrayList<>();
+        clusters.add(new Cluster());
+        createBinary(clusters);
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -56,7 +60,15 @@ public class MainActivity extends ListActivity {
                 .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                         new ComponentName(this, WallpaperService.class))
                 .putExtra("WallpaperType", mListValues.get(position));
-        startActivity(intent);
+        startActivityForResult(intent, 123);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(sWallpaperService != null && requestCode == 123 && resultCode == RESULT_OK) {
+            sWallpaperService.restart();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void createBinary(List<Cluster> clusters) {

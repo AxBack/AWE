@@ -17,8 +17,16 @@ class Renderer implements GLSurfaceView.Renderer {
     private int mNativeId = -1;
     private boolean mIsActive = false;
 
+    private int mWidth = 0;
+    private int mHeight = 0;
+
     public Renderer(Context ctx) {
         mContext = ctx;
+    }
+
+    public synchronized void restart() {
+        if(mNativeId >= 0)
+            mRenderEngine.restart(mNativeId);
     }
 
     public synchronized void destroy() {
@@ -34,6 +42,8 @@ class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public synchronized void onSurfaceChanged(GL10 gl, int width, int height) {
+        mWidth = width;
+        mHeight = height;
         if(mNativeId >= 0)
             mRenderEngine.setSize(mNativeId, width,height);
     }
@@ -87,9 +97,7 @@ class Renderer implements GLSurfaceView.Renderer {
         if(mNativeId > -1)
             return;
 
-        final SharedPreferences preferences = mContext.getSharedPreferences("AxB", MODE_PRIVATE);
-        String type = preferences.getString("WallpaperType", "Connections");
-        mNativeId = mRenderEngine.create(type, mContext.getFilesDir().getAbsolutePath(), mContext.getAssets());
+        mNativeId = mRenderEngine.create("Electric", mContext.getFilesDir().getAbsolutePath(), mContext.getAssets());
         if(mIsActive)
             mRenderEngine.resume(mNativeId);
 
