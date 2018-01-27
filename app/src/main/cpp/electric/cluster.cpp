@@ -13,6 +13,9 @@ namespace Electric {
 		m_position.read(reader);
 		m_rotation.read(reader);
 
+		m_switchInterval = reader.read<float>();
+		m_transitionTime = reader.read<float>();
+
 		std::uniform_real_distribution<> dist(0.0f, 1.0f);
 
 		float_path chargePath;
@@ -37,7 +40,7 @@ namespace Electric {
 			m_states.push_back(state);
 		}
 
-		toState(m_states[0], 5.0f);
+		toState(m_states[0], m_transitionTime);
 	}
 
 	void Cluster::read(Engine::BinaryReader& reader, vec3_path& path)
@@ -72,12 +75,12 @@ namespace Electric {
 	{
 		read(reader, state.positionPath);
 		read(reader, state.rotationPath);
-		read(reader, state.minOffsetPath);
-		read(reader, state.maxOffsetPath);
+		read(reader, state.offsetPath);
+		read(reader, state.spreadPath);
+		read(reader, state.spreadDirectionYawPath);
+		read(reader, state.spreadDirectionPatchPath);
 		read(reader, state.colorPath);
 		read(reader, state.sizePath);
-		read(reader, state.spreadYawPath);
-		read(reader, state.spreadPitchPath);
 	}
 
 	void Cluster::toState(State& state, float transitionTime)
@@ -92,11 +95,11 @@ namespace Electric {
 				Math::Matrix::setRotate(rot, r.x(), r.y(), r.z());
 			}
 
-			float yaw = state.spreadYawPath.traverse(d);
+			float yaw = state.spreadDirectionYawPath.traverse(d);
 			std::uniform_real_distribution<> yawDist(-yaw, yaw);
 			yaw = static_cast<float>(yawDist(m_generator));
 
-			float pitch = state.spreadPitchPath.traverse(d);
+			float pitch = state.spreadDirectionPatchPath.traverse(d);
 			std::uniform_real_distribution<> pitchDist(-pitch, pitch);
 			pitch = static_cast<float>(pitchDist(m_generator));
 
@@ -112,11 +115,11 @@ namespace Electric {
 
 			Math::Vector3 p = rotSpread.transform({0,0,-1});
 
-			float minOffset = state.minOffsetPath.traverse(d);
-			float maxOffset = state.maxOffsetPath.traverse(d);
-			std::uniform_real_distribution<> offsetDist(minOffset, maxOffset);
+			float offset = state.offsetPath.traverse(d);
+			float spread = state.spreadPath.traverse(d);
+			std::uniform_real_distribution<> offsetDist(-spread, spread);
 
-			p *= static_cast<float>(offsetDist(m_generator));
+			p *= (offset + static_cast<float>(offsetDist(m_generator)));
 			p += state.positionPath.traverse(d);
 
 			float s = state.sizePath.traverse(d);
@@ -157,7 +160,7 @@ namespace Electric {
 		if(m_time <= 0.0f)
 		{
 			m_state = ++m_state % static_cast<UINT>(m_states.size());
-			m_time = 10.0f;
+			m_time = m_switchInterval;
 			toState(m_states[m_state], 5.0f);
 		}
 

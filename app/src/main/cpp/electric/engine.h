@@ -5,7 +5,7 @@
 
 #include "particle_shader.h"
 #include "node_shader.h"
-#include "charge_shader.h"
+#include "discharge_shader.h"
 #include "../engine/framebuffer.h"
 #include "bloom_shader.h"
 #include "dof_shader.h"
@@ -17,7 +17,7 @@ namespace Electric {
 	typedef Engine::Mesh<TexturedVertex> ScreenMesh;
     typedef Engine::InstancedMesh<PositionVertex, ParticleInstance> ParticleMesh;
     typedef Engine::InstancedMesh<PositionVertex, NodeInstance> NodeMesh;
-	typedef Engine::InstancedMesh<ChargeVertex, ChargeInstance> ChargeMesh;
+	typedef Engine::InstancedMesh<DischargeVertex, DischargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
 	typedef Engine::Framebuffer Framebuffer;
     typedef Engine::Path<Math::Vector3> vec3_path;

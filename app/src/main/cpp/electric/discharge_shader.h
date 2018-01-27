@@ -11,7 +11,7 @@ namespace Electric {
 	class DischargeShader : public Engine::Shader {
 	private:
 
-		typedef Engine::InstancedMesh<ChargeVertex, ChargeInstance> Mesh;
+		typedef Engine::InstancedMesh<DischargeVertex, DischargeInstance> Mesh;
 
 		GLuint m_program;
 		GLuint m_vao;

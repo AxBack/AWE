@@ -1,4 +1,4 @@
-#include "charge_shader.h"
+#include "discharge_shader.h"
 #include "vertex.h"
 
 namespace Electric {
@@ -19,19 +19,19 @@ namespace Electric {
 		glBindBuffer(GL_ARRAY_BUFFER, mesh.getStaticBuffer());
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ChargeVertex), 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DischargeVertex), 0);
 
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(ChargeVertex), BUFFER_OFFSET(3));
+		glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(DischargeVertex), BUFFER_OFFSET(3));
 
 		glBindBuffer(GL_ARRAY_BUFFER, mesh.getDynamicBuffer());
 
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(ChargeInstance), 0);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), 0);
 		glVertexAttribDivisor(2, 1);
 
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(ChargeInstance), BUFFER_OFFSET(3));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(3));
 		glVertexAttribDivisor(3, 1);
 
 		glBindVertexArray(0);

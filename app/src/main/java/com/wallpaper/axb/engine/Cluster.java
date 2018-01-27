@@ -11,15 +11,23 @@ public class Cluster {
 
     List<State> mStates = new ArrayList<>();
 
-    Path<Float> chargePath = new Path<>();
+    Path<Float> mChargePath = new Path<>();
 
-    int nrNodes = 1000;
+    float mSwitchInterval = 10.0f;
+    float mTransitionTime = 1.0f;
 
-    public Cluster() {
+    int mNrNodes = 500;
+
+    public Cluster(int nrNodes) {
+        mNrNodes = nrNodes;
+
         //temp
-        randomize(chargePath, 0.0f, 0.8f);
+        Float[] points = {0.0f, 1.0f };
+        mChargePath.add(1.0f, points);
 
         Random random = new Random();
+        mSwitchInterval = 5.0f + (random.nextFloat() * 10.0f);
+
         int i = Math.abs(random.nextInt() % 10) + 10;
 
         for(int x=0; x < i; ++x)
@@ -36,11 +44,14 @@ public class Cluster {
         stream.writeFloat(0); // pitch
         stream.writeFloat(0); // roll
 
+        stream.writeFloat(mSwitchInterval);
+        stream.writeFloat(mTransitionTime);
+
         // charge
-        writePath(stream, chargePath);
+        writePath(stream, mChargePath);
 
         // nr nodes
-        stream.writeInt(nrNodes);
+        stream.writeInt(mNrNodes);
 
         // nr states
         stream.writeInt(mStates.size());
@@ -71,12 +82,12 @@ public class Cluster {
         }
     }
 
-    static void randomize(Path<Float> path, float min, float max) {
+    static void randomize(Path<Float> path, float min, float max, int minNrPoints, int maxNrPoints) {
         path.clear();
 
         Random random = new Random();
 
-        int nr = Math.abs(random.nextInt() % 3) + 1;
+        int nr = Math.abs(random.nextInt() % maxNrPoints) + minNrPoints;
         Float[] points = new Float[nr];
         for(int i=0; i < nr; ++i) {
             points[i] = min + (random.nextFloat() * (max - min));
@@ -84,12 +95,12 @@ public class Cluster {
         path.add(1.0f, points);
     }
 
-    static void randomize(Path<Float3> path, Float3 min, Float3 max) {
+    static void randomize(Path<Float3> path, Float3 min, Float3 max, int minNrPoints, int maxNrPoints) {
         path.clear();
 
         Random random = new Random();
 
-        int nr = Math.abs(random.nextInt() % 3) + 1;
+        int nr = Math.abs(random.nextInt() % maxNrPoints) + minNrPoints;
         Float3[] points = new Float3[nr];
         for(int i=0; i < nr; ++i) {
             points[i] = new Float3(
@@ -146,29 +157,26 @@ public class Cluster {
 
         public Path<Float3> position = new Path<>();
         public Path<Float3> rotation = new Path<>();
-        public Path<Float> minOffset = new Path<>();
-        public Path<Float>  maxOffset = new Path<>();
-        public Path<Float3> color = new Path<>();
-        public Path<Float> size = new Path<>();
+        public Path<Float> offset = new Path<>();
+        public Path<Float> spread = new Path<>();
         public Path<Float> yaw = new Path<>();
         public Path<Float> pitch = new Path<>();
+        public Path<Float3> color = new Path<>();
+        public Path<Float> size = new Path<>();
 
         public State() {
             //temp
-            randomize(position, new Float3(-50, -50, -50), new Float3(50,50,50));
-            randomize(rotation, new Float3(0, 0, 0), new Float3(360,360,360));
-            randomize(minOffset, -300, 0);
-            randomize(maxOffset, 0, 300);
-            randomize(color, new Float3(0, 0, 0), new Float3(1,1,1));
-            randomize(size, 0.5f, 5f);
-            randomize(yaw, 0, 180);
-            randomize(pitch, 0, 180);
+            randomize(position, new Float3(-20, -20, -20), new Float3(20,20,20), 1, 3);
+            randomize(rotation, new Float3(0, 0, 0), new Float3(360,360,360), 2, 5);
+            randomize(offset, 0, 200, 1, 3);
+            randomize(spread, 10, 100, 1, 3);
+            randomize(color, new Float3(0, 0, 0), new Float3(1,1,1), 2, 4);
+            randomize(size, 0.5f, 5f, 2, 4);
+            randomize(yaw, 0, 180, 1, 3);
+            randomize(pitch, 0, 180, 1, 3);
         }
 
         public void write(DataOutputStream stream) throws IOException {
-
-            //Temp
-            Random random = new Random();
 
             // position
             writePath3(stream, position);
@@ -176,23 +184,23 @@ public class Cluster {
             // rotation
             writePath3(stream, rotation);
 
-            // max offset
-            writePath(stream, minOffset);
+            // offset
+            writePath(stream, offset);
 
-            // max offset
-            writePath(stream, maxOffset);
-
-            // color
-            writePath3(stream, color);
-
-            // size
-            writePath(stream, size);
+            // spread
+            writePath(stream, spread);
 
             // yaw spread
             writePath(stream, yaw);
 
             // pitch spread
             writePath(stream, pitch);
+
+            // color
+            writePath3(stream, color);
+
+            // size
+            writePath(stream, size);
         }
     }
 }

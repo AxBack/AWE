@@ -47,7 +47,7 @@ public class MainActivity extends ListActivity {
 
 
         List<Cluster> clusters = new ArrayList<>();
-        clusters.add(new Cluster());
+        clusters.add(new Cluster(1000));
         createBinary(clusters);
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);

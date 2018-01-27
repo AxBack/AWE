@@ -22,29 +22,31 @@ namespace Electric {
 		typedef Engine::Path<Math::Vector3> vec3_path;
 		typedef Engine::Path<float> float_path;
 
-		node_vec m_nodes;
-		bool m_dirty;
-		Math::Vector3 m_rotation;
-		Math::Vector3 m_position;
-		Math::Matrix m_transform;
-
-
 		struct State
 		{
 			vec3_path positionPath;
 			vec3_path rotationPath;
-			float_path minOffsetPath;
-			float_path maxOffsetPath;
-			vec3_path colorPath;
+			float_path offsetPath;
+			float_path spreadPath;
+			float_path spreadDirectionYawPath;
+			float_path spreadDirectionPatchPath;
 			float_path sizePath;
-			float_path spreadYawPath;
-			float_path spreadPitchPath;
+			vec3_path colorPath;
 		};
 
 		std::mt19937 m_generator;
 
 		float m_time;
 		UINT m_state;
+
+		node_vec m_nodes;
+		bool m_dirty;
+		Math::Vector3 m_rotation;
+		Math::Vector3 m_position;
+		Math::Matrix m_transform;
+
+		float m_switchInterval;
+		float m_transitionTime;
 
 		std::vector<State> m_states;
 

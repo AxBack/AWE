@@ -155,10 +155,10 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		mesh.updateInstances(static_cast<UINT>(m_nodeInstances.size()), m_nodeInstances.size() == 0 ? nullptr : &m_nodeInstances[0]);
 	}
 
-	void Updater::updateInstances(Engine::InstancedMesh<ChargeVertex, ChargeInstance>& mesh)
+	void Updater::updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		std::vector<ChargeInstance> charges;
+		std::vector<DischargeInstance> charges;
 		for(auto& it : m_discharges)
 		{
 			charges.push_back({

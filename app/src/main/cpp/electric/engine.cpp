@@ -85,16 +85,21 @@ namespace Electric {
 		}
 
 		{
-			ChargeVertex vertices[] = {
-					{0.0f,0.2f,0.0f, 0.0f},
-					{0.0f,0.2f,0.0f, 1.0f},
-					{0.0f,-0.2f,0.0f, 1.0f},
-					{0.0f,-0.2f,0.0f, 0.0f}
+			DischargeVertex vertices[] = {
+					{0.0f, 0.0f,0.0f, 0.0f},
+					{0.0f, 0.0f,0.0f, 1.0f},
+					{0.0f, 0.2f,0.0f, 0.2f},
+					{0.0f, 0.2f,0.0f, 0.8f},
+					{0.0f,-0.2f,0.0f, 0.8f},
+					{0.0f,-0.2f,0.0f, 0.2f},
 			};
 
-			GLushort indices[] = {0,1,2,0,2,3};
+			GLushort indices[] = {
+					0,2,5, 3,1,4, // ends
+					2,3,4, 2,4,5
+			};
 
-			if(!m_chargeMesh.init(4, vertices, 6, indices))
+			if(!m_chargeMesh.init(6, vertices, 12, indices))
 			{
 				LOGD("init( Failed to init ChargeMesh: %d )", m_id);
 				return false;

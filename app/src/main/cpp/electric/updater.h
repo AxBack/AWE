@@ -77,7 +77,7 @@ namespace Electric {
 
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);
-		void updateInstances(Engine::InstancedMesh<ChargeVertex, ChargeInstance>& mesh);
+		void updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh);
 
 		void onDischarge(Node* pNode) override;
 

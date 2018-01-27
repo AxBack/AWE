@@ -22,7 +22,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/electric/updater.cpp
              src/main/cpp/electric/particle_shader.cpp
              src/main/cpp/electric/node_shader.cpp
-             src/main/cpp/electric/charge_shader.cpp
+             src/main/cpp/electric/discharge_shader.cpp
              src/main/cpp/electric/bloom_shader.cpp
              src/main/cpp/electric/dof_shader.cpp
              src/main/cpp/electric/cluster.cpp

@@ -13,7 +13,7 @@ namespace Electric {
 		GLfloat x,y,z,u,v;
 	};
 
-	struct ChargeVertex
+	struct DischargeVertex
 	{
 		GLfloat x, y, z, dt;
 	};
@@ -28,7 +28,7 @@ namespace Electric {
 		GLfloat x,y,z,size,charge,r,g,b;
 	};
 
-	struct ChargeInstance
+	struct DischargeInstance
 	{
 		GLfloat sx,sy,sz, dx,dy,dz;
 	};
