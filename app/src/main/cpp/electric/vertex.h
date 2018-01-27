@@ -15,7 +15,7 @@ namespace Electric {
 
 	struct DischargeVertex
 	{
-		GLfloat x, y, z, dt;
+		GLfloat x, y, z, distortInfluence, dt;
 	};
 
     struct ParticleInstance
@@ -30,6 +30,6 @@ namespace Electric {
 
 	struct DischargeInstance
 	{
-		GLfloat sx,sy,sz, dx,dy,dz;
+		GLfloat sx,sy,sz, dx,dy,dz, rand;
 	};
 };

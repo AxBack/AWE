@@ -26,7 +26,7 @@ public class Cluster {
         mChargePath.add(1.0f, points);
 
         Random random = new Random();
-        mSwitchInterval = 5.0f + (random.nextFloat() * 10.0f);
+        mSwitchInterval = 30.0f + (random.nextFloat() * 10.0f);
 
         int i = Math.abs(random.nextInt() % 10) + 10;
 
@@ -63,7 +63,7 @@ public class Cluster {
     private static void writePath(DataOutputStream stream, Path<Float> path) throws IOException {
         stream.writeInt(path.parts.size()); // nr parts
 
-        for (Path<Float>.Part<Float> p : path.parts) {
+        for (Path<Float>.Part p : path.parts) {
             stream.writeFloat(p.time);
             stream.writeInt(p.points.size());
             for (float f : p.points)
@@ -74,7 +74,7 @@ public class Cluster {
     private static void writePath3(DataOutputStream stream, Path<Float3> path) throws IOException {
         stream.writeInt(path.parts.size()); // nr parts
 
-        for (Path<Float3>.Part<Float3> p : path.parts) {
+        for (Path<Float3>.Part p : path.parts) {
             stream.writeFloat(p.time);
             stream.writeInt(p.points.size());
             for (Float3 f : p.points)
@@ -132,7 +132,7 @@ public class Cluster {
 
     class Path<T> {
 
-        class Part<T> {
+        class Part {
             float time;
             List<T> points = new ArrayList<>();
 
@@ -142,10 +142,10 @@ public class Cluster {
             }
         }
 
-        List<Part<T>> parts = new ArrayList<>();
+        List<Part> parts = new ArrayList<>();
 
         void add(float time, T[] points) {
-            parts.add(new Part<T>(time, points));
+            parts.add(new Part(time, points));
         }
 
         void clear() {

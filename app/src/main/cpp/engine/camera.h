@@ -51,6 +51,7 @@ namespace Engine {
 		}
 
 		const Matrix& getViewProjection() const { return m_viewProjection; }
+		const Vector3& getPosition() const { return m_position; }
 		const Vector3& getUp() const { return m_up; }
 		const Vector3& getRight() const { return m_right; }
 

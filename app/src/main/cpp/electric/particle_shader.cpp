@@ -4,14 +4,14 @@
 namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
-#define UP "up"
+#define CAMERA_POS "up"
 #define RIGHT "right"
 
     bool ParticleShader::init(AAssetManager* pAssetManager, const Mesh& mesh) {
 
         m_program = createProgram(pAssetManager, "shaders/ParticleShader_vs.glsl", "shaders/SimpleShader_ps.glsl");
         m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
-        m_upLocation = getLocation(m_program, UP);
+        m_upLocation = getLocation(m_program, CAMERA_POS);
         m_rightLocation = getLocation(m_program, RIGHT);
 
         glGenVertexArrays(1, &m_vao);
