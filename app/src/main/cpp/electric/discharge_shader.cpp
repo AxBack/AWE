@@ -4,12 +4,14 @@
 namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
+#define TEXTURE "uTexture"
 
 	bool DischargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
 	{
 
 		m_program = createProgram(pAssetManager, "shaders/DischargeShader_vs.glsl", "shaders/DischargeShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
+		m_textureLocation = getLocation(m_program, TEXTURE);
 
 		glGenVertexArrays(1, &m_vao);
 
@@ -33,6 +35,10 @@ namespace Electric {
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(3));
 		glVertexAttribDivisor(3, 1);
+
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(6));
+		glVertexAttribDivisor(4, 1);
 
 		glBindVertexArray(0);
 

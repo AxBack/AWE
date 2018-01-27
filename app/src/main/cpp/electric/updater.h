@@ -22,8 +22,9 @@ namespace Electric {
 		struct Discharge
 		{
 			float time;
-			Math::Vector3 start;
-			Math::Vector3 end;
+			Node* pStart;
+			Node* pEnd;
+			float rand;
 		};
 
 		typedef std::shared_ptr<Cluster> cluster_ptr;
@@ -31,6 +32,7 @@ namespace Electric {
         typedef std::vector<Particle> particle_vec;
 		typedef std::vector<NodeInstance> node_instance_vec;
 		typedef std::vector<Discharge> discharge_vec;
+		typedef std::vector<DischargeInstance> discharge_instance_vec;
 
 		std::string m_internalFilesPath;
 
@@ -46,7 +48,7 @@ namespace Electric {
 
 		std::mutex m_dischargeMutex;
 		discharge_vec m_discharges;
-
+		discharge_instance_vec m_dischargeInstances;
 
 		void loadCluster(Engine::BinaryReader& reader);
 

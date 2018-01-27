@@ -9,6 +9,7 @@
 #include "../engine/framebuffer.h"
 #include "bloom_shader.h"
 #include "dof_shader.h"
+#include "../engine/texture.h"
 
 namespace Electric {
 
@@ -20,6 +21,7 @@ namespace Electric {
 	typedef Engine::InstancedMesh<DischargeVertex, DischargeInstance> ChargeMesh;
     typedef Engine::Camera Camera;
 	typedef Engine::Framebuffer Framebuffer;
+	typedef Engine::Texture Texture;
     typedef Engine::Path<Math::Vector3> vec3_path;
 	typedef Engine::Path<float> float_path;
 	typedef std::atomic<float> atomic_float;
@@ -55,12 +57,18 @@ namespace Electric {
         NodeMesh        m_nodeMesh;
         NodeShader      m_nodeShader;
 
-		ChargeMesh		m_chargeMesh;
-		DischargeShader	m_chargeShader;
+		ChargeMesh		m_dischargeMesh;
+		Texture			m_dischargeTexture;
+		DischargeShader	m_dischargeShader;
 
 		std::atomic_bool m_sizeDirty;
 		std::mutex 		 m_sizeMutex;
 		Framebuffer		 m_renderTarget;
+
+		bool setupPostProcess(AAssetManager* pAssetManager);
+		bool setupParticles(AAssetManager* pAssetManager);
+		bool setupNodes(AAssetManager* pAssetManager);
+		bool setupDischarges(AAssetManager* pAssetManager);
 
     public:
 

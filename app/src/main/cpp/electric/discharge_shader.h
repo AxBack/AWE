@@ -5,6 +5,7 @@
 #include "../engine/mesh.h"
 #include "../engine/camera.h"
 #include "vertex.h"
+#include "../engine/texture.h"
 
 namespace Electric {
 
@@ -16,6 +17,7 @@ namespace Electric {
 		GLuint m_program;
 		GLuint m_vao;
 		GLint m_viewProjectionLocation;
+		GLint m_textureLocation;
 
 	public:
 
@@ -39,11 +41,17 @@ namespace Electric {
 			}
 		}
 
-		void render(const Engine::Camera& camera, const Mesh& mesh)
+		void render(const Engine::Camera& camera, const Mesh& mesh, Engine::Texture& texture )
 		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);
+
+			glActiveTexture(GL_TEXTURE0);
+			texture.bind();
+			glUniform1i(m_textureLocation, 0);
+
 			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
+
 			mesh.render();
 		}
 	};

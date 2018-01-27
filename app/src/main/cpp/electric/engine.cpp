@@ -12,105 +12,17 @@ namespace Electric {
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
-		{
-			TexturedVertex vertices[] = {
-					{-1,-1,0,0,0},
-					{ 1,-1,0,1,0},
-					{ 1, 1,0,1,1},
-					{-1, 1,0,0,1}
-			};
+		if(!setupPostProcess(pAssetManager))
+			return false;
 
-			GLushort indices[] = {0,1,2,0,2,3};
-			if(!m_screenMesh.init(4, vertices, 6, indices))
-			{
-				LOGD("init( Failed to init ScreenMesh: %d )", m_id);
-				return false;
-			}
+        if(!setupParticles(pAssetManager))
+			return false;
 
-			if(!m_bloomShader.init(pAssetManager, m_screenMesh))
-			{
-				LOGD("init( Failed to init BloomShader: %d )", m_id);
-				return false;
-			}
+		if(!setupNodes(pAssetManager))
+			return false;
 
-			if(!m_dofShader.init(pAssetManager, m_screenMesh))
-			{
-				LOGD("init( Failed to init DofShader: %d )", m_id);
-				return false;
-			}
-		};
-
-        {
-            PositionVertex vertices[] = {
-                    {-0.5f, 0.5f,  0},
-                    {0.5f,  0.5f,  0},
-                    {0.5f,  -0.5f, 0},
-                    {-0.5f, -0.5f, 0}
-            };
-
-            GLushort indices[] = {0, 1, 2, 0, 2, 3};
-            if (!m_particlesMesh.init(4, vertices, 6, indices))
-			{
-                LOGD("init( Failed to init ParticleMesh: %d )", m_id);
-                return false;
-            }
-
-            if (!m_particleShader.init(pAssetManager, m_particlesMesh))
-			{
-                LOGD("init( Failed to init ParticleShader: %d )", m_id);
-                return false;
-            }
-        }
-
-		{
-			PositionVertex vertices[] = {
-					{-0.5f, 0.5f,  0},
-					{0.5f,  0.5f,  0},
-					{0.5f,  -0.5f, 0},
-					{-0.5f, -0.5f, 0}
-			};
-
-			GLushort indices[] = {0, 1, 2, 0, 2, 3};
-			if (!m_nodeMesh.init(4, vertices, 6, indices))
-			{
-				LOGD("init( Failed to init NodeMesh: %d )", m_id);
-				return false;
-			}
-
-			if (!m_nodeShader.init(pAssetManager, m_nodeMesh))
-			{
-				LOGD("init( Failed to init NodeShader: %d )", m_id);
-				return false;
-			}
-		}
-
-		{
-			DischargeVertex vertices[] = {
-					{0.0f, 0.0f,0.0f, 0.0f},
-					{0.0f, 0.0f,0.0f, 1.0f},
-					{0.0f, 0.2f,0.0f, 0.2f},
-					{0.0f, 0.2f,0.0f, 0.8f},
-					{0.0f,-0.2f,0.0f, 0.8f},
-					{0.0f,-0.2f,0.0f, 0.2f},
-			};
-
-			GLushort indices[] = {
-					0,2,5, 3,1,4, // ends
-					2,3,4, 2,4,5
-			};
-
-			if(!m_chargeMesh.init(6, vertices, 12, indices))
-			{
-				LOGD("init( Failed to init ChargeMesh: %d )", m_id);
-				return false;
-			}
-
-			if(!m_chargeShader.init(pAssetManager, m_chargeMesh))
-			{
-				LOGD("init( Failed to init DischargeShader: %d )", m_id);
-				return false;
-			}
-		}
+		if(!setupDischarges(pAssetManager))
+			return false;
 
         if(!m_updater.init(internalFilesPath))
             return false;
@@ -118,6 +30,134 @@ namespace Electric {
         LOGI("ElectricEngine( Init end: %d )", m_id);
         return true;
     }
+
+	bool ElectricEngine::setupPostProcess(AAssetManager* pAssetManager)
+	{
+		TexturedVertex vertices[] = {
+				{-1,-1,0,0,0},
+				{ 1,-1,0,1,0},
+				{ 1, 1,0,1,1},
+				{-1, 1,0,0,1}
+		};
+
+		GLushort indices[] = {0,1,2,0,2,3};
+		if(!m_screenMesh.init(4, vertices, 6, indices))
+		{
+			LOGD("init( Failed to init ScreenMesh: %d )", m_id);
+			return false;
+		}
+
+		if(!m_bloomShader.init(pAssetManager, m_screenMesh))
+		{
+			LOGD("init( Failed to init BloomShader: %d )", m_id);
+			return false;
+		}
+
+		if(!m_dofShader.init(pAssetManager, m_screenMesh))
+		{
+			LOGD("init( Failed to init DofShader: %d )", m_id);
+			return false;
+		}
+		return true;
+	}
+
+	bool ElectricEngine::setupParticles(AAssetManager* pAssetManager)
+	{
+		PositionVertex vertices[] = {
+				{-0.5f, 0.5f,  0},
+				{0.5f,  0.5f,  0},
+				{0.5f,  -0.5f, 0},
+				{-0.5f, -0.5f, 0}
+		};
+
+		GLushort indices[] = {0, 1, 2, 0, 2, 3};
+		if (!m_particlesMesh.init(4, vertices, 6, indices))
+		{
+			LOGD("init( Failed to init ParticleMesh: %d )", m_id);
+			return false;
+		}
+
+		if (!m_particleShader.init(pAssetManager, m_particlesMesh))
+		{
+			LOGD("init( Failed to init ParticleShader: %d )", m_id);
+			return false;
+		}
+		return true;
+	}
+
+	bool ElectricEngine::setupNodes(AAssetManager* pAssetManager)
+	{
+		PositionVertex vertices[] = {
+				{-0.5f, 0.5f,  0},
+				{0.5f,  0.5f,  0},
+				{0.5f,  -0.5f, 0},
+				{-0.5f, -0.5f, 0}
+		};
+
+		GLushort indices[] = {0, 1, 2, 0, 2, 3};
+		if (!m_nodeMesh.init(4, vertices, 6, indices))
+		{
+			LOGD("init( Failed to init NodeMesh: %d )", m_id);
+			return false;
+		}
+
+		if (!m_nodeShader.init(pAssetManager, m_nodeMesh))
+		{
+			LOGD("init( Failed to init NodeShader: %d )", m_id);
+			return false;
+		}
+
+		return true;
+	}
+
+	bool ElectricEngine::setupDischarges(AAssetManager* pAssetManager)
+	{
+		DischargeVertex vertices[] = {
+				{0.0f, 0.0f,0.0f, 0.0f},
+				{0.0f, 0.0f,0.0f, 1.0f},
+				{0.0f, 0.2f,0.0f, 0.2f},
+				{0.0f, 0.2f,0.0f, 0.4f},
+				{0.0f, 0.2f,0.0f, 0.6f},
+				{0.0f, 0.2f,0.0f, 0.8f},
+				{0.0f,-0.2f,0.0f, 0.2f},
+				{0.0f,-0.2f,0.0f, 0.4f},
+				{0.0f,-0.2f,0.0f, 0.6f},
+				{0.0f,-0.2f,0.0f, 0.8f}
+		};
+
+		GLushort indices[] = {
+				0,2,6, 5,1,9, // ends
+				2,3,7, 2,7,6,
+				3,4,8, 3,8,7,
+				4,5,9, 4,9,8
+		};
+
+		if(!m_dischargeMesh.init(6, vertices, 3*8, indices))
+		{
+			LOGD("init( Failed to init ChargeMesh: %d )", m_id);
+			return false;
+		}
+
+		std::mt19937 generator(840031);
+		std::uniform_int_distribution<char> dist(0, 255);
+
+		char pixels[8*8*3];
+		for(int i=0; i<8*8*3; ++i)
+			pixels[i] = dist(generator);
+
+		if(!m_dischargeTexture.init(GL_RGB, 8, 8, pixels))
+		{
+			LOGD("init( Failed to init DischargeTexture: %d )", m_id);
+			return false;
+		}
+
+		if(!m_dischargeShader.init(pAssetManager, m_dischargeMesh))
+		{
+			LOGD("init( Failed to init DischargeShader: %d )", m_id);
+			return false;
+		}
+		return true;
+	}
 
 	void ElectricEngine::restart()
 	{
@@ -137,7 +177,7 @@ namespace Electric {
             m_camera.updateProjection(m_viewport[2], m_viewport[3]);
 		}
 
-		m_updater.updateInstances(m_chargeMesh);
+		m_updater.updateInstances(m_dischargeMesh);
 		m_updater.updateInstances(m_nodeMesh);
 		m_updater.updateInstances(m_particlesMesh);
 
@@ -176,14 +216,18 @@ namespace Electric {
 		m_renderTarget.set();
 		m_renderTarget.clear();
 
-        if(m_chargeMesh.hasInstances())
-            m_chargeShader.render(m_camera, m_chargeMesh);
-
 		if(m_nodeMesh.hasInstances())
 			m_nodeShader.render(m_camera, m_nodeMesh);
 
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		if(m_dischargeMesh.hasInstances())
+			m_dischargeShader.render(m_camera, m_dischargeMesh, m_dischargeTexture);
+
 		if(m_particlesMesh.hasInstances())
 			m_particleShader.render(m_camera, m_particlesMesh);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);

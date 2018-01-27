@@ -24,23 +24,6 @@ namespace Engine {
 
 		std::vector<GLuint> m_textures;
 
-		static GLuint createTexture(GLint internalFormat, GLuint format, GLuint type,
-									GLsizei width, GLsizei height, GLenum filter,
-									GLenum wrap, GLenum attachment)
-		{
-			GLuint texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, 0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
-			return texture;
-		}
-
 	public:
 
 		Framebuffer()

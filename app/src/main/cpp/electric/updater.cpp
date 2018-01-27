@@ -65,14 +65,27 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	void Updater::updateCharges(float dt)
 	{
+		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
+		m_dischargeInstances.clear();
 		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
 		{
+			it->rand = dist(m_generator);
 			it->time -= dt;
 			if(it->time <= 0.0f)
 				it = m_discharges.erase(it);
 			else
+			{
+				Math::Vector3 s = it->pStart->getPosition();
+				Math::Vector3 e = it->pEnd->getPosition();
+				m_dischargeInstances.push_back({
+						s.x(), s.y(), s.z(),
+						e.x(), e.y(), e.z(),
+						it->rand
+										  });
 				++it;
+			}
 		}
 	}
 
@@ -111,8 +124,10 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 			p->pNode->modifyCharge( f * LOSS_FACTOR );
 			pNode->modifyCharge(-f);
 
+			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
 			std::lock_guard<std::mutex> _(m_dischargeMutex);
-			m_discharges.push_back({0.1f, pNode->getPosition(), p->pNode->getPosition()});
+			m_discharges.push_back({0.1f, pNode, p->pNode, dist(m_generator)});
 		}
 	}
 
@@ -158,15 +173,6 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 	void Updater::updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		std::vector<DischargeInstance> charges;
-		for(auto& it : m_discharges)
-		{
-			charges.push_back({
-							  it.start.x(), it.start.y(), it.start.z(),
-							  it.end.x(), it.end.y(), it.end.z()
-							  });
-		}
-
-		mesh.updateInstances(static_cast<UINT>(charges.size()), charges.size() > 0 ? &charges[0] : nullptr);
+		mesh.updateInstances(static_cast<UINT>(m_dischargeInstances.size()), m_dischargeInstances.size() > 0 ? &m_dischargeInstances[0] : nullptr);
 	}
 }

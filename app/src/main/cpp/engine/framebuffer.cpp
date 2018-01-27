@@ -1,4 +1,5 @@
 #include "framebuffer.h"
+#include "util.h"
 
 namespace Engine {
 
@@ -25,8 +26,11 @@ namespace Engine {
 		{
 			GLenum a = GL_COLOR_ATTACHMENT0+i;
 			attachments.push_back(a);
-			m_textures.push_back(createTexture(pFormats[i], static_cast<GLenum>(pFormats[i]), GL_UNSIGNED_BYTE,
-											   width, height, GL_LINEAR, GL_CLAMP_TO_EDGE, a));
+			GLuint handle = Util::createTexture(pFormats[i], static_cast<GLenum>(pFormats[i]), GL_UNSIGNED_BYTE,
+											   width, height, GL_LINEAR, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, a, GL_TEXTURE_2D, handle, 0);
+			m_textures.push_back(handle);
+
 		}
 
 		switch(m_depthType)
@@ -41,8 +45,9 @@ namespace Engine {
 				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
 				break;
 			case READ_WRITE:
-				m_depth = createTexture(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, width, height,
-										GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_ATTACHMENT);
+				m_depth = Util::createTexture(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, width, height,
+										GL_LINEAR, GL_CLAMP_TO_EDGE);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
 				break;
 		}
 
