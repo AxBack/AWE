@@ -10,12 +10,13 @@ layout (location = 1) in float influence;
 layout (location = 2) in float dt;
 layout (location = 3) in vec3 start;
 layout (location = 4) in vec3 end;
-layout (location = 5) in float rand;
+layout (location = 5) in vec3 inColor;
+layout (location = 6) in float rand;
 
 out vec4 color;
 
 void main() {
-    color = vec4(1.0,1.0,1.0,1.0);
+    color = vec4(inColor, 1.0f) * (1.0f + (rand * 0.75f));
 
     vec3 pos = mix(start, end, dt);
 

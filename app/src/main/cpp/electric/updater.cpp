@@ -71,19 +71,29 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		m_dischargeInstances.clear();
 		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
 		{
-			it->rand = dist(m_generator);
 			it->time -= dt;
+			it->randChangeTimer -= dt;
+
+			if(it->randChangeTimer <= 0.0f)
+			{
+				it->rand = dist(m_generator);
+				it->randChangeTimer = 0.03f;
+			}
+
 			if(it->time <= 0.0f)
 				it = m_discharges.erase(it);
 			else
 			{
 				Math::Vector3 s = it->pStart->getPosition();
 				Math::Vector3 e = it->pEnd->getPosition();
+				Math::Vector3 c = it->pStart->getColor();
 				m_dischargeInstances.push_back({
 						s.x(), s.y(), s.z(),
 						e.x(), e.y(), e.z(),
+						c.x(), c.y(), c.x(),
 						it->rand
-										  });
+											   });
+
 				++it;
 			}
 		}

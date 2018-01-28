@@ -112,17 +112,18 @@ namespace Electric {
 
 	bool ElectricEngine::setupDischarges(AAssetManager* pAssetManager)
 	{
+		float size = 0.1f;
 		DischargeVertex vertices[] = {
 				{0.0f, 0.0f,0.0f, 0.0f, 0.0f},
 				{0.0f, 0.0f,0.0f, 0.0f, 1.0f},
-				{0.0f, 0.2f,0.0f, 1.0f, 0.2f},
-				{0.0f, 0.2f,0.0f, 1.0f, 0.4f},
-				{0.0f, 0.2f,0.0f, 1.0f, 0.6f},
-				{0.0f, 0.2f,0.0f, 1.0f, 0.8f},
-				{0.0f,-0.2f,0.0f, 1.0f, 0.2f},
-				{0.0f,-0.2f,0.0f, 1.0f, 0.4f},
-				{0.0f,-0.2f,0.0f, 1.0f, 0.6f},
-				{0.0f,-0.2f,0.0f, 1.0f, 0.8f}
+				{0.0f, size,0.0f, 1.0f, 0.2f},
+				{0.0f, size,0.0f, 1.0f, 0.4f},
+				{0.0f, size,0.0f, 1.0f, 0.6f},
+				{0.0f, size,0.0f, 1.0f, 0.8f},
+				{0.0f,-size,0.0f, 1.0f, 0.2f},
+				{0.0f,-size,0.0f, 1.0f, 0.4f},
+				{0.0f,-size,0.0f, 1.0f, 0.6f},
+				{0.0f,-size,0.0f, 1.0f, 0.8f}
 		};
 
 		GLushort indices[] = {
@@ -220,10 +221,10 @@ namespace Electric {
 		if(m_nodeMesh.hasInstances())
 			m_nodeShader.render(m_camera, m_nodeMesh);
 
-		glBlendFunc(GL_ONE, GL_ONE);
-
 		if(m_dischargeMesh.hasInstances())
 			m_dischargeShader.render(m_camera, m_dischargeMesh, m_dischargeTexture);
+
+		glBlendFunc(GL_ONE, GL_ONE);
 
 		if(m_particlesMesh.hasInstances())
 			m_particleShader.render(m_camera, m_particlesMesh);

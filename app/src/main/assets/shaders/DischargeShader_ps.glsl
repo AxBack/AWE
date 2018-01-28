@@ -8,5 +8,5 @@
 
  void main() {
      color1 = color;
-     color2 = color;
+     color2 = vec4(1,1,1,1);
  }

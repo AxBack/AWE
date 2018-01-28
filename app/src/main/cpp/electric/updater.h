@@ -25,6 +25,7 @@ namespace Electric {
 			Node* pStart;
 			Node* pEnd;
 			float rand;
+			float randChangeTimer;
 		};
 
 		typedef std::shared_ptr<Cluster> cluster_ptr;
