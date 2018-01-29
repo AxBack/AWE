@@ -68,7 +68,6 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		m_dischargeInstances.clear();
 		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
 		{
 			it->time -= dt;
@@ -83,19 +82,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 			if(it->time <= 0.0f)
 				it = m_discharges.erase(it);
 			else
-			{
-				Math::Vector3 s = it->pStart->getPosition();
-				Math::Vector3 e = it->pEnd->getPosition();
-				Math::Vector3 c = it->pStart->getColor();
-				m_dischargeInstances.push_back({
-						s.x(), s.y(), s.z(),
-						e.x(), e.y(), e.z(),
-						c.x(), c.y(), c.x(),
-						it->rand
-											   });
-
 				++it;
-			}
 		}
 	}
 
@@ -110,7 +97,7 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 		std::vector<SearchResult> near;
 		for(auto& cluster : m_clusters)
 		{
-			cluster->search(pNode->getPosition(), radius, near);
+			cluster->search(pNode->getPosition(), radius, 5, near);
 		}
 
 		if(near.size() == 0)
@@ -183,6 +170,31 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 	void Updater::updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		mesh.updateInstances(static_cast<UINT>(m_dischargeInstances.size()), m_dischargeInstances.size() > 0 ? &m_dischargeInstances[0] : nullptr);
+		if(m_dischargeInstances .size() < m_discharges.size())
+			m_dischargeInstances.resize(m_discharges.size());
+
+		UINT i=0;
+		for(auto& it : m_discharges)
+		{
+			Math::Vector3 s = it.pStart->getPosition();
+			Math::Vector3 d = it.pEnd->getPosition();
+			Math::Vector3 c = it.pStart->getColor();
+
+			m_dischargeInstances[i].sx = s.x();
+			m_dischargeInstances[i].sy = s.y();
+			m_dischargeInstances[i].sz = s.z();
+
+			m_dischargeInstances[i].dx = d.x();
+			m_dischargeInstances[i].dy = d.y();
+			m_dischargeInstances[i].dz = d.z();
+
+			m_dischargeInstances[i].r = c.x();
+			m_dischargeInstances[i].g = c.y();
+			m_dischargeInstances[i].b = c.z();
+
+			m_dischargeInstances[i].rand = it.rand;
+			++i;
+		}
+		mesh.updateInstances(static_cast<UINT>(m_discharges.size()), m_discharges.size() > 0 ? &m_dischargeInstances[0] : nullptr);
 	}
 }

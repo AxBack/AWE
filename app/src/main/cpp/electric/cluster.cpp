@@ -192,15 +192,25 @@ namespace Electric {
 		}
 	}
 
-	void Cluster::search(const Math::Vector3& point, float radiusSq, std::vector<SearchResult>& hits)
+	void Cluster::search(const Math::Vector3& point, float radiusSq, int maxHits, std::vector<SearchResult>& hits)
 	{
-		for(auto& node : m_nodes)
+		std::mt19937 gen;
+		std::uniform_int_distribution<int> dist(0, static_cast<int>(m_nodes.size())-1);
+		int start = dist(gen);
+
+		//for(auto& node : m_nodes)
+		for(int i=0; i<m_nodes.size(); ++i)
 		{
-			if(!node.resting())
+			int index = (start + i) % static_cast<int>(m_nodes.size());
+			if(!m_nodes[index].resting())
 			{
-				float l2 = (node.getPosition() - point).lengthSq();
+				float l2 = (m_nodes[index].getPosition() - point).lengthSq();
 				if(l2 <=  radiusSq)
-					hits.push_back({ &node, l2 });
+				{
+					hits.push_back({&m_nodes[index], l2});
+					if(hits.size() >= maxHits)
+						return;
+				}
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public class Cluster {
         mChargePath.add(1.0f, points);
 
         Random random = new Random();
-        mSwitchInterval = 30.0f + (random.nextFloat() * 10.0f);
+        mSwitchInterval = 30.0f + (random.nextFloat() * 30.0f);
 
         int i = Math.abs(random.nextInt() % 10) + 10;
 

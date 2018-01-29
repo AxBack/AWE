@@ -4,7 +4,7 @@
 namespace Electric {
 
 	float OSMOSIS_PER_SECOND = 0.05f;
-	float CHARGE_FLOW_FACTOR = 0.025f;
+	float CHARGE_FLOW_FACTOR = 0.015f;
 
 	void Node::update(Cluster* pOwner, bool dirty, float dt)
 	{

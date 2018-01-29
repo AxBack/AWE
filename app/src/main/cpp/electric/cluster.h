@@ -71,7 +71,7 @@ namespace Electric {
 
 		void update(std::vector<NodeInstance>& nodeInstances);
 
-		void search(const Math::Vector3& points, float radiusSq, std::vector<SearchResult>& hits);
+		void search(const Math::Vector3& points, float radiusSq, int maxHits, std::vector<SearchResult>& hits);
 
 		const Math::Matrix& getTransform() { return m_transform; }
 
