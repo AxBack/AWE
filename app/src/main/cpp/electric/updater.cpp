@@ -9,7 +9,6 @@ namespace Electric {
 
 float DISCHARGE_FACTOR = 1.0f;
 float LOSS_FACTOR = 0.25f;
-float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	bool Updater::init()
 	{
@@ -88,44 +87,51 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
 	void Updater::updateCluster(cluster_ptr pCluster, float dt)
 	{
-		pCluster->update(dt);
-	}
-
-	void Updater::onDischarge(Node* pNode)
-	{
-		float radius = DISCHARGE_RADIUS_SQ * pNode->getCharge();
-		std::vector<SearchResult> near;
-		for(auto& cluster : m_clusters)
+		std::vector<Search> searches;
+		while(m_dischargeSearches.size() > 0 && searches.size() < 5)
 		{
-			cluster->search(pNode->getPosition(), radius, 5, near);
+			Search s = m_dischargeSearches.back();
+			searches.push_back(s);
+			m_dischargeSearches.pop();
 		}
 
-		if(near.size() == 0)
-			return;
+		pCluster->update(searches, dt);
 
-		SearchResult* p = nullptr;
-		float currMin = FLT_MAX;
-		for(int i=0; i<near.size(); ++i)
+		for(auto& it : searches)
 		{
-			float v = (near[i].lengthSq / radius) + (pNode->getCharge() - near[i].pNode->getCharge());
-			if(currMin > v)
+			Search::Hit* p = nullptr;
+			if(it.hits.size() == 0)
+				continue;
+
+			float currMin = FLT_MAX;
+			for(int i=0; i<it.hits.size(); ++i)
 			{
-				p = &near[i];
-				currMin = v;
+				float v = (it.hits[i].lengthSq / it.radiusSq) + (it.pNode->getCharge() - it.hits[i].pNode->getCharge());
+				if(currMin > v)
+				{
+					p = &it.hits[i];
+					currMin = v;
+				}
+			}
+
+			if(p)
+			{
+				float f = it.pNode->getCharge() * DISCHARGE_FACTOR;
+				p->pNode->modifyCharge( f * LOSS_FACTOR );
+				it.pNode->modifyCharge(-f);
+				it.pNode->onDischargeResult(p->pNode);
+
+				std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+				std::lock_guard<std::mutex> _(m_dischargeMutex);
+				m_discharges.push_back({m_dischargeTime, it.pNode, p->pNode, dist(m_generator)});
 			}
 		}
+	}
 
-		if(p)
-		{
-			float f = pNode->getCharge() * DISCHARGE_FACTOR;
-			p->pNode->modifyCharge( f * LOSS_FACTOR );
-			pNode->modifyCharge(-f);
-
-			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
-			std::lock_guard<std::mutex> _(m_dischargeMutex);
-			m_discharges.push_back({m_dischargeTime, pNode, p->pNode, dist(m_generator)});
-		}
+	void Updater::onDischarge(Node* pNode, float radius)
+	{
+		m_dischargeSearches.push({pNode, radius * radius});
 	}
 
 	void Updater::updateNodeInstances()
@@ -139,9 +145,9 @@ float DISCHARGE_RADIUS_SQ = 10.0f * 10.0f;
 
     void Updater::advance(float dt)
     {
-		updateCharges(dt);
 		for(auto& it : m_clusters)
 			updateCluster(it, dt);
+		updateCharges(dt);
 		updateNodeInstances();
     }
 

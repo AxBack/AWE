@@ -154,7 +154,7 @@ namespace Electric {
 		}
 	}
 
-	void Cluster::update(float dt)
+	void Cluster::update(std::vector<Search>& searches, float dt)
 	{
 		m_time -= dt;
 		if(m_time <= 0.0f)
@@ -181,6 +181,21 @@ namespace Electric {
 		for(auto& it : m_nodes)
 		{
 			it.update(this, dirty, dt);
+
+			if(it.resting())
+				continue;
+
+			for(auto& search : searches)
+			{
+				if(search.pNode == &it)
+					continue;
+
+				float l2 = (it.getPosition() - search.pNode->getPosition()).lengthSq();
+				if(l2 <= search.radiusSq)
+				{
+					search.hits.push_back({&it, l2 });
+				}
+			}
 		}
 	}
 
@@ -189,29 +204,6 @@ namespace Electric {
 		for(auto& node : m_nodes)
 		{
 			node.update(nodeInstances);
-		}
-	}
-
-	void Cluster::search(const Math::Vector3& point, float radiusSq, int maxHits, std::vector<SearchResult>& hits)
-	{
-		std::mt19937 gen;
-		std::uniform_int_distribution<int> dist(0, static_cast<int>(m_nodes.size())-1);
-		int start = dist(gen);
-
-		//for(auto& node : m_nodes)
-		for(int i=0; i<m_nodes.size(); ++i)
-		{
-			int index = (start + i) % static_cast<int>(m_nodes.size());
-			if(!m_nodes[index].resting())
-			{
-				float l2 = (m_nodes[index].getPosition() - point).lengthSq();
-				if(l2 <=  radiusSq)
-				{
-					hits.push_back({&m_nodes[index], l2});
-					if(hits.size() >= maxHits)
-						return;
-				}
-			}
 		}
 	}
 }

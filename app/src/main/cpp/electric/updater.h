@@ -5,6 +5,7 @@
 #include "../engine/mesh.h"
 
 #include <random>
+#include <queue>
 
 namespace Electric {
 
@@ -34,6 +35,7 @@ namespace Electric {
 		typedef std::vector<NodeInstance> node_instance_vec;
 		typedef std::vector<Discharge> discharge_vec;
 		typedef std::vector<DischargeInstance> discharge_instance_vec;
+		typedef std::queue<Search> search_queue;
 
 		std::string m_internalFilesPath;
 
@@ -50,6 +52,7 @@ namespace Electric {
 		std::mutex m_dischargeMutex;
 		discharge_vec m_discharges;
 		discharge_instance_vec m_dischargeInstances;
+		search_queue m_dischargeSearches;
 		float m_dischargeTime;
 
 		void loadCluster(Engine::BinaryReader& reader);
@@ -84,7 +87,7 @@ namespace Electric {
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh);
 
-		void onDischarge(Node* pNode) override;
+		void onDischarge(Node* pNode, float radius) override;
 
     };
 }

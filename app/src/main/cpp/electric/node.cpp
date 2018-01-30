@@ -5,6 +5,7 @@ namespace Electric {
 
 	float OSMOSIS_PER_SECOND = 0.05f;
 	float CHARGE_FLOW_FACTOR = 0.015f;
+	float DISCHARGE_RADIUS = 10.0f;
 
 	void Node::update(Cluster* pOwner, bool dirty, float dt)
 	{
@@ -39,20 +40,22 @@ namespace Electric {
 			m_position = pOwner->getTransform().transform(m_offset);
 		}
 
-		float flow = CHARGE_FLOW_FACTOR * dt;
 		m_charge += dt * OSMOSIS_PER_SECOND;
 
 		if(m_restitution > 0.0f)
 			m_restitution -= dt;
 
-		float f = std::min(flow, m_charge);
-		m_charge -= f;
-
-		if(m_charge > 1.0f)
+		if(!m_waitingForDischargeResult && m_charge > 1.0f)
 		{
-			m_restitution = 1.0f;
-			m_pListener->onDischarge(this);
+			m_waitingForDischargeResult = true;
+			m_pListener->onDischarge(this, DISCHARGE_RADIUS * m_charge);
 		}
+	}
+
+	void Node::onDischargeResult(Node* pNode)
+	{
+		m_waitingForDischargeResult = false;
+		m_restitution = 1.0f;
 	}
 
 }

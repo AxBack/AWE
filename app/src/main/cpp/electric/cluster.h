@@ -8,10 +8,17 @@
 
 namespace Electric {
 
-	struct SearchResult
+	struct Search
 	{
+		struct Hit
+		{
+			Node* pNode;
+			float lengthSq;
+		};
+
 		Node* pNode;
-		float lengthSq;
+		float radiusSq;
+		std::vector<Hit> hits;
 	};
 
 	class Cluster
@@ -67,11 +74,9 @@ namespace Electric {
 		void init(std::mt19937& generator, Engine::BinaryReader& reader, std::vector<NodeInstance>& nodeInstances,
 				  DischargeListener* pDischargeListener);
 
-		void update(float dt);
+		void update(std::vector<Search>& seaches, float dt);
 
 		void update(std::vector<NodeInstance>& nodeInstances);
-
-		void search(const Math::Vector3& points, float radiusSq, int maxHits, std::vector<SearchResult>& hits);
 
 		const Math::Matrix& getTransform() { return m_transform; }
 

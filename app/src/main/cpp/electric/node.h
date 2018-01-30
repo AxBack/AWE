@@ -15,7 +15,7 @@ namespace Electric {
 	class DischargeListener
 	{
 	public:
-		virtual void onDischarge(Node* pNode) = 0;
+		virtual void onDischarge(Node* pNode, float radius) = 0;
 	};
 
 	class Node
@@ -45,6 +45,8 @@ namespace Electric {
 
 		DischargeListener* m_pListener;
 
+		bool m_waitingForDischargeResult;
+
 	public:
 
 		Node(UINT instanceId, Math::Vector3 position, Math::Vector3 color, float scale, float charge,
@@ -60,6 +62,7 @@ namespace Electric {
 				, m_restitution(0.0f)
 				, m_pListener(pListener)
 				, m_transitionTime(0.0f)
+				, m_waitingForDischargeResult(false)
 		{
 		}
 
@@ -88,6 +91,8 @@ namespace Electric {
 			m_pColorPath = pColorPath;
 			m_pScalePath = pScalePath;
 		}
+
+		void onDischargeResult(Node* pNode);
 
 		float getCharge() const { return m_charge; }
 		void modifyCharge(float modifier) { m_charge += modifier; }
