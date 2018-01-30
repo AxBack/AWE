@@ -27,8 +27,9 @@ namespace Electric {
 			float dt = static_cast<float>(dist(generator));
 			float charge = chargePath.traverse(static_cast<float>(dist(generator)));
 
-			m_nodes.push_back(Node(static_cast<UINT>(nodeInstances.size()), {0,0,0}, {0,0,0}, 1.0f,
-								   charge, dt, pDischargeListener));
+			node_ptr pNode(new Node(static_cast<UINT>(nodeInstances.size()), {0,0,0}, {0,0,0}, 1.0f,
+									charge, dt, pDischargeListener));
+			m_nodes.push_back(pNode);
 			nodeInstances.push_back({0, 0, 0, 0.0f, charge, 0,0,0});
 		}
 
@@ -88,7 +89,7 @@ namespace Electric {
 		std::uniform_real_distribution<> dist(0.0f, 1.0f);
 		for(auto& it : m_nodes)
 		{
-			float d = it.getDelta();
+			float d = it->getDelta();
 			Math::Matrix rot;
 			{
 				Math::Vector3 r = state.rotationPath.traverse(d);
@@ -128,7 +129,7 @@ namespace Electric {
 
 			std::shared_ptr<vec3_path> offsetPath(new vec3_path());
 			{
-				Math::Vector3 start = it.getOffset();
+				Math::Vector3 start = it->getOffset();
 				Math::Vector3 diff = p - start;
 				Math::Vector3 points[] = {start,
 									  start + (diff * 0.95f),
@@ -140,17 +141,17 @@ namespace Electric {
 
 			std::shared_ptr<vec3_path> colorPath(new vec3_path());
 			{
-				Math::Vector3 points[] = {it.getColor(), color};
+				Math::Vector3 points[] = {it->getColor(), color};
 				colorPath->add(transitionTime, 2, points);
 			};
 
 			std::shared_ptr<float_path> scalePath(new float_path());
 			{
-				float points[] = {it.getScale(), s };
+				float points[] = {it->getScale(), s };
 				scalePath->add(transitionTime, 2, points);
 			};
 
-			it.transition(offsetPath, colorPath, scalePath);
+			it->transition(offsetPath, colorPath, scalePath);
 		}
 	}
 
@@ -180,20 +181,25 @@ namespace Electric {
 
 		for(auto& it : m_nodes)
 		{
-			it.update(this, dirty, dt);
+			it->update(this, dirty, dt);
 
-			if(it.resting())
+			if(it->resting())
 				continue;
 
 			for(auto& search : searches)
 			{
-				if(search.pNode == &it)
+				if(search.pNode == it.get())
 					continue;
 
-				float l2 = (it.getPosition() - search.pNode->getPosition()).lengthSq();
+				float l2 = (it->getPosition() - search.pNode->getPosition()).lengthSq();
 				if(l2 <= search.radiusSq)
 				{
-					search.hits.push_back({&it, l2 });
+					float v = (l2 / search.radiusSq) + (search.pNode->getCharge() - it->getCharge()) * 0.25f;
+					if(v < search.value || search.pHit == nullptr)
+					{
+						search.value = v;
+						search.pHit = it.get();
+					}
 				}
 			}
 		}
@@ -203,7 +209,7 @@ namespace Electric {
 	{
 		for(auto& node : m_nodes)
 		{
-			node.update(nodeInstances);
+			node->update(nodeInstances);
 		}
 	}
 }

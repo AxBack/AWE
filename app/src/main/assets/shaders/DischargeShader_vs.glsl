@@ -15,6 +15,8 @@ layout (location = 6) in float rand;
 
 out vec4 color;
 
+const float size = 0.3f;
+
 void main() {
     color = vec4(inColor, 1.0f) * (1.0f + (rand * 0.75f));
 
@@ -23,7 +25,9 @@ void main() {
     vec3 toCamera = normalize(cameraPos - pos);
     vec3 up = cross(toCamera, normalize(end - start));
 
-    pos += up * position.y + (influence * normalize(texture(uTexture, vec2(dt, rand)).xyz - 0.5f) * 1.0f );
+    vec3 offset = (influence * normalize(texture(uTexture, vec2(dt, rand)).xyz - 0.5f) * 1.0f );
+
+    pos += up * (size * position.y) + offset;
 
     gl_Position = viewProjection * vec4(pos, position.w);
 }

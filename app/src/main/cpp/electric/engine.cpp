@@ -112,7 +112,7 @@ namespace Electric {
 
 	bool ElectricEngine::setupDischarges(AAssetManager* pAssetManager)
 	{
-		float size = 0.1f;
+		float size = 1.0f;
 		DischargeVertex vertices[] = {
 				{0.0f, 0.0f,0.0f, 0.0f, 0.0f},
 				{0.0f, 0.0f,0.0f, 0.0f, 1.0f},
@@ -140,7 +140,7 @@ namespace Electric {
 		}
 
 		std::mt19937 generator(840331);
-		std::uniform_int_distribution<char> dist(0, 255);
+		std::uniform_int_distribution<char> dist(0, static_cast<char>(255));
 
 		const int nrBytes = 8*8*3;
 		char pixels[nrBytes];

@@ -10,22 +10,18 @@ namespace Electric {
 
 	struct Search
 	{
-		struct Hit
-		{
-			Node* pNode;
-			float lengthSq;
-		};
-
 		Node* pNode;
 		float radiusSq;
-		std::vector<Hit> hits;
+		Node* pHit;
+		float value;
 	};
 
 	class Cluster
 	{
 	private:
 
-		typedef std::vector<Node> node_vec;
+		typedef std::shared_ptr<Node> node_ptr;
+		typedef std::vector<node_ptr> node_vec;
 		typedef Engine::Path<Math::Vector3> vec3_path;
 		typedef Engine::Path<float> float_path;
 

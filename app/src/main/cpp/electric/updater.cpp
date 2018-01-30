@@ -8,7 +8,7 @@
 namespace Electric {
 
 float DISCHARGE_FACTOR = 1.0f;
-float LOSS_FACTOR = 0.25f;
+float LOSS_FACTOR = 0.75f;
 
 	bool Updater::init()
 	{
@@ -19,8 +19,6 @@ float LOSS_FACTOR = 0.25f;
 		{
 			loadCluster(reader);
 		}
-		//setupCluster(300, 30, {-25, -25, -25}, {0,0,0});
-		//setupCluster(300, 30, {25, 25, 25}, {0,0,0});
 
 		return Engine::Updater::init();
 	}
@@ -90,7 +88,7 @@ float LOSS_FACTOR = 0.25f;
 		std::vector<Search> searches;
 		while(m_dischargeSearches.size() > 0 && searches.size() < 5)
 		{
-			Search s = m_dischargeSearches.back();
+			Search s = m_dischargeSearches.front();
 			searches.push_back(s);
 			m_dischargeSearches.pop();
 		}
@@ -99,39 +97,25 @@ float LOSS_FACTOR = 0.25f;
 
 		for(auto& it : searches)
 		{
-			Search::Hit* p = nullptr;
-			if(it.hits.size() == 0)
-				continue;
-
-			float currMin = FLT_MAX;
-			for(int i=0; i<it.hits.size(); ++i)
-			{
-				float v = (it.hits[i].lengthSq / it.radiusSq) + (it.pNode->getCharge() - it.hits[i].pNode->getCharge());
-				if(currMin > v)
-				{
-					p = &it.hits[i];
-					currMin = v;
-				}
-			}
-
-			if(p)
+			if(it.pHit)
 			{
 				float f = it.pNode->getCharge() * DISCHARGE_FACTOR;
-				p->pNode->modifyCharge( f * LOSS_FACTOR );
+				it.pHit->modifyCharge( f * LOSS_FACTOR );
 				it.pNode->modifyCharge(-f);
-				it.pNode->onDischargeResult(p->pNode);
 
 				std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 				std::lock_guard<std::mutex> _(m_dischargeMutex);
-				m_discharges.push_back({m_dischargeTime, it.pNode, p->pNode, dist(m_generator)});
+				m_discharges.push_back({m_dischargeTime, it.pNode, it.pHit, dist(m_generator)});
 			}
+
+			it.pNode->onDischargeResult(it.pHit);
 		}
 	}
 
 	void Updater::onDischarge(Node* pNode, float radius)
 	{
-		m_dischargeSearches.push({pNode, radius * radius});
+		m_dischargeSearches.push({pNode, radius * radius, nullptr, FLT_MAX});
 	}
 
 	void Updater::updateNodeInstances()
