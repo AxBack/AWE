@@ -99,7 +99,7 @@ namespace Electric {
 
 			{
 				float points[] = { 0, -360};
-				m_yawPath.add(360, 2, points);
+				m_rollPath.add(360, 2, points);
 			}
         }
 
