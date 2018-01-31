@@ -65,6 +65,7 @@ float LOSS_FACTOR = 0.75f;
 		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
+		m_nrDischargeInstances = 0;
 		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
 		{
 			it->time -= dt;
@@ -79,7 +80,33 @@ float LOSS_FACTOR = 0.75f;
 			if(it->time <= 0.0f)
 				it = m_discharges.erase(it);
 			else
+			{
+				const Math::Vector3& s = it->pStart->getPosition();
+				const Math::Vector3& d = it->pEnd->getPosition();
+				const Math::Vector3& c = it->pStart->getColor();
+
+				if(m_nrDischargeInstances >= m_dischargeInstances.size())
+					m_dischargeInstances.push_back({s.x(), s.y(), s.z(), d.x(), d.y(), d.z(), c.x(), c.y(), c.z(), it->rand});
+				else
+				{
+					m_dischargeInstances[m_nrDischargeInstances].sx = s.x();
+					m_dischargeInstances[m_nrDischargeInstances].sy = s.y();
+					m_dischargeInstances[m_nrDischargeInstances].sz = s.z();
+
+					m_dischargeInstances[m_nrDischargeInstances].dx = d.x();
+					m_dischargeInstances[m_nrDischargeInstances].dy = d.y();
+					m_dischargeInstances[m_nrDischargeInstances].dz = d.z();
+
+					m_dischargeInstances[m_nrDischargeInstances].r = c.x();
+					m_dischargeInstances[m_nrDischargeInstances].g = c.y();
+					m_dischargeInstances[m_nrDischargeInstances].b = c.z();
+
+					m_dischargeInstances[m_nrDischargeInstances].rand = it->rand;
+				}
+
+				++m_nrDischargeInstances;
 				++it;
+			}
 		}
 	}
 
@@ -160,31 +187,6 @@ float LOSS_FACTOR = 0.75f;
 	void Updater::updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		if(m_dischargeInstances .size() < m_discharges.size())
-			m_dischargeInstances.resize(m_discharges.size());
-
-		UINT i=0;
-		for(auto& it : m_discharges)
-		{
-			Math::Vector3 s = it.pStart->getPosition();
-			Math::Vector3 d = it.pEnd->getPosition();
-			Math::Vector3 c = it.pStart->getColor();
-
-			m_dischargeInstances[i].sx = s.x();
-			m_dischargeInstances[i].sy = s.y();
-			m_dischargeInstances[i].sz = s.z();
-
-			m_dischargeInstances[i].dx = d.x();
-			m_dischargeInstances[i].dy = d.y();
-			m_dischargeInstances[i].dz = d.z();
-
-			m_dischargeInstances[i].r = c.x();
-			m_dischargeInstances[i].g = c.y();
-			m_dischargeInstances[i].b = c.z();
-
-			m_dischargeInstances[i].rand = it.rand;
-			++i;
-		}
-		mesh.updateInstances(static_cast<UINT>(m_discharges.size()), m_discharges.size() > 0 ? &m_dischargeInstances[0] : nullptr);
+		mesh.updateInstances(m_nrDischargeInstances, m_nrDischargeInstances > 0 ? &m_dischargeInstances[0] : nullptr);
 	}
 }

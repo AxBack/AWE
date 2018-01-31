@@ -177,6 +177,7 @@ namespace Electric {
 									m_position.x(),
 									m_position.y(),
 									m_position.z());
+			m_dirty = false;
 		}
 
 		for(auto& it : m_nodes)

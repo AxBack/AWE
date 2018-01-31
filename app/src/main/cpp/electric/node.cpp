@@ -14,7 +14,7 @@ namespace Electric {
 		if(m_pOffsetPath != nullptr)
 		{
 			m_offset = m_pOffsetPath->traverse(m_transitionTime);
-			m_dirty = true;
+			m_dirty = dirty = true;
 			if(m_transitionTime > m_pOffsetPath->getLength())
 				m_pOffsetPath = nullptr;
 		}
@@ -37,7 +37,6 @@ namespace Electric {
 
 		if(dirty)
 		{
-			m_dirty = dirty;
 			m_position = pOwner->getTransform().transform(m_offset);
 		}
 
