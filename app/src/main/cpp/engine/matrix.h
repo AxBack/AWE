@@ -227,9 +227,10 @@ namespace Math {
 
         static inline Matrix& setRotate(Matrix& m, float x, float y, float z)
         {
-            x *= static_cast<float>(M_PI) / 180.0f;
-            y *= static_cast<float>(M_PI) / 180.0f;
-            z *= static_cast<float>(M_PI) / 180.0f;
+			float p = static_cast<float>(M_PI) / 180.0f;
+            x = x * p;
+            y = y * p;
+            z = z * p;
             float cx = cosf(x);
             float sx = sinf(x);
             float cy = cosf(y);

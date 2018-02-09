@@ -41,7 +41,7 @@ namespace Engine {
 			glActiveTexture(GL_TEXTURE);
 			glBindTexture(GL_TEXTURE_2D, m_pHandles[0]);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, pPixels);
-			Util::setupTexture(GL_TEXTURE_2D, GL_NEAREST, GL_REPEAT);
+			Util::setupTexture(GL_TEXTURE_2D, GL_LINEAR, GL_REPEAT);
 			glBindTexture(GL_TEXTURE_2D, 0);
 
 			return true;

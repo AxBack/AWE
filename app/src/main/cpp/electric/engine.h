@@ -30,18 +30,14 @@ namespace Electric {
     {
     private:
 
-        //temp
-        float           m_scaleTime;
-		float_path		m_scalePath;
-
 		atomic_float 	m_pinch;
         vec3_path       m_positionPath;
 
 		atomic_float 	m_offset;
         float_path	    m_yawPath;
 
-		atomic_float	m_rotation;
-		float_path		m_rollPath;
+		float			m_rotation;
+		float_path		m_pitchPath;
 
         Camera 			m_camera;
 
@@ -74,7 +70,6 @@ namespace Electric {
 
         ElectricEngine()
 		: m_sizeDirty(false)
-        , m_scaleTime(0.0f)
         , m_offset(0.5f)
 		, m_pinch(0.75f)
 		, m_rotation(0.0f)
@@ -87,19 +82,14 @@ namespace Electric {
                 m_positionPath.add(5.0f, 2, points);
             }
 
-			{
-				float scales[] = {0.0f, 0.75f, 0.90f, 0.95f, 1.0f };
-				m_scalePath.add(5, 5, scales);
-			};
-
             {
                 float points[] = { -180.0f, 180.0f};
                 m_yawPath.add(1.0f, 2, points);
             }
 
 			{
-				float points[] = { 0, -360};
-				m_rollPath.add(360, 2, points);
+				float points[] = { 0, 45, -45, 0};
+				m_pitchPath.add(100, 2, points);
 			}
         }
 

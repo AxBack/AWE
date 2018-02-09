@@ -21,11 +21,13 @@ void main() {
     color = vec4(inColor, 1.0f) * (1.0f + (rand * 0.75f));
 
     vec3 pos = mix(start, end, dt);
-    vec3 up = normalize(cross(normalize(cameraPos - pos), normalize(end - start)));
+    vec3 toCamera = normalize(cameraPos - pos);
+    vec3 toEnd = normalize(end - start);
+    vec3 up = normalize(cross(toCamera, toEnd));
 
-    vec3 offset = (influence * normalize(texture(uTexture, vec2(dt, rand)).xyz - 0.5f) * 1.0f );
-
-    pos += (up * (size * position.y) + offset) * length(up);
+    vec3 offset = texture(uTexture, vec2(dt, rand)).xyz - 0.5f;
+    offset = (up * (size * position.y) + (influence * normalize(offset)));
+    pos += offset;
 
     gl_Position = viewProjection * vec4(pos, position.w);
 }

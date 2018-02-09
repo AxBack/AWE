@@ -114,16 +114,16 @@ namespace Electric {
 	{
 		float size = 1.0f;
 		DischargeVertex vertices[] = {
-				{0.0f, 0.0f,0.0f, 0.0f, 0.0f},
-				{0.0f, 0.0f,0.0f, 0.0f, 1.0f},
-				{0.0f, size,0.0f, 1.0f, 0.2f},
-				{0.0f, size,0.0f, 1.0f, 0.4f},
-				{0.0f, size,0.0f, 1.0f, 0.6f},
-				{0.0f, size,0.0f, 1.0f, 0.8f},
-				{0.0f,-size,0.0f, 1.0f, 0.2f},
-				{0.0f,-size,0.0f, 1.0f, 0.4f},
-				{0.0f,-size,0.0f, 1.0f, 0.6f},
-				{0.0f,-size,0.0f, 1.0f, 0.8f}
+				{0.0f, 0.0f,0.0f, 0.0f, 0.0f}, // 0
+				{0.0f, 0.0f,0.0f, 0.0f, 1.0f}, // 1
+				{0.0f, size,0.0f, 1.0f, 0.2f}, // 2
+				{0.0f, size,0.0f, 1.0f, 0.4f}, // 3
+				{0.0f, size,0.0f, 1.0f, 0.6f}, // 4
+				{0.0f, size,0.0f, 1.0f, 0.8f}, // 5
+				{0.0f,-size,0.0f, 1.0f, 0.2f}, // 6
+				{0.0f,-size,0.0f, 1.0f, 0.4f}, // 7
+				{0.0f,-size,0.0f, 1.0f, 0.6f}, // 8
+				{0.0f,-size,0.0f, 1.0f, 0.8f}  // 9
 		};
 
 		GLushort indices[] = {
@@ -139,7 +139,7 @@ namespace Electric {
 			return false;
 		}
 
-		std::mt19937 generator(840331);
+		std::mt19937 generator;
 		std::uniform_int_distribution<char> dist(0, static_cast<char>(255));
 
 		const int nrBytes = 8*8*3;
@@ -201,15 +201,11 @@ namespace Electric {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		{
-			Math::Matrix r;
-			Math::Matrix::setRotate(r, 0,0, m_rollPath.traverse(m_rotation));
-			Math::Vector3 up = Math::Matrix::transform(r, {0,1,0});
-
 			//TODO:create update on demand
 			Math::Matrix y;
 			Math::Matrix::setRotate(y, 0,m_yawPath.traverse(m_offset), 0);
-			y = r * y;
 			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
+			Math::Vector3 up = Math::Matrix::transform(y, {0,1,0});
 
 			m_camera.updateView(pos, {1,0,0}, up);
 		}

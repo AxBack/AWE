@@ -38,6 +38,7 @@ namespace Electric {
 		if(dirty)
 		{
 			m_position = pOwner->getTransform().transform(m_offset);
+			m_dirty = true;
 		}
 
 		m_charge += dt * OSMOSIS_PER_SECOND;

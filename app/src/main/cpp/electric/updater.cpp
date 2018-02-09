@@ -73,7 +73,7 @@ float LOSS_FACTOR = 0.75f;
 
 			if(it->randChangeTimer <= 0.0f)
 			{
-				it->rand = dist(m_generator);
+				it->rand += dist(m_generator);
 				it->randChangeTimer = 0.03f;
 			}
 
