@@ -5,11 +5,12 @@
 
 namespace Math {
 
-#define X 0
-#define Y 1
-#define Z 2
-
 	struct Vector3 {
+
+		static const UINT X = 0;
+		static const UINT Y = 1;
+		static const UINT Z = 2;
+
 		float m_data[3];
 
 		Vector3()

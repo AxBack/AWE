@@ -5,6 +5,8 @@
 
 #include <string.h>
 #include "vector3.h"
+#include "quaternion.h"
+
 namespace Math {
 
 	class Matrix {
@@ -223,6 +225,38 @@ namespace Math {
 				   m[M00] * m[M21] * m[M12] * m[M33] -
 				   m[M10] * m[M01] * m[M22] * m[M33] +
 				   m[M00] * m[M11] * m[M22] * m[M33];
+		}
+
+		static inline Matrix& setRotate(Matrix& m, const Quaternion& q)
+		{
+			float x=q.x();
+			float y=q.y();
+			float z=q.z();
+			float w=q.w();
+
+			float n = 2.0f/(x*x + y*y + z*z + w*w);
+
+			m.m_data[0] = 1.0f - n*y*y - n*z*z;
+			m.m_data[1] = n*x*y - n*z*w;
+			m.m_data[2] = n*x*z + n*y*w;
+			m.m_data[3] = 0.0f;
+
+			m.m_data[4] = n*x*y + n*z*w;
+			m.m_data[5] = 1.0f - n*x*x - n*z*z;
+			m.m_data[6] = n*y*z - n*x*w;
+			m.m_data[7] = 0.0f;
+
+			m.m_data[8] = n*x*z - n*y*w;
+			m.m_data[9] = n*y*z + n*x*w;
+			m.m_data[10] = 1.0f - n*x*x - n*y*y;
+			m.m_data[11] = 0.0f;
+
+			m.m_data[12] = 0.0f;
+			m.m_data[13] = 0.0f;
+			m.m_data[14] = 0.0f;
+			m.m_data[15] = 1.0f;
+
+
 		}
 
         static inline Matrix& setRotate(Matrix& m, float x, float y, float z)
