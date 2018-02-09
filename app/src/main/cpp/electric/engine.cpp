@@ -203,7 +203,7 @@ namespace Electric {
 		{
 			//TODO:create update on demand
 			Math::Matrix y;
-			Math::Matrix::setRotate(y, 0,m_yawPath.traverse(m_offset), 0);
+			Math::Matrix::setRotate(y, Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset)));
 			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
 			Math::Vector3 up = Math::Matrix::transform(y, {0,1,0});
 

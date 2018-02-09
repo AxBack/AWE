@@ -5,12 +5,11 @@
 
 namespace Math {
 
+#define X 0
+#define Y 1
+#define Z 2
+
 	struct Vector3 {
-
-		static const UINT X = 0;
-		static const UINT Y = 1;
-		static const UINT Z = 2;
-
 		float m_data[3];
 
 		Vector3()
@@ -40,7 +39,7 @@ namespace Math {
 			m_data[Z] = in.read<float>();
 		}
 
-		Vector3 &operator=(const Vector3 &rhs) {
+		Vector3& operator=(const Vector3 &rhs) {
 			m_data[X] = rhs.m_data[X];
 			m_data[Y] = rhs.m_data[Y];
 			m_data[Z] = rhs.m_data[Z];

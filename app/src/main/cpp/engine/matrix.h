@@ -256,45 +256,13 @@ namespace Math {
 			m.m_data[14] = 0.0f;
 			m.m_data[15] = 1.0f;
 
-
+			return m;
 		}
 
         static inline Matrix& setRotate(Matrix& m, float x, float y, float z)
         {
-			float p = static_cast<float>(M_PI) / 180.0f;
-            x = x * p;
-            y = y * p;
-            z = z * p;
-            float cx = cosf(x);
-            float sx = sinf(x);
-            float cy = cosf(y);
-            float sy = sinf(y);
-            float cz = cosf(z);
-            float sz = sinf(z);
-            float cxsy = cx * sy;
-            float sxsy = sx * sy;
-
-            m[M00] = cy * cz;
-            m[M01] = -cy * sz;
-            m[M02] = sy;
-            m[M03] = 0;
-
-            m[M10] = cxsy * cz + cx * sz;
-            m[M11] = -cxsy * sy + cx * cz;
-            m[M12] = -sx * cy;
-            m[M13] = 0;
-
-            m[M20] = -sxsy * cz + sx * sz;
-            m[M21] = sxsy * sz + sx * cz;
-            m[M22] = cx * cy;
-            m[M23] = 0;
-
-            m[M30] = 0;
-            m[M31] = 0;
-            m[M32] = 0;
-            m[M33] = 1;
-
-            return m;
+			Quaternion q = Quaternion::fromEulerAngles(x,y,z);
+            return setRotate(m, q);
         }
 
 		static Matrix &translate(Matrix &m, float x, float y, float z) {
