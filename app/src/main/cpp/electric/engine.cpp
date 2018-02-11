@@ -12,6 +12,9 @@ namespace Electric {
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
+		if(!m_sensor.init(m_id))
+			return false;
+
 		if(!setupPostProcess(pAssetManager))
 			return false;
 
@@ -189,7 +192,6 @@ namespace Electric {
 			m_wobblePath.add(30.0f, points.size(), &points[0]);
 		}
 
-
 		if(m_sizeDirty)
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
@@ -224,9 +226,11 @@ namespace Electric {
 
 		{
 			//TODO:create update on demand
-			Math::Vector3 w = m_wobblePath.traverse(m_wobbleTime);
+			m_sensor.update();
+
+			Math::Quaternion r = m_sensor.getRotation(); //m_wobblePath.traverse(m_wobbleTime);
 			Math::Matrix wobble;
-			Math::Matrix::setRotate(wobble, w.x(), w.y(), w.z());
+			Math::Matrix::setRotate(wobble, r);
 
 			Math::Vector3 at = wobble.transform(Math::Vector3{0,0,1}, 0.0f);
 			Math::Vector3 up = wobble.transform(Math::Vector3{0,1,0}, 0.0f);
@@ -238,7 +242,7 @@ namespace Electric {
 			at = Math::Matrix::transform(y, at, 0.0f);
 			up = Math::Matrix::transform(y, up, 0.0f);
 
-			m_camera.updateView(pos, pos + at, {0,1,0});
+			m_camera.updateView(pos, pos + at, up);
 		}
         m_camera.update();
 

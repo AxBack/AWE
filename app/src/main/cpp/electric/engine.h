@@ -10,6 +10,7 @@
 #include "bloom_shader.h"
 #include "dof_shader.h"
 #include "../engine/texture.h"
+#include "../engine/sensor.h"
 
 #include <chrono>
 
@@ -26,6 +27,7 @@ namespace Electric {
 	typedef Engine::Texture Texture;
     typedef Engine::Path<Math::Vector3> vec3_path;
 	typedef Engine::Path<float> float_path;
+	typedef Engine::Sensor Sensor;
 	typedef std::atomic<float> atomic_float;
 	typedef std::chrono::steady_clock::time_point time_point;
 	typedef std::vector<Math::Vector3> vec3_vec;
@@ -36,6 +38,7 @@ namespace Electric {
 
 		std::mt19937	m_generator;
 
+		Sensor 		m_sensor;
 		time_point 		m_lastRenderTime;
 		float 			m_wobbleTime;
 		vec3_path		m_wobblePath;
@@ -116,8 +119,16 @@ namespace Electric {
 		virtual void restart() override;
         virtual bool render() override;
 
-        virtual void resume() override { m_updater.resume(); }
-        virtual void pause() override { m_updater.pause(); }
+        virtual void resume() override
+		{
+			m_sensor.resume();
+			m_updater.resume();
+		}
+        virtual void pause() override
+		{
+			m_sensor.pause();
+			m_updater.pause();
+		}
 
         virtual void updateSize(int width, int height) override
         {
