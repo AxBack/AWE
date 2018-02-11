@@ -120,5 +120,19 @@ namespace Math {
 					m_data[X] * other.m_data[Y] - m_data[Y] * other.m_data[X]
 			};
 		}
+
+		static Vector3 cross(const Vector3& lhs, const Vector3& rhs)
+		{
+			return {
+					lhs.m_data[Y] * rhs.m_data[Z] - lhs.m_data[Z] * rhs.m_data[Y],
+					lhs.m_data[Z] * rhs.m_data[X] - lhs.m_data[X] * rhs.m_data[Z],
+					lhs.m_data[X] * rhs.m_data[Y] - lhs.m_data[Y] * rhs.m_data[X]
+			};
+		}
+
+		static float dot(const Vector3& lhs, const Vector3& rhs)
+		{
+			return lhs.m_data[X] * rhs.m_data[X] + lhs.m_data[Y] * rhs.m_data[Y] + lhs.m_data[Z] * rhs.m_data[Z];
+		}
 	};
 }

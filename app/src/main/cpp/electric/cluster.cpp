@@ -155,7 +155,7 @@ namespace Electric {
 		}
 	}
 
-	void Cluster::update(std::vector<Search>& searches, float dt)
+	void Cluster::update(const Math::Matrix& parent, bool dirty, std::vector<Search>& searches, float dt)
 	{
 		m_time -= dt;
 		if(m_time <= 0.0f)
@@ -165,14 +165,15 @@ namespace Electric {
 			toState(m_states[m_state], 5.0f);
 		}
 
-		bool dirty = m_dirty;
-		if(m_dirty)
+		dirty |= m_dirty;
+		if(dirty)
 		{
 			Math::Matrix::setRotate(m_transform, m_rotation.x(), m_rotation.y(), m_rotation.z());
 			Math::Matrix::translate(m_transform,
 									m_position.x(),
 									m_position.y(),
 									m_position.z());
+			m_transform = Math::Matrix::multiply(m_transform, parent);
 			m_dirty = false;
 		}
 

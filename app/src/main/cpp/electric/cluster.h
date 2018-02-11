@@ -70,7 +70,7 @@ namespace Electric {
 		void init(std::mt19937& generator, Engine::BinaryReader& reader, std::vector<NodeInstance>& nodeInstances,
 				  DischargeListener* pDischargeListener);
 
-		void update(std::vector<Search>& seaches, float dt);
+		void update(const Math::Matrix& parent, bool dirty, std::vector<Search>& searches, float dt);
 
 		void update(std::vector<NodeInstance>& nodeInstances);
 

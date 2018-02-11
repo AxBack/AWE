@@ -127,6 +127,12 @@ namespace Engine {
         {
         }
 
+        void clear()
+        {
+            m_traversables.clear();
+            m_totalLength = 0;
+        }
+
         void add(float length, UINT nrControlPoints, const T* pControlPoints)
         {
             traversable_ptr p;

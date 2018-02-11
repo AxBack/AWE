@@ -38,11 +38,16 @@ namespace Math {
 
 		const float *const data() const { return m_data; }
 
-		Matrix operator*(const Matrix &rhs) {
+		Matrix operator*(const Matrix &rhs) const {
 			return multiply(*this, rhs);
 		}
 
-		float &operator[](const int index) {
+		Vector3 operator*(const Vector3& rhs) const
+		{
+			return transform(rhs);
+		}
+
+		float& operator[](const int index) {
 			return m_data[index];
 		}
 
@@ -50,8 +55,8 @@ namespace Math {
 			return m_data[index];
 		}
 
-		Vector3 transform(const Vector3 &point) const {
-			return Matrix::transform(*this, point);
+		Vector3 transform(const Vector3 &point, float w = 1.0f) const {
+			return Matrix::transform(*this, point, w);
 		}
 
 		Vector3 project(const Vector3 &point) {
@@ -69,41 +74,25 @@ namespace Math {
 			const float *pL = left.m_data;
 			const float *pR = right.m_data;
 
-			ret[M00] =
-					pR[M00] * pL[M00] + pR[M10] * pL[M01] + pR[M20] * pL[M02] + pR[M30] * pL[M03];
-			ret[M10] =
-					pR[M00] * pL[M10] + pR[M10] * pL[M11] + pR[M20] * pL[M12] + pR[M30] * pL[M13];
-			ret[M20] =
-					pR[M00] * pL[M20] + pR[M10] * pL[M21] + pR[M20] * pL[M22] + pR[M30] * pL[M23];
-			ret[M30] =
-					pR[M00] * pL[M30] + pR[M10] * pL[M31] + pR[M20] * pL[M32] + pR[M30] * pL[M33];
+			ret[M00] = pR[M00] * pL[M00] + pR[M10] * pL[M01] + pR[M20] * pL[M02] + pR[M30] * pL[M03];
+			ret[M10] = pR[M00] * pL[M10] + pR[M10] * pL[M11] + pR[M20] * pL[M12] + pR[M30] * pL[M13];
+			ret[M20] = pR[M00] * pL[M20] + pR[M10] * pL[M21] + pR[M20] * pL[M22] + pR[M30] * pL[M23];
+			ret[M30] = pR[M00] * pL[M30] + pR[M10] * pL[M31] + pR[M20] * pL[M32] + pR[M30] * pL[M33];
 
-			ret[M01] =
-					pR[M01] * pL[M00] + pR[M11] * pL[M01] + pR[M21] * pL[M02] + pR[M31] * pL[M03];
-			ret[M11] =
-					pR[M01] * pL[M10] + pR[M11] * pL[M11] + pR[M21] * pL[M12] + pR[M31] * pL[M13];
-			ret[M21] =
-					pR[M01] * pL[M20] + pR[M11] * pL[M21] + pR[M21] * pL[M22] + pR[M31] * pL[M23];
-			ret[M31] =
-					pR[M01] * pL[M30] + pR[M11] * pL[M31] + pR[M21] * pL[M32] + pR[M31] * pL[M33];
+			ret[M01] = pR[M01] * pL[M00] + pR[M11] * pL[M01] + pR[M21] * pL[M02] + pR[M31] * pL[M03];
+			ret[M11] = pR[M01] * pL[M10] + pR[M11] * pL[M11] + pR[M21] * pL[M12] + pR[M31] * pL[M13];
+			ret[M21] = pR[M01] * pL[M20] + pR[M11] * pL[M21] + pR[M21] * pL[M22] + pR[M31] * pL[M23];
+			ret[M31] = pR[M01] * pL[M30] + pR[M11] * pL[M31] + pR[M21] * pL[M32] + pR[M31] * pL[M33];
 
-			ret[M02] =
-					pR[M02] * pL[M00] + pR[M12] * pL[M01] + pR[M22] * pL[M02] + pR[M32] * pL[M03];
-			ret[M12] =
-					pR[M02] * pL[M10] + pR[M12] * pL[M11] + pR[M22] * pL[M12] + pR[M32] * pL[M13];
-			ret[M22] =
-					pR[M02] * pL[M20] + pR[M12] * pL[M21] + pR[M22] * pL[M22] + pR[M32] * pL[M23];
-			ret[M32] =
-					pR[M02] * pL[M30] + pR[M12] * pL[M31] + pR[M22] * pL[M32] + pR[M32] * pL[M33];
+			ret[M02] = pR[M02] * pL[M00] + pR[M12] * pL[M01] + pR[M22] * pL[M02] + pR[M32] * pL[M03];
+			ret[M12] = pR[M02] * pL[M10] + pR[M12] * pL[M11] + pR[M22] * pL[M12] + pR[M32] * pL[M13];
+			ret[M22] = pR[M02] * pL[M20] + pR[M12] * pL[M21] + pR[M22] * pL[M22] + pR[M32] * pL[M23];
+			ret[M32] = pR[M02] * pL[M30] + pR[M12] * pL[M31] + pR[M22] * pL[M32] + pR[M32] * pL[M33];
 
-			ret[M03] =
-					pR[M03] * pL[M00] + pR[M13] * pL[M01] + pR[M23] * pL[M02] + pR[M33] * pL[M03];
-			ret[M13] =
-					pR[M03] * pL[M10] + pR[M13] * pL[M11] + pR[M23] * pL[M12] + pR[M33] * pL[M13];
-			ret[M23] =
-					pR[M03] * pL[M20] + pR[M13] * pL[M21] + pR[M23] * pL[M22] + pR[M33] * pL[M23];
-			ret[M33] =
-					pR[M03] * pL[M30] + pR[M13] * pL[M31] + pR[M23] * pL[M32] + pR[M33] * pL[M33];
+			ret[M03] = pR[M03] * pL[M00] + pR[M13] * pL[M01] + pR[M23] * pL[M02] + pR[M33] * pL[M03];
+			ret[M13] = pR[M03] * pL[M10] + pR[M13] * pL[M11] + pR[M23] * pL[M12] + pR[M33] * pL[M13];
+			ret[M23] = pR[M03] * pL[M20] + pR[M13] * pL[M21] + pR[M23] * pL[M22] + pR[M33] * pL[M23];
+			ret[M33] = pR[M03] * pL[M30] + pR[M13] * pL[M31] + pR[M23] * pL[M32] + pR[M33] * pL[M33];
 
 			return ret;
 		}
@@ -236,25 +225,25 @@ namespace Math {
 
 			float n = 2.0f/(x*x + y*y + z*z + w*w);
 
-			m.m_data[0] = 1.0f - n*y*y - n*z*z;
-			m.m_data[1] = n*x*y - n*z*w;
-			m.m_data[2] = n*x*z + n*y*w;
-			m.m_data[3] = 0.0f;
+			m.m_data[M00] = 1.0f - n*y*y - n*z*z;
+			m.m_data[M10] = n*x*y - n*z*w;
+			m.m_data[M20] = n*x*z + n*y*w;
+			m.m_data[M30] = 0.0f;
 
-			m.m_data[4] = n*x*y + n*z*w;
-			m.m_data[5] = 1.0f - n*x*x - n*z*z;
-			m.m_data[6] = n*y*z - n*x*w;
-			m.m_data[7] = 0.0f;
+			m.m_data[M01] = n*x*y + n*z*w;
+			m.m_data[M11] = 1.0f - n*x*x - n*z*z;
+			m.m_data[M21] = n*y*z - n*x*w;
+			m.m_data[M31] = 0.0f;
 
-			m.m_data[8] = n*x*z - n*y*w;
-			m.m_data[9] = n*y*z + n*x*w;
-			m.m_data[10] = 1.0f - n*x*x - n*y*y;
-			m.m_data[11] = 0.0f;
+			m.m_data[M02] = n*x*z - n*y*w;
+			m.m_data[M12] = n*y*z + n*x*w;
+			m.m_data[M22] = 1.0f - n*x*x - n*y*y;
+			m.m_data[M32] = 0.0f;
 
-			m.m_data[12] = 0.0f;
-			m.m_data[13] = 0.0f;
-			m.m_data[14] = 0.0f;
-			m.m_data[15] = 1.0f;
+			m.m_data[M03] = 0.0f;
+			m.m_data[M13] = 0.0f;
+			m.m_data[M23] = 0.0f;
+			m.m_data[M33] = 1.0f;
 
 			return m;
 		}
@@ -376,10 +365,10 @@ namespace Math {
 			return true;
 		}
 
-		static Vector3 transform(const Matrix &m, const Vector3 &point) {
-			float x = (point.x() * m[M00] + point.y() * m[M01] + point.z() * m[M02] + m[M03]);
-			float y = (point.x() * m[M10] + point.y() * m[M11] + point.z() * m[M12] + m[M13]);
-			float z = (point.x() * m[M20] + point.y() * m[M21] + point.z() * m[M22] + m[M23]);
+		static Vector3 transform(const Matrix &m, const Vector3 &point, float w = 1.0f) {
+			float x = (point.x() * m[M00] + point.y() * m[M01] + point.z() * m[M02] + m[M03] * w);
+			float y = (point.x() * m[M10] + point.y() * m[M11] + point.z() * m[M12] + m[M13] * w);
+			float z = (point.x() * m[M20] + point.y() * m[M21] + point.z() * m[M22] + m[M23] * w);
 			return {x, y, z};
 		}
 

@@ -40,6 +40,10 @@ namespace Electric {
 		std::string m_internalFilesPath;
 
 		std::mt19937 m_generator;
+		Math::Matrix m_transform;
+		bool  m_dirty;
+
+		float m_rotation;
 
 		std::mutex m_particleMutex;
         particle_vec m_particles;
@@ -72,6 +76,8 @@ namespace Electric {
 		Updater()
 			: m_generator(840331)
 			, m_dischargeTime(0.1f)
+			, m_dirty(true)
+			, m_rotation(0.0f)
 		{
 		}
 

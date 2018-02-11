@@ -67,6 +67,16 @@ namespace Math {
             m_data[W] = x1*w2 - y1*z2 + z1*y2 + w1*x2;
         }
 
+		virtual Vector3 operator*(const Vector3& rhs)
+		{
+			Vector3 v(m_data[X], m_data[Y], m_data[Z]);
+			Vector3 r = rhs * (Vector3::dot(rhs, v) * 2.0f);
+			return
+					rhs * (Vector3::dot(rhs, v) * 2.0f)
+					+ v * (m_data[W]*m_data[W] - Vector3::dot(rhs, rhs))
+					+ Vector3::cross(rhs, v) *(2.0f * m_data[W]); //TODO: does this work?
+		}
+
 		virtual Quaternion operator+(const Quaternion& rhs)
 		{
 			return {m_data[X] + rhs.m_data[X],

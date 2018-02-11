@@ -12,6 +12,8 @@ float LOSS_FACTOR = 0.75f;
 
 	bool Updater::init()
 	{
+		Math::Matrix::identity(m_transform);
+
 		Engine::BinaryReader reader((m_internalFilesPath + "/WAE.dat").c_str());
 		int nrClusters = reader.read<int>();
 
@@ -120,7 +122,7 @@ float LOSS_FACTOR = 0.75f;
 			m_dischargeSearches.pop();
 		}
 
-		pCluster->update(searches, dt);
+		pCluster->update(m_transform, m_dirty, searches, dt);
 
 		for(auto& it : searches)
 		{

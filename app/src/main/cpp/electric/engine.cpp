@@ -168,6 +168,28 @@ namespace Electric {
 
     bool ElectricEngine::render()
     {
+		time_point now = std::chrono::steady_clock::now();
+		std::chrono::duration<float> secs = now - m_lastRenderTime;
+		m_lastRenderTime = now;
+
+		m_wobbleTime += secs.count();
+		if(m_wobbleTime >= m_wobblePath.getLength())
+		{
+			m_wobbleTime = 0.0f;
+			std::uniform_int_distribution<int> nrDist(1, 4);
+			std::uniform_real_distribution<float> dist(-10,10);
+			int nr = nrDist(m_generator);
+
+			vec3_vec points;
+			points.push_back(m_wobblePath.traverse(m_wobblePath.getLength()));
+			for(int i=0; i<nr; ++i)
+				points.push_back({dist(m_generator), dist(m_generator), 0});
+
+			m_wobblePath.clear();
+			m_wobblePath.add(30.0f, points.size(), &points[0]);
+		}
+
+
 		if(m_sizeDirty)
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
@@ -202,12 +224,21 @@ namespace Electric {
 
 		{
 			//TODO:create update on demand
+			Math::Vector3 w = m_wobblePath.traverse(m_wobbleTime);
+			Math::Matrix wobble;
+			Math::Matrix::setRotate(wobble, w.x(), w.y(), w.z());
+
+			Math::Vector3 at = wobble.transform(Math::Vector3{0,0,1}, 0.0f);
+			Math::Vector3 up = wobble.transform(Math::Vector3{0,1,0}, 0.0f);
+
 			Math::Matrix y;
 			Math::Matrix::setRotate(y, Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset)));
-			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
-			Math::Vector3 up = Math::Matrix::transform(y, {0,1,0});
 
-			m_camera.updateView(pos, {1,0,0}, up);
+			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
+			at = Math::Matrix::transform(y, at, 0.0f);
+			up = Math::Matrix::transform(y, up, 0.0f);
+
+			m_camera.updateView(pos, pos + at, {0,1,0});
 		}
         m_camera.update();
 
