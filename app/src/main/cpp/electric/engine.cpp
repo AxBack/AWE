@@ -171,27 +171,6 @@ namespace Electric {
 
     bool ElectricEngine::render()
     {
-		time_point now = std::chrono::steady_clock::now();
-		std::chrono::duration<float> secs = now - m_lastRenderTime;
-		m_lastRenderTime = now;
-
-		m_wobbleTime += secs.count();
-		if(m_wobbleTime >= m_wobblePath.getLength())
-		{
-			m_wobbleTime = 0.0f;
-			std::uniform_int_distribution<int> nrDist(1, 4);
-			std::uniform_real_distribution<float> dist(-10,10);
-			int nr = nrDist(m_generator);
-
-			vec3_vec points;
-			points.push_back(m_wobblePath.traverse(m_wobblePath.getLength()));
-			for(int i=0; i<nr; ++i)
-				points.push_back({dist(m_generator), dist(m_generator), 0});
-
-			m_wobblePath.clear();
-			m_wobblePath.add(30.0f, points.size(), &points[0]);
-		}
-
 		if(m_sizeDirty)
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
@@ -227,20 +206,23 @@ namespace Electric {
 		{
 			//TODO:create update on demand
 			m_sensor.update();
+			Math::Vector3 r = m_sensor.getRotation();
 
-			Math::Quaternion r = m_sensor.getRotation(); //m_wobblePath.traverse(m_wobbleTime);
-			Math::Matrix wobble;
-			Math::Matrix::setRotate(wobble, r);
+			// Convert to radians instead of having a really small factor.
+			// However, might want to experiment with different speed and stuff
+			Math::Quaternion tilt = Math::Quaternion::fromEulerAngles(TO_RADIANS(r.x()), TO_RADIANS(r.y()), TO_RADIANS(r.z()));
 
-			Math::Vector3 at = wobble.transform(Math::Vector3{0,0,1}, 0.0f);
-			Math::Vector3 up = wobble.transform(Math::Vector3{0,1,0}, 0.0f);
+			Math::Vector3 at = {0,0,1};
+			Math::Vector3 up = {0,1,0};
 
-			Math::Matrix y;
-			Math::Matrix::setRotate(y, Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset)));
+			Math::Quaternion offset = Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset));
 
-			Math::Vector3 pos = Math::Matrix::transform(y, m_positionPath.traverse(m_pinch));
-			at = Math::Matrix::transform(y, at, 0.0f);
-			up = Math::Matrix::transform(y, up, 0.0f);
+			Math::Matrix rot;
+			Math::Matrix::setRotate(rot, offset * tilt);
+
+			Math::Vector3 pos = Math::Matrix::transform(rot, m_positionPath.traverse(m_pinch));
+			at = Math::Matrix::transform(rot, at, 0.0f);
+			up = Math::Matrix::transform(rot, up, 0.0f);
 
 			m_camera.updateView(pos, pos + at, up);
 		}

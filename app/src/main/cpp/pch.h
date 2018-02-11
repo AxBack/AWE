@@ -19,5 +19,5 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
-#define TO_RADIANS(degrees) (degrees * static_cast<float>(M_PI / 180.0))
-#define TO_DEGREES(radians) (radians * static_cast<float>(180.0 / M_PI))
+#define TO_RADIANS(degrees) ((degrees) * static_cast<float>(M_PI) / 180.0f)
+#define TO_DEGREES(radians) ((radians) * 180.0f / static_cast<float>(M_PI))

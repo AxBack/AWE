@@ -17,6 +17,7 @@ namespace Engine {
 		Matrix		m_viewProjection;
 
 		Vector3 	m_position;
+		Vector3 	m_at;
 		Vector3 	m_right;
 		Vector3		m_up;
 
@@ -43,10 +44,9 @@ namespace Engine {
 			{
                 m_vpDirty = false;
 				m_viewProjection = m_projection * m_view;
-				Vector3 normal = m_position;
+				Vector3 normal = m_at - m_position;
 				normal.normalize();
-				m_right = normal.cross({0,1,0});
-				m_up = m_right.cross(normal);
+				m_right = normal.cross(m_up);
 			}
 		}
 
@@ -58,6 +58,8 @@ namespace Engine {
         void updateView(const Vector3& position, const Vector3& at, const Vector3& up)
         {
             m_position = position;
+			m_up = up;
+			m_at = at;
             Matrix::lookAt(m_view, m_position, at, up);
             m_vpDirty = true;
         }

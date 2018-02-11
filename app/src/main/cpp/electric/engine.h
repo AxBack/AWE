@@ -29,19 +29,11 @@ namespace Electric {
 	typedef Engine::Path<float> float_path;
 	typedef Engine::Sensor Sensor;
 	typedef std::atomic<float> atomic_float;
-	typedef std::chrono::steady_clock::time_point time_point;
-	typedef std::vector<Math::Vector3> vec3_vec;
 
     class ElectricEngine : public Engine::Engine
     {
     private:
-
-		std::mt19937	m_generator;
-
-		Sensor 		m_sensor;
-		time_point 		m_lastRenderTime;
-		float 			m_wobbleTime;
-		vec3_path		m_wobblePath;
+		Sensor 			m_sensor;
 
 		atomic_float 	m_pinch;
         vec3_path       m_positionPath;
@@ -87,14 +79,6 @@ namespace Electric {
 		, m_pinch(0.75f)
 		, m_rotation(0.0f)
         {
-			{
-				Math::Vector3 points[] = {
-						{0,0,0},
-						{0,0,0}
-				};
-				m_wobblePath.add(1.0f, 2, points);
-			}
-
             {
                 Math::Vector3 points[] = {
                         {0, 0, -50},
