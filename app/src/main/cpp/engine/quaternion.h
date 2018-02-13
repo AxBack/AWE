@@ -42,10 +42,10 @@ namespace Math {
             float w2 = rhs.m_data[W];
 
             Quaternion q;
-            q.m_data[X] = x1*x2 - y1*y2 - z1*z2 - w1*w2;
-            q.m_data[Y] = x1*y2 + y1*x2 - z1*w2 + w1*z2;
-            q.m_data[Z] = x1*z2 + y1*w2 + z1*x2 - w1*y2;
-            q.m_data[W] = x1*w2 - y1*z2 + z1*y2 + w1*x2;
+            q.m_data[X] = x1*w2 + y1*z2 - z1*y2 + w1*x2;
+            q.m_data[Y] = x1*z2 + y1*w2 + z1*x2 + w1*y2;
+            q.m_data[Z] = x1*y2 - y1*x2 + z1*w2 + w1*z2;
+            q.m_data[W] = x1*x2 - y1*y2 - z1*z2 + w1*w2;
             return q;
         }
 
@@ -61,10 +61,10 @@ namespace Math {
             float z2 = rhs.m_data[Z];
             float w2 = rhs.m_data[W];
 
-            m_data[X] = x1*x2 - y1*y2 - z1*z2 - w1*w2;
-            m_data[Y] = x1*y2 + y1*x2 - z1*w2 + w1*z2;
-            m_data[Z] = x1*z2 + y1*w2 + z1*x2 - w1*y2;
-            m_data[W] = x1*w2 - y1*z2 + z1*y2 + w1*x2;
+			m_data[X] = x1*w2 + y1*z2 - z1*y2 + w1*x2;
+			m_data[Y] = x1*z2 + y1*w2 + z1*x2 + w1*y2;
+			m_data[Z] = x1*y2 - y1*x2 + z1*w2 + w1*z2;
+			m_data[W] = x1*x2 - y1*y2 - z1*z2 + w1*w2;
         }
 
 		virtual Vector3 operator*(const Vector3& rhs)

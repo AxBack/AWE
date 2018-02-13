@@ -67,28 +67,28 @@ float LOSS_FACTOR = 0.75f;
 		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		m_nrDischargeInstances = 0;
-		for(auto it = m_discharges.begin(); it != m_discharges.end(); )
+		for(m_nrDischargeInstances=0; m_nrDischargeInstances<m_discharges.size();)
 		{
-			it->time -= dt;
-			it->randChangeTimer -= dt;
+			Discharge& discharge = m_discharges[m_nrDischargeInstances];
+			discharge.time -= dt;
+			discharge.randChangeTimer -= dt;
 
-			if(it->randChangeTimer <= 0.0f)
+			if(discharge.randChangeTimer <= 0.0f)
 			{
-				it->rand += dist(m_generator);
-				it->randChangeTimer = 0.03f;
+				discharge.rand += dist(m_generator);
+				discharge.randChangeTimer = 0.03f;
 			}
 
-			if(it->time <= 0.0f)
-				it = m_discharges.erase(it);
+			if(discharge.time <= 0.0f)
+				m_discharges.erase(m_discharges.begin()+m_nrDischargeInstances);
 			else
 			{
-				const Math::Vector3& s = it->pStart->getPosition();
-				const Math::Vector3& d = it->pEnd->getPosition();
-				const Math::Vector3& c = it->pStart->getColor();
+				const Math::Vector3& s = discharge.pStart->getPosition();
+				const Math::Vector3& d = discharge.pEnd->getPosition();
+				const Math::Vector3& c = discharge.pStart->getColor();
 
 				if(m_nrDischargeInstances >= m_dischargeInstances.size())
-					m_dischargeInstances.push_back({s.x(), s.y(), s.z(), d.x(), d.y(), d.z(), c.x(), c.y(), c.z(), it->rand});
+					m_dischargeInstances.push_back({s.x(), s.y(), s.z(), d.x(), d.y(), d.z(), c.x(), c.y(), c.z(), discharge.rand});
 				else
 				{
 					m_dischargeInstances[m_nrDischargeInstances].sx = s.x();
@@ -103,11 +103,9 @@ float LOSS_FACTOR = 0.75f;
 					m_dischargeInstances[m_nrDischargeInstances].g = c.y();
 					m_dischargeInstances[m_nrDischargeInstances].b = c.z();
 
-					m_dischargeInstances[m_nrDischargeInstances].rand = it->rand;
+					m_dischargeInstances[m_nrDischargeInstances].rand = discharge.rand;
 				}
-
 				++m_nrDischargeInstances;
-				++it;
 			}
 		}
 	}

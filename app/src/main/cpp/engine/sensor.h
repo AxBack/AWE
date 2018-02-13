@@ -11,18 +11,22 @@ namespace Engine {
 
 		typedef std::chrono::steady_clock::time_point time_point;
 
-		time_point 		m_lastRenderTime;
+		int m_id;
+
+		time_point m_lastRenderTime;
+		bool m_changed;
 
 		Math::Vector3 m_rotation;
 
 		ASensorManager* m_pSensorManager;
-		const ASensor* m_pAccelerometer;
+		const ASensor* m_pGyroscope;
 		ASensorEventQueue* m_pEventQueue;
 		ALooper* m_pLooper;
 
 	public:
 
 		Sensor()
+		: m_changed(false)
 		{
 
 		}
@@ -34,8 +38,9 @@ namespace Engine {
 
 		bool init(int id)
 		{
+			m_id = id;
 			m_pSensorManager = ASensorManager_getInstance();
-			m_pAccelerometer = ASensorManager_getDefaultSensor(m_pSensorManager, ASENSOR_TYPE_GYROSCOPE);
+			m_pGyroscope = ASensorManager_getDefaultSensor(m_pSensorManager, ASENSOR_TYPE_GYROSCOPE);
 			m_pLooper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 			m_pEventQueue = ASensorManager_createEventQueue(m_pSensorManager, m_pLooper, id, NULL, NULL);
 			resume();
@@ -44,14 +49,14 @@ namespace Engine {
 
 		void resume()
 		{
-			ASensorEventQueue_enableSensor(m_pEventQueue, m_pAccelerometer);
-			ASensorEventQueue_setEventRate(m_pEventQueue, m_pAccelerometer, 100);
+			ASensorEventQueue_enableSensor(m_pEventQueue, m_pGyroscope);
+			ASensorEventQueue_setEventRate(m_pEventQueue, m_pGyroscope, 10000);
 			m_lastRenderTime = std::chrono::steady_clock::now();
 		}
 
 		void pause()
 		{
-			ASensorEventQueue_disableSensor(m_pEventQueue, m_pAccelerometer);
+			ASensorEventQueue_disableSensor(m_pEventQueue, m_pGyroscope);
 		}
 
 		void update()
@@ -61,7 +66,9 @@ namespace Engine {
 			m_lastRenderTime = now;
 			float dt = secs.count();
 
-			ALooper_pollAll(0, NULL, NULL, NULL);
+			if(ALooper_pollAll(0, NULL, NULL, NULL) != m_id)
+				return;
+
 			ASensorEvent event;
 			while(ASensorEventQueue_getEvents(m_pEventQueue, &event, 1) > 0)
 			{

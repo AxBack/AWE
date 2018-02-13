@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math.h>
+#include <cmath>
 #include "binary_reader.h"
 
 namespace Math {
@@ -56,6 +57,16 @@ namespace Math {
 			m_data[Z] *= rhs;
 		}
 
+		Vector3 operator/(const float scale) const {
+			return {m_data[X] / scale, m_data[Y] / scale, m_data[Z] / scale};
+		}
+
+		void operator/=(const float rhs) {
+			m_data[X] /= rhs;
+			m_data[Y] /= rhs;
+			m_data[Z] /= rhs;
+		}
+
 		Vector3 operator+(const Vector3 &rhs) const {
 			return {m_data[X] + rhs.m_data[X], m_data[Y] + rhs.m_data[Y], m_data[Z] + rhs.m_data[Z]};
 		}
@@ -103,7 +114,7 @@ namespace Math {
 		}
 
 		float lengthSq() const {
-			return m_data[X] * m_data[X] + m_data[Y] * m_data[Y] + m_data[Z] * m_data[Z];
+			return std::abs(m_data[X] * m_data[X] + m_data[Y] * m_data[Y] + m_data[Z] * m_data[Z]);
 		}
 
 		void normalize() {

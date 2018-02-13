@@ -87,12 +87,6 @@ class Renderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void onRotation(float angle) {
-        if(mNativeId >= 0) {
-            mRenderEngine.onRotation(mNativeId, angle);
-        }
-    }
-
     private synchronized void createEngine() {
         if(mNativeId > -1)
             return;

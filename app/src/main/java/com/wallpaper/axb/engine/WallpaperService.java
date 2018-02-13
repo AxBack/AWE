@@ -1,8 +1,6 @@
 package com.wallpaper.axb.engine;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
@@ -129,7 +127,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
 
                 mScaleGestureDetector = new ScaleGestureDetector(WallpaperService.this, this);
                 mGestureDetector = new GestureDetectorCompat(WallpaperService.this, this);
-                //mRotationDetector = new RotationGestureDetector(this, this);
             }
 
             public void restart() {
@@ -181,12 +178,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                     mRenderer.onPinch(diff);
                 return true;
             }
-
-           /* @Override
-            public void onRotation(RotationGestureDetector rotationDetector) {
-                float rotation = rotationDetector.getAngle();
-                mRenderer.onRotation(rotation);
-            }*/
 
             @Override
             public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {

@@ -77,7 +77,6 @@ namespace Electric {
 		: m_sizeDirty(false)
         , m_offset(0.5f)
 		, m_pinch(0.75f)
-		, m_rotation(0.0f)
         {
             {
                 Math::Vector3 points[] = {
@@ -135,12 +134,6 @@ namespace Electric {
 			Engine::Engine::pinch(diff);
 			float c = m_pinch;
 			m_pinch = std::max(0.0f, std::min(m_positionPath.getLength(), c + diff));
-		}
-
-		virtual void rotate(float angle) override
-		{
-			Engine::Engine::rotate(angle);
-			m_rotation = angle;
 		}
     };
 

@@ -56,7 +56,7 @@ namespace Electric {
 		std::mutex m_dischargeMutex;
 		discharge_vec m_discharges;
 		discharge_instance_vec m_dischargeInstances;
-		UINT m_nrDischargeInstances;
+		int m_nrDischargeInstances;
 		search_queue m_dischargeSearches;
 		float m_dischargeTime;
 
@@ -78,6 +78,7 @@ namespace Electric {
 			, m_dischargeTime(0.1f)
 			, m_dirty(true)
 			, m_rotation(0.0f)
+			, m_nrDischargeInstances(0)
 		{
 		}
 
