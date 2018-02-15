@@ -8,7 +8,7 @@
 namespace Electric {
 
 float DISCHARGE_FACTOR = 1.0f;
-float LOSS_FACTOR = 0.75f;
+float LOSS_FACTOR = 0.5f;
 
 	bool Updater::init()
 	{
@@ -124,7 +124,7 @@ float LOSS_FACTOR = 0.75f;
 
 		for(auto& it : searches)
 		{
-			if(it.pHit)
+			if(it.pHit && !it.pHit->resting())
 			{
 				float f = it.pNode->getCharge() * DISCHARGE_FACTOR;
 				it.pHit->modifyCharge( f * LOSS_FACTOR );

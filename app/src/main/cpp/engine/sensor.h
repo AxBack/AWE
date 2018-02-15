@@ -51,12 +51,14 @@ namespace Engine {
 		{
 			ASensorEventQueue_enableSensor(m_pEventQueue, m_pGyroscope);
 			ASensorEventQueue_setEventRate(m_pEventQueue, m_pGyroscope, 10000);
+			m_rotation = {0,0,0};
 			m_lastRenderTime = std::chrono::steady_clock::now();
 		}
 
 		void pause()
 		{
 			ASensorEventQueue_disableSensor(m_pEventQueue, m_pGyroscope);
+			m_rotation = {0,0,0};
 		}
 
 		void update()

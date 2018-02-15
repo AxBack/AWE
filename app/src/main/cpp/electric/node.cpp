@@ -6,7 +6,7 @@ namespace Electric {
 	float OSMOSIS_PER_SECOND = 0.05f;
 	float CHARGE_FLOW_FACTOR = 0.015f;
 	float DISCHARGE_RADIUS = 10.0f;
-	float DISCHARGE_MAX_RADIUS = 30.0f;
+	float DISCHARGE_MAX_RADIUS = 50.0f;
 
 	void Node::update(Cluster* pOwner, bool dirty, float dt)
 	{
@@ -49,7 +49,7 @@ namespace Electric {
 		if(!m_waitingForDischargeResult && m_charge > 1.0f)
 		{
 			m_waitingForDischargeResult = true;
-			m_pListener->onDischarge(this, DISCHARGE_RADIUS * m_charge);
+			m_pListener->onDischarge(this, std::min(DISCHARGE_RADIUS * m_charge, DISCHARGE_MAX_RADIUS));
 		}
 	}
 
@@ -57,7 +57,7 @@ namespace Electric {
 	{
 		m_waitingForDischargeResult = false;
 		if(pNode != nullptr)
-			m_restitution = 0.3f;
+			m_restitution = 1.0f;
 	}
 
 }
