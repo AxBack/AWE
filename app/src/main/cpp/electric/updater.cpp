@@ -80,7 +80,10 @@ float LOSS_FACTOR = 0.5f;
 			}
 
 			if(discharge.time <= 0.0f)
-				m_discharges.erase(m_discharges.begin()+m_nrDischargeInstances);
+			{
+				discharge.pEnd->modifyCharge( discharge.charge * LOSS_FACTOR );
+				m_discharges.erase(m_discharges.begin() + m_nrDischargeInstances);
+			}
 			else
 			{
 				const Math::Vector3& s = discharge.pStart->getPosition();
@@ -127,13 +130,12 @@ float LOSS_FACTOR = 0.5f;
 			if(it.pHit && !it.pHit->resting())
 			{
 				float f = it.pNode->getCharge() * DISCHARGE_FACTOR;
-				it.pHit->modifyCharge( f * LOSS_FACTOR );
 				it.pNode->modifyCharge(-f);
 
 				std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
 				std::lock_guard<std::mutex> _(m_dischargeMutex);
-				m_discharges.push_back({m_dischargeTime, it.pNode, it.pHit, dist(m_generator)});
+				m_discharges.push_back({m_dischargeTime, it.pNode, it.pHit, f, dist(m_generator)});
 			}
 
 			it.pNode->onDischargeResult(it.pHit);

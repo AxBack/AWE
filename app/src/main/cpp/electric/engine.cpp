@@ -210,7 +210,7 @@ namespace Electric {
 
 			// Convert to radians instead of having a really small factor.
 			// However, might want to experiment with different speed and stuff
-			Math::Quaternion tilt = Math::Quaternion::fromEulerAngles(TO_RADIANS(r.x()), TO_RADIANS(r.y()), TO_RADIANS(r.z()));
+			Math::Quaternion tilt = Math::Quaternion::fromEulerAngles(TO_RADIANS(-r.x()), TO_RADIANS(r.y()), TO_RADIANS(r.z()));
 
 			Math::Vector3 at = {0,0,1};
 			Math::Vector3 up = {0,1,0};
@@ -218,7 +218,7 @@ namespace Electric {
 			Math::Quaternion offset = Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset));
 
 			Math::Matrix rot;
-			Math::Matrix::setRotate(rot, offset * tilt);
+			Math::Matrix::setRotate(rot, tilt * offset);
 
 			Math::Vector3 pos = Math::Matrix::transform(rot, m_positionPath.traverse(m_pinch));
 			at = Math::Matrix::transform(rot, at, 0.0f);

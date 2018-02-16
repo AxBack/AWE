@@ -25,6 +25,7 @@ namespace Electric {
 			float time;
 			Node* pStart;
 			Node* pEnd;
+			float charge;
 			float rand;
 			float randChangeTimer;
 		};
