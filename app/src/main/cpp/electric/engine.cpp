@@ -115,26 +115,15 @@ namespace Electric {
 
 	bool ElectricEngine::setupDischarges(AAssetManager* pAssetManager)
 	{
-		float size = 1.0f;
+		float size = 0.5f;
 		DischargeVertex vertices[] = {
-				{0.0f, 0.0f,0.0f, 0.0f, 0.0f}, // 0
-				{0.0f, 0.0f,0.0f, 0.0f, 1.0f}, // 1
-				{0.0f, size,0.0f, 1.0f, 0.2f}, // 2
-				{0.0f, size,0.0f, 1.0f, 0.4f}, // 3
-				{0.0f, size,0.0f, 1.0f, 0.6f}, // 4
-				{0.0f, size,0.0f, 1.0f, 0.8f}, // 5
-				{0.0f,-size,0.0f, 1.0f, 0.2f}, // 6
-				{0.0f,-size,0.0f, 1.0f, 0.4f}, // 7
-				{0.0f,-size,0.0f, 1.0f, 0.6f}, // 8
-				{0.0f,-size,0.0f, 1.0f, 0.8f}  // 9
+				{-size, size,0.0f, 0,0}, // 0
+				{ size, size,0.0f, 1,0}, // 1
+				{ size,-size,0.0f, 1,1}, // 2
+				{-size,-size,0.0f, 0,1}  // 3
 		};
 
-		GLushort indices[] = {
-				0,2,6, 5,1,9, // ends
-				2,3,7, 2,7,6,
-				3,4,8, 3,8,7,
-				4,5,9, 4,9,8
-		};
+		GLushort indices[] = {0,1,2,0,2,3};
 
 		if(!m_dischargeMesh.init(10, vertices, 3*8, indices))
 		{

@@ -18,7 +18,8 @@ namespace Electric {
 		GLuint m_vao;
 		GLint m_viewProjectionLocation;
 		GLint m_textureLocation;
-		GLint m_cameraPosLocation;
+		GLint m_rightLocation;
+		GLint m_upLocation;
 
 	public:
 
@@ -27,7 +28,8 @@ namespace Electric {
 				, m_vao(0)
 				, m_viewProjectionLocation(0)
 				, m_textureLocation(0)
-				, m_cameraPosLocation(0)
+				, m_rightLocation(0)
+				, m_upLocation(0)
 		{}
 
 		bool init(AAssetManager *pAssetManager, const Mesh& mesh);
@@ -53,8 +55,11 @@ namespace Electric {
 			texture.bind();
 			glUniform1i(m_textureLocation, 0);
 
-			Math::Vector3 pos = camera.getPosition();
-			glUniform3f(m_cameraPosLocation, pos.x(), pos.y(), pos.z());
+			Math::Vector3 up = camera.getUp();
+			glUniform3f(m_upLocation, up.x(), up.y(), up.z());
+
+			Math::Vector3 right = camera.getRight();
+			glUniform3f(m_rightLocation, right.x(), right.y(), right.z());
 
 			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
 

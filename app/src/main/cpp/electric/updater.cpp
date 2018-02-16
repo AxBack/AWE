@@ -70,16 +70,9 @@ float LOSS_FACTOR = 0.5f;
 		for(m_nrDischargeInstances=0; m_nrDischargeInstances<m_discharges.size();)
 		{
 			Discharge& discharge = m_discharges[m_nrDischargeInstances];
-			discharge.time -= dt;
-			discharge.randChangeTimer -= dt;
+			discharge.time += dt;
 
-			if(discharge.randChangeTimer <= 0.0f)
-			{
-				discharge.rand += dist(m_generator);
-				discharge.randChangeTimer = 0.03f;
-			}
-
-			if(discharge.time <= 0.0f)
+			if(discharge.time >= discharge.travelTime)
 			{
 				discharge.pEnd->modifyCharge( discharge.charge * LOSS_FACTOR );
 				m_discharges.erase(m_discharges.begin() + m_nrDischargeInstances);
@@ -91,7 +84,11 @@ float LOSS_FACTOR = 0.5f;
 				const Math::Vector3& c = discharge.pStart->getColor();
 
 				if(m_nrDischargeInstances >= m_dischargeInstances.size())
-					m_dischargeInstances.push_back({s.x(), s.y(), s.z(), d.x(), d.y(), d.z(), c.x(), c.y(), c.z(), discharge.rand});
+					m_dischargeInstances.push_back({s.x(), s.y(), s.z(),
+													d.x(), d.y(), d.z(),
+													c.x(), c.y(), c.z(),
+													discharge.time / discharge.travelTime,
+												    discharge.charge});
 				else
 				{
 					m_dischargeInstances[m_nrDischargeInstances].sx = s.x();
@@ -106,7 +103,8 @@ float LOSS_FACTOR = 0.5f;
 					m_dischargeInstances[m_nrDischargeInstances].g = c.y();
 					m_dischargeInstances[m_nrDischargeInstances].b = c.z();
 
-					m_dischargeInstances[m_nrDischargeInstances].rand = discharge.rand;
+					m_dischargeInstances[m_nrDischargeInstances].size = discharge.charge;
+					m_dischargeInstances[m_nrDischargeInstances].dt = discharge.time / discharge.travelTime;
 				}
 				++m_nrDischargeInstances;
 			}
@@ -134,8 +132,9 @@ float LOSS_FACTOR = 0.5f;
 
 				std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
+				float l = (it.pNode->getPosition() - it.pHit->getPosition()).length();
 				std::lock_guard<std::mutex> _(m_dischargeMutex);
-				m_discharges.push_back({m_dischargeTime, it.pNode, it.pHit, f, dist(m_generator)});
+				m_discharges.push_back({0.0f, l / m_dischargeSpeed, it.pNode, it.pHit, f});
 			}
 
 			it.pNode->onDischargeResult(it.pHit);

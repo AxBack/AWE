@@ -23,11 +23,10 @@ namespace Electric {
 		struct Discharge
 		{
 			float time;
+			float travelTime;
 			Node* pStart;
 			Node* pEnd;
 			float charge;
-			float rand;
-			float randChangeTimer;
 		};
 
 		typedef std::shared_ptr<Cluster> cluster_ptr;
@@ -59,7 +58,7 @@ namespace Electric {
 		discharge_instance_vec m_dischargeInstances;
 		int m_nrDischargeInstances;
 		search_queue m_dischargeSearches;
-		float m_dischargeTime;
+		float m_dischargeSpeed;
 
 		void loadCluster(Engine::BinaryReader& reader);
 
@@ -76,7 +75,7 @@ namespace Electric {
 
 		Updater()
 			: m_generator(840331)
-			, m_dischargeTime(0.1f)
+			, m_dischargeSpeed(20.0f)
 			, m_dirty(true)
 			, m_rotation(0.0f)
 			, m_nrDischargeInstances(0)
