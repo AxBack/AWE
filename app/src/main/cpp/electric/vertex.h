@@ -30,6 +30,6 @@ namespace Electric {
 
 	struct DischargeInstance
 	{
-		GLfloat sx,sy,sz, dx,dy,dz, r,g,b, dt, size;
+		GLfloat x,y,z, r,g,b, size;
 	};
 };

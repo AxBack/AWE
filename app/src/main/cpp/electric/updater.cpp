@@ -79,32 +79,30 @@ float LOSS_FACTOR = 0.5f;
 			}
 			else
 			{
+				float delta = discharge.time / discharge.travelTime;
+				float o = m_dischargeOffsetPath.traverse(delta);
+				float size = discharge.pStart->getScale() * m_dischargeSizePath.traverse(delta);
+
 				const Math::Vector3& s = discharge.pStart->getPosition();
 				const Math::Vector3& d = discharge.pEnd->getPosition();
+				Math::Vector3 offset = s * (1.0f - o) + d * o;
+
 				const Math::Vector3& c = discharge.pStart->getColor();
 
 				if(m_nrDischargeInstances >= m_dischargeInstances.size())
-					m_dischargeInstances.push_back({s.x(), s.y(), s.z(),
-													d.x(), d.y(), d.z(),
+					m_dischargeInstances.push_back({offset.x(), offset.y(), offset.z(),
 													c.x(), c.y(), c.z(),
-													discharge.time / discharge.travelTime,
-												    discharge.charge});
+												    size});
 				else
 				{
-					m_dischargeInstances[m_nrDischargeInstances].sx = s.x();
-					m_dischargeInstances[m_nrDischargeInstances].sy = s.y();
-					m_dischargeInstances[m_nrDischargeInstances].sz = s.z();
-
-					m_dischargeInstances[m_nrDischargeInstances].dx = d.x();
-					m_dischargeInstances[m_nrDischargeInstances].dy = d.y();
-					m_dischargeInstances[m_nrDischargeInstances].dz = d.z();
-
+					m_dischargeInstances[m_nrDischargeInstances].x = offset.x();
+					m_dischargeInstances[m_nrDischargeInstances].y = offset.y();
+					m_dischargeInstances[m_nrDischargeInstances].z = offset.z();
 					m_dischargeInstances[m_nrDischargeInstances].r = c.x();
 					m_dischargeInstances[m_nrDischargeInstances].g = c.y();
 					m_dischargeInstances[m_nrDischargeInstances].b = c.z();
 
-					m_dischargeInstances[m_nrDischargeInstances].size = discharge.charge;
-					m_dischargeInstances[m_nrDischargeInstances].dt = discharge.time / discharge.travelTime;
+					m_dischargeInstances[m_nrDischargeInstances].size = size;
 				}
 				++m_nrDischargeInstances;
 			}

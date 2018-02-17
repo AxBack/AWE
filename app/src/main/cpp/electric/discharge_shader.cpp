@@ -41,16 +41,8 @@ namespace Electric {
 		glVertexAttribDivisor(3, 1);
 
 		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(6));
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(6));
 		glVertexAttribDivisor(4, 1);
-
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(9));
-		glVertexAttribDivisor(5, 1);
-
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(DischargeInstance), BUFFER_OFFSET(10));
-		glVertexAttribDivisor(6, 1);
 
 		glBindVertexArray(0);
 

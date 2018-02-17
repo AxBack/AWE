@@ -27,12 +27,12 @@ namespace Electric {
 				m_pColorPath = nullptr;
 		}
 
-		if(m_pScalePath!= nullptr)
+		if(m_pSizePath!= nullptr)
 		{
-			m_scale = m_pScalePath->traverse(m_transitionTime);
+			m_size = m_pSizePath->traverse(m_transitionTime);
 			m_dirty = true;
-			if(m_transitionTime > m_pScalePath->getLength())
-				m_pScalePath = nullptr;
+			if(m_transitionTime > m_pSizePath->getLength())
+				m_pSizePath = nullptr;
 		}
 
 		if(dirty)

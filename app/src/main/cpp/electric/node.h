@@ -32,7 +32,7 @@ namespace Electric {
 		Math::Vector3 m_offset;
 		Math::Vector3 m_position;
 		Math::Vector3 m_color;
-		float m_scale;
+		float m_size;
 		float m_charge;
 		float m_restitution;
 		bool m_dirty;
@@ -41,7 +41,7 @@ namespace Electric {
 		float m_transitionTime;
 		vec3_path_ptr m_pOffsetPath;
 		vec3_path_ptr m_pColorPath;
-		float_path_ptr m_pScalePath;
+		float_path_ptr m_pSizePath;
 
 		DischargeListener* m_pListener;
 
@@ -49,13 +49,13 @@ namespace Electric {
 
 	public:
 
-		Node(UINT instanceId, Math::Vector3 position, Math::Vector3 color, float scale, float charge,
+		Node(UINT instanceId, Math::Vector3 position, Math::Vector3 color, float size, float charge,
 			 float dt, DischargeListener* pListener)
 				: m_instanceId(instanceId)
 				, m_position(position)
 				, m_offset(position)
 				, m_color(color)
-				, m_scale(scale)
+				, m_size(size)
 				, m_charge(charge)
 				, m_delta(dt)
 				, m_dirty(true)
@@ -77,7 +77,7 @@ namespace Electric {
 				pInstance->x = m_position.x();
 				pInstance->y = m_position.y();
 				pInstance->z = m_position.z();
-				pInstance->size = m_scale;
+				pInstance->size = m_size;
 				pInstance->r = m_color.x();
 				pInstance->g = m_color.y();
 				pInstance->b = m_color.z();
@@ -89,7 +89,7 @@ namespace Electric {
 			m_transitionTime = 0;
 			m_pOffsetPath = pOffsetPath;
 			m_pColorPath = pColorPath;
-			m_pScalePath = pScalePath;
+			m_pSizePath = pScalePath;
 		}
 
 		void onDischargeResult(Node* pNode);
@@ -100,7 +100,7 @@ namespace Electric {
 		const Math::Vector3& getPosition() const {return m_position; }
 		const Math::Vector3& getOffset() const { return m_offset; }
 		const Math::Vector3& getColor() const {return m_color; }
-		float getScale() const { return m_scale; }
+		float getScale() const { return m_size; }
 		bool resting() { return m_restitution > 0.0f; }
 
 		float getDelta() { return m_delta; }

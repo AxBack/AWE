@@ -36,6 +36,7 @@ namespace Electric {
 		typedef std::vector<Discharge> discharge_vec;
 		typedef std::vector<DischargeInstance> discharge_instance_vec;
 		typedef std::queue<Search> search_queue;
+		typedef Engine::Path<float> float_path;
 
 		std::string m_internalFilesPath;
 
@@ -60,6 +61,9 @@ namespace Electric {
 		search_queue m_dischargeSearches;
 		float m_dischargeSpeed;
 
+		float_path m_dischargeOffsetPath;
+		float_path m_dischargeSizePath;
+
 		void loadCluster(Engine::BinaryReader& reader);
 
 		void updateCharges(float dt);
@@ -74,12 +78,24 @@ namespace Electric {
     public:
 
 		Updater()
-			: m_generator(840331)
-			, m_dischargeSpeed(20.0f)
+			: Engine::Updater()
+			, m_generator(840331)
+			, m_dischargeSpeed(30.0f)
 			, m_dirty(true)
 			, m_rotation(0.0f)
 			, m_nrDischargeInstances(0)
 		{
+			{
+				float points[] = {0,0.9f,1};
+				m_dischargeOffsetPath.add(1.0f, 3, points);
+			}
+
+			{
+				float p1[] = {1.0, 0.6};
+				float p2[] = {0.6};
+				m_dischargeSizePath.add(0.2f, 2, p1);
+				m_dischargeSizePath.add(0.8f, 1, p2);
+			}
 		}
 
 		virtual bool init(const char* internalFilesPath)
