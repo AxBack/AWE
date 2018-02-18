@@ -11,6 +11,11 @@ namespace Electric {
 	class NodeShader : public Engine::Shader {
 	private:
 
+#define VIEW_PROJECTION "viewProjection"
+#define UP "up"
+#define RIGHT "right"
+
+
 		typedef Engine::InstancedMesh<PositionVertex, NodeInstance> Mesh;
 
 		GLuint m_program;
@@ -18,6 +23,27 @@ namespace Electric {
 		GLint m_viewProjectionLocation;
 		GLint m_rightLocation;
 		GLint m_upLocation;
+
+	protected:
+
+		virtual GLuint createProgram(AAssetManager* pAssetManager) const
+		{
+			return Engine::Shader::createProgram(pAssetManager, "shaders/NodeShader_vs.glsl", "shaders/NodeShader_ps.glsl");
+		}
+
+		virtual void extractUniforms(GLuint program)
+		{
+			m_viewProjectionLocation = getLocation(program, VIEW_PROJECTION);
+			m_upLocation = getLocation(program, UP);
+			m_rightLocation = getLocation(program, RIGHT);
+		}
+
+		virtual void setUniforms(const Engine::Camera& camera)
+		{
+			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
+			glUniform3fv(m_upLocation, 1, camera.getUp().data());
+			glUniform3fv(m_rightLocation, 1, camera.getRight().data());
+		}
 
 	public:
 
@@ -47,9 +73,7 @@ namespace Electric {
 		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);
-			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
-			glUniform3fv(m_upLocation, 1, camera.getUp().data());
-			glUniform3fv(m_rightLocation, 1, camera.getRight().data());
+			setUniforms(camera);
 			mesh.render();
 		}
 	};

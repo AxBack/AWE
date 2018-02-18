@@ -3,17 +3,11 @@
 
 namespace Electric {
 
-#define VIEW_PROJECTION "viewProjection"
-#define CAMERA_RIGHT "up"
-#define RIGHT "right"
-
 	bool NodeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
 	{
 
-		m_program = createProgram(pAssetManager, "shaders/NodeShader_vs.glsl", "shaders/NodeShader_ps.glsl");
-		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
-		m_upLocation = getLocation(m_program, CAMERA_RIGHT);
-		m_rightLocation = getLocation(m_program, RIGHT);
+		m_program = createProgram(pAssetManager);
+		extractUniforms(m_program);
 
 		glGenVertexArrays(1, &m_vao);
 
@@ -31,16 +25,16 @@ namespace Electric {
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), 0);
 		glVertexAttribDivisor(1, 1);
 
-		glEnableVertexAttribArray(2); // size
-		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(3));
+		glEnableVertexAttribArray(2); // color
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(3));
 		glVertexAttribDivisor(2, 1);
 
-		glEnableVertexAttribArray(3); // charge
-		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(4));
+		glEnableVertexAttribArray(3); // size
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(6));
 		glVertexAttribDivisor(3, 1);
 
-		glEnableVertexAttribArray(4); // color
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(5));
+		glEnableVertexAttribArray(4); // size
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(NodeInstance), BUFFER_OFFSET(7));
 		glVertexAttribDivisor(4, 1);
 
 		glBindVertexArray(0);

@@ -112,6 +112,12 @@ namespace Electric {
 			return false;
 		}
 
+		if (!m_nodeOverlayShader.init(pAssetManager, m_nodeMesh))
+		{
+			LOGD("init( Failed to init NodeOverlayShader: %d )", m_id);
+			return false;
+		}
+
 		return true;
 	}
 
@@ -166,8 +172,10 @@ namespace Electric {
 		{
 			std::lock_guard<std::mutex> _(m_sizeMutex);
 			m_sizeDirty = false;
-			GLint formats[] = {GL_RGB, GL_RGB};
-			m_renderTarget.init(m_viewport[2], m_viewport[3], 2, formats, Framebuffer::READ_WRITE);
+			GLint formats[] = {GL_RGBA};
+			m_mainTarget.init(m_viewport[2], m_viewport[3], 1, formats, Framebuffer::READ_WRITE);
+			m_bloomTarget.init(m_viewport[2], m_viewport[3], 1, formats, Framebuffer::NONE);
+			//m_bloomTarget.attachDepthBuffer(m_mainTarget.getDepthBuffer(), Framebuffer::WRITE);
 			m_bloomShader.updateSize(m_viewport[2], m_viewport[3]);
 			m_dofShader.updateSize(m_viewport[2], m_viewport[3]);
             m_camera.updateProjection(m_viewport[2], m_viewport[3]);
@@ -219,13 +227,23 @@ namespace Electric {
 		}
         m_camera.update();
 
-		m_renderTarget.set();
-		m_renderTarget.clear();
+		m_mainTarget.set();
+		m_mainTarget.clear();
 
 		if(m_nodeMesh.hasInstances())
 			m_nodeShader.render(m_camera, m_nodeMesh);
 
+		if(m_dischargeMesh.hasInstances())
+			m_dischargeShader.render(m_camera, m_dischargeMesh, m_dischargeTexture);
+
+		m_bloomTarget.set();
+		m_bloomTarget.clear();
+
 		glBlendFunc(GL_ONE, GL_ONE);
+		glDepthMask(GL_FALSE);
+
+		if(m_nodeMesh.hasInstances())
+			m_nodeOverlayShader.render(m_camera, m_nodeMesh);
 
 		if(m_dischargeMesh.hasInstances())
 			m_dischargeShader.render(m_camera, m_dischargeMesh, m_dischargeTexture);
@@ -234,12 +252,13 @@ namespace Electric {
 			m_particleShader.render(m_camera, m_particlesMesh);
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
 
-		m_dofShader.render(m_screenMesh, m_renderTarget, 0);
-		m_bloomShader.render(m_screenMesh, m_renderTarget, 1);
+		m_dofShader.render(m_screenMesh, m_mainTarget, 0);
+		m_bloomShader.render(m_screenMesh, m_bloomTarget, 0);
 
         return true;
     }

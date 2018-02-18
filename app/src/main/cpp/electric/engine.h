@@ -11,6 +11,7 @@
 #include "dof_shader.h"
 #include "../engine/texture.h"
 #include "../engine/sensor.h"
+#include "node_overlay_shader.h"
 
 #include <chrono>
 
@@ -57,6 +58,7 @@ namespace Electric {
 
         NodeMesh        m_nodeMesh;
         NodeShader      m_nodeShader;
+		NodeOverlayShader m_nodeOverlayShader;
 
 		ChargeMesh		m_dischargeMesh;
 		Texture			m_dischargeTexture;
@@ -64,7 +66,8 @@ namespace Electric {
 
 		std::atomic_bool m_sizeDirty;
 		std::mutex 		 m_sizeMutex;
-		Framebuffer		 m_renderTarget;
+		Framebuffer		 m_mainTarget;
+		Framebuffer		 m_bloomTarget;
 
 		bool setupPostProcess(AAssetManager* pAssetManager);
 		bool setupParticles(AAssetManager* pAssetManager);

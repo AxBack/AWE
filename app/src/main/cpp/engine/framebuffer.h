@@ -64,6 +64,8 @@ namespace Engine {
 		bool init(int width, int height, bool alpha, DepthType depthType);
 		bool init(int width, int height, UINT nrAttachments, GLint* pFormats, DepthType depthType);
 
+		void attachDepthBuffer(GLuint depthBuffer, DepthType type);
+
 		void set() const
 		{
 			if(m_handle > 0)
@@ -95,5 +97,7 @@ namespace Engine {
 
 		GLsizei getWidth() const { return m_width; }
 		GLsizei getHeight() const { return m_height; }
+
+		GLuint getDepthBuffer()const { return m_depth; }
 	};
 };

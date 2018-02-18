@@ -5,7 +5,7 @@ namespace Electric {
 
 #define VIEW_PROJECTION "viewProjection"
 #define TEXTURE "uTexture"
-#define CAMERA_RIGHT "right"
+#define UP "right"
 #define CAMERA_UP "up"
 
 	bool DischargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
@@ -14,7 +14,7 @@ namespace Electric {
 		m_program = createProgram(pAssetManager, "shaders/DischargeShader_vs.glsl", "shaders/DischargeShader_ps.glsl");
 		m_viewProjectionLocation = getLocation(m_program, VIEW_PROJECTION);
 		m_textureLocation = getLocation(m_program, TEXTURE);
-		m_rightLocation = getLocation(m_program, CAMERA_RIGHT);
+		m_rightLocation = getLocation(m_program, UP);
 		m_upLocation = getLocation(m_program, CAMERA_UP);
 
 		glGenVertexArrays(1, &m_vao);

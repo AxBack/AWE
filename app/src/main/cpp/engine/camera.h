@@ -18,6 +18,7 @@ namespace Engine {
 
 		Vector3 	m_position;
 		Vector3 	m_at;
+		Vector3 	m_forward;
 		Vector3 	m_right;
 		Vector3		m_up;
 
@@ -44,14 +45,15 @@ namespace Engine {
 			{
                 m_vpDirty = false;
 				m_viewProjection = m_projection * m_view;
-				Vector3 normal = m_at - m_position;
-				normal.normalize();
-				m_right = normal.cross(m_up);
+				m_forward = m_at - m_position;
+				m_forward.normalize();
+				m_right = m_forward.cross(m_up);
 			}
 		}
 
 		const Matrix& getViewProjection() const { return m_viewProjection; }
 		const Vector3& getPosition() const { return m_position; }
+		const Vector3& getForward() const { return m_forward; }
 		const Vector3& getUp() const { return m_up; }
 		const Vector3& getRight() const { return m_right; }
 
@@ -66,7 +68,7 @@ namespace Engine {
 
 		void updateProjection(float w, float h)
 		{
-			Matrix::perspective(m_projection, 90.0f, w / h, 1, 1000);
+			Matrix::perspective(m_projection, 90.0f, w / h, 1.0f, 1000.0f);
 			m_vpDirty = true;
 		}
 	};

@@ -7,7 +7,7 @@ namespace Engine {
     {
         GLint formats[] = {alpha ? GL_RGBA : GL_RGB };
 		return init(width, height, 1, formats, depthType);
-    };
+    }
 
 	bool Framebuffer::init(int width, int height, UINT nrAttachments, GLint* pFormats,
 						   DepthType depthType)
@@ -54,5 +54,15 @@ namespace Engine {
 		glDrawBuffers(static_cast<GLsizei>(attachments.size()), &attachments[0]);
 
 		return glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE;
+	}
+
+	void Framebuffer::attachDepthBuffer(GLuint depthBuffer, DepthType type)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
+		if (type == WRITE)
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+		else if(type == READ_WRITE)
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
