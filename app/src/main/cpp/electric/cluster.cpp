@@ -41,7 +41,7 @@ namespace Electric {
 			m_states.push_back(state);
 		}
 
-		toState(m_states[0], m_transitionTime);
+		toState(m_states[0], 0);
 	}
 
 	void Cluster::read(Engine::BinaryReader& reader, vec3_path& path)

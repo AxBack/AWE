@@ -27,9 +27,9 @@ class Renderer implements GLSurfaceView.Renderer {
         mBinaryFile = binaryFile;
     }
 
-    public synchronized void restart() {
+    public synchronized void reset(String binaryFile) {
         if(mNativeId >= 0)
-            mRenderEngine.restart(mNativeId);
+            mRenderEngine.reset(mNativeId, mContext.getFilesDir().getAbsolutePath() + "/" + binaryFile);
     }
 
     public synchronized void destroy() {

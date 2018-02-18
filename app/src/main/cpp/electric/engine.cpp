@@ -155,9 +155,9 @@ namespace Electric {
 		return true;
 	}
 
-	void ElectricEngine::restart()
+	void ElectricEngine::reset(const char* internalFilePath)
 	{
-		m_updater.restart();
+		m_updater.reset(internalFilePath);
 	}
 
     bool ElectricEngine::render()

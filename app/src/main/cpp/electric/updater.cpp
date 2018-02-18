@@ -25,14 +25,14 @@ float LOSS_FACTOR = 0.5f;
 		return Engine::Updater::init();
 	}
 
-	void Updater::restart()
+	void Updater::reset(const char* internalFilePath)
 	{
 		bool running = isRunning();
 		if(running)
 			stop();
 
 		clear();
-		init();
+		init(internalFilePath);
 
 		if(running)
 			start();

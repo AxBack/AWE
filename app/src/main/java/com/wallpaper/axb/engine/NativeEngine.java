@@ -5,9 +5,9 @@ import android.content.res.AssetManager;
 
 class NativeEngine {
 
-    public native int create(String type, String internalFiles, AssetManager assetManager);
+    public native int create(String type, String internalFile, AssetManager assetManager);
     public native void destroy(int id);
-    public native void restart(int id);
+    public native void reset(int id, String internalFile);
     public native boolean render(int id);
     public native void resume(int id);
     public native void pause(int id);

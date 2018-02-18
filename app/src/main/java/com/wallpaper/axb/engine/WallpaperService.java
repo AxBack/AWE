@@ -62,7 +62,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         }
 
         public void restart() {
-            mSurfaceView.restart();
+            mSurfaceView.reset();
         }
 
         @Override
@@ -129,8 +129,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 mGestureDetector = new GestureDetectorCompat(WallpaperService.this, this);
             }
 
-            public void restart() {
-                mRenderer.restart();
+            public void reset() {
+                mRenderer.reset("WAE.dat");
             }
 
             @Override

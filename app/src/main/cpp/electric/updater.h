@@ -98,13 +98,13 @@ namespace Electric {
 			}
 		}
 
-		virtual bool init(const char* internalFilesPath)
+		virtual bool init(const char* internalFilePath)
 		{
-			m_internalFilePath = internalFilesPath;
+			m_internalFilePath = internalFilePath;
 			return init();
 		}
 
-		void restart();
+		void reset(const char* internalFilePath);
 		void clear();
 
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);

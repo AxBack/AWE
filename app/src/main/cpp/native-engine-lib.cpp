@@ -36,13 +36,15 @@ Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_engine_NativeEngine_restart(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)
+Java_com_wallpaper_axb_engine_NativeEngine_reset(JNIEnv* pEnv, jobject /*thiz*/, jint id, jstring internalFile)
 {
+	const char* internalFilePath = pEnv->GetStringUTFChars(internalFile, (jboolean*)0);
+
 	auto it = engines.find(id);
 	if(it == engines.end())
 		return;
 
-	it->second->restart();
+	it->second->reset(internalFilePath);
 }
 
 
