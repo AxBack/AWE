@@ -12,10 +12,10 @@ extern "C" {
 
 JNIEXPORT jint JNICALL
 Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type,
-												  jstring internalFiles, jobject assetManager)
+												  jstring internalFile, jobject assetManager)
 {
     const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
-	const char* internalPath = pEnv->GetStringUTFChars(internalFiles, (jboolean*)0);
+	const char* internalFilePath = pEnv->GetStringUTFChars(internalFile, (jboolean*)0);
     Engine::Engine* pEngine = nullptr;
     if(strcmp(str, "Electric") == 0)
         pEngine = new Electric::ElectricEngine;
@@ -23,7 +23,7 @@ Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/
         return -1;
 
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
-	if(!pEngine->init(internalPath, pAssetManager))
+	if(!pEngine->init(internalFilePath, pAssetManager))
 	{
 		SAFE_DELETE(pEngine);
 		return -1;

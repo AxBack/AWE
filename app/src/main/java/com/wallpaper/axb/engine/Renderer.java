@@ -17,11 +17,14 @@ class Renderer implements GLSurfaceView.Renderer {
     private int mNativeId = -1;
     private boolean mIsActive = false;
 
+    private final String mBinaryFile;
+
     private int mWidth = 0;
     private int mHeight = 0;
 
-    public Renderer(Context ctx) {
+    public Renderer(Context ctx, String binaryFile) {
         mContext = ctx;
+        mBinaryFile = binaryFile;
     }
 
     public synchronized void restart() {
@@ -37,7 +40,7 @@ class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public synchronized void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        createEngine();
+        createEngine(mBinaryFile);
     }
 
     @Override
@@ -87,11 +90,13 @@ class Renderer implements GLSurfaceView.Renderer {
         }
     }
 
-    private synchronized void createEngine() {
+    private synchronized void createEngine(String binaryFile) {
         if(mNativeId > -1)
             return;
 
-        mNativeId = mRenderEngine.create("Electric", mContext.getFilesDir().getAbsolutePath(), mContext.getAssets());
+        mNativeId = mRenderEngine.create("Electric",
+                mContext.getFilesDir().getAbsolutePath() + "/" + binaryFile,
+                mContext.getAssets());
         if(mIsActive)
             mRenderEngine.resume(mNativeId);
 

@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include <sstream>
+
 namespace Electric {
 
     void ElectricEngine::clear()
@@ -8,7 +10,7 @@ namespace Electric {
         LOGI("ElectricEngine( Cleared: %d )", m_id);
     }
 
-    bool ElectricEngine::init(const char* internalFilesPath, AAssetManager* pAssetManager)
+    bool ElectricEngine::init(const char* internalFilePath, AAssetManager* pAssetManager)
     {
         LOGI("ElectricEngine( Init begin: %d )", m_id);
 
@@ -27,7 +29,7 @@ namespace Electric {
 		if(!setupDischarges(pAssetManager))
 			return false;
 
-        if(!m_updater.init(internalFilesPath))
+        if(!m_updater.init(internalFilePath))
             return false;
 
         LOGI("ElectricEngine( Init end: %d )", m_id);
@@ -223,10 +225,10 @@ namespace Electric {
 		if(m_nodeMesh.hasInstances())
 			m_nodeShader.render(m_camera, m_nodeMesh);
 
+		glBlendFunc(GL_ONE, GL_ONE);
+
 		if(m_dischargeMesh.hasInstances())
 			m_dischargeShader.render(m_camera, m_dischargeMesh, m_dischargeTexture);
-
-		glBlendFunc(GL_ONE, GL_ONE);
 
 		if(m_particlesMesh.hasInstances())
 			m_particleShader.render(m_camera, m_particlesMesh);

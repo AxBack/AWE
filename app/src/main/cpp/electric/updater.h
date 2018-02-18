@@ -38,7 +38,7 @@ namespace Electric {
 		typedef std::queue<Search> search_queue;
 		typedef Engine::Path<float> float_path;
 
-		std::string m_internalFilesPath;
+		std::string m_internalFilePath;
 
 		std::mt19937 m_generator;
 		Math::Matrix m_transform;
@@ -100,7 +100,7 @@ namespace Electric {
 
 		virtual bool init(const char* internalFilesPath)
 		{
-			m_internalFilesPath = internalFilesPath;
+			m_internalFilePath = internalFilesPath;
 			return init();
 		}
 

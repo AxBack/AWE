@@ -14,7 +14,7 @@ float LOSS_FACTOR = 0.5f;
 	{
 		Math::Matrix::identity(m_transform);
 
-		Engine::BinaryReader reader((m_internalFilesPath + "/WAE.dat").c_str());
+		Engine::BinaryReader reader(m_internalFilePath.c_str());
 		int nrClusters = reader.read<int>();
 
 		for(int i=0; i<nrClusters; ++i)

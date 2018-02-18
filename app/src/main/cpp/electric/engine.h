@@ -98,7 +98,7 @@ namespace Electric {
         }
 
         virtual void clear() override;
-        virtual bool init(const char* internalFilesPath, AAssetManager* pAssetManager) override;
+        virtual bool init(const char* internalFilePath, AAssetManager* pAssetManager) override;
 		virtual void restart() override;
         virtual bool render() override;
 
