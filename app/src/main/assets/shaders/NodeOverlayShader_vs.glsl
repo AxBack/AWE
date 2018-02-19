@@ -14,10 +14,12 @@
 
  out vec4 color;
  out vec2 uv;
+ out float intensity;
 
  void main() {
-     color = vec4(baseColor * 1.0 + (0.5 * charge), 1.0);
+     color = vec4(baseColor, 1.0f);
      uv = position.xy;
-     vec3 pos = ((right * position.x + up * position.y ) * (1.0 + charge));
+     intensity = 1.0f + charge;
+     vec3 pos = ((right * position.x + up * position.y ) * (2.0 + charge));
      gl_Position = viewProjection * vec4((pos * size) + offset, position.w);
  }
