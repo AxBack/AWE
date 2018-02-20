@@ -20,6 +20,7 @@ namespace Electric {
 		GLint m_textureLocation;
 		GLint m_rightLocation;
 		GLint m_upLocation;
+		GLint m_scaleLocation;
 
 	public:
 
@@ -30,6 +31,7 @@ namespace Electric {
 				, m_textureLocation(0)
 				, m_rightLocation(0)
 				, m_upLocation(0)
+				, m_scaleLocation(0)
 		{}
 
 		bool init(AAssetManager *pAssetManager, const Mesh& mesh);
@@ -46,7 +48,7 @@ namespace Electric {
 			}
 		}
 
-		void render(const Engine::Camera& camera, const Mesh& mesh, Engine::Texture& texture )
+		void render(float scale, const Engine::Camera& camera, const Mesh& mesh, Engine::Texture& texture )
 		{
 			glUseProgram(m_program);
 			glBindVertexArray(m_vao);
@@ -60,6 +62,8 @@ namespace Electric {
 
 			Math::Vector3 right = camera.getRight();
 			glUniform3f(m_rightLocation, right.x(), right.y(), right.z());
+
+			glUniform1f(m_scaleLocation, scale);
 
 			glUniformMatrix4fv(m_viewProjectionLocation, 1, GL_FALSE, camera.getViewProjection().data());
 

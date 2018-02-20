@@ -5,6 +5,7 @@ uniform mat4 viewProjection;
 uniform sampler2D uTexture;
 uniform vec3 up;
 uniform vec3 right;
+uniform float scale;
 
 layout (location = 0) in vec4 position;
 layout (location = 1) in vec2 texCoords;
@@ -20,8 +21,6 @@ void main() {
     color = inColor;
     uv = texCoords;
     charge = size;
-
-    vec3 pos = offset + (right * position.x + up * position.y) * size;
-
+    vec3 pos = offset + (right * position.x + up * position.y) * (scale + size);
     gl_Position = viewProjection * vec4(pos, position.w);
 }

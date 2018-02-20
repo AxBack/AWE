@@ -7,6 +7,7 @@ namespace Electric {
 #define TEXTURE "uTexture"
 #define UP "right"
 #define CAMERA_UP "up"
+#define SCALE "scale"
 
 	bool DischargeShader::init(AAssetManager* pAssetManager, const Mesh& mesh)
 	{
@@ -16,6 +17,7 @@ namespace Electric {
 		m_textureLocation = getLocation(m_program, TEXTURE);
 		m_rightLocation = getLocation(m_program, UP);
 		m_upLocation = getLocation(m_program, CAMERA_UP);
+		m_scaleLocation = getLocation(m_program, SCALE);
 
 		glGenVertexArrays(1, &m_vao);
 
