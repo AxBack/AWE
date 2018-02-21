@@ -80,7 +80,7 @@ namespace Electric {
 		Updater()
 			: Engine::Updater()
 			, m_generator(840331)
-			, m_dischargeSpeed(30.0f)
+			, m_dischargeSpeed(100.0f)
 			, m_dirty(true)
 			, m_rotation(0.0f)
 			, m_nrDischargeInstances(0)
@@ -91,8 +91,8 @@ namespace Electric {
 			}
 
 			{
-				float p1[] = {1.0, 0.6};
-				float p2[] = {0.6};
+				float p1[] = {1.0, 0.3};
+				float p2[] = {0.3};
 				m_dischargeSizePath.add(0.2f, 2, p1);
 				m_dischargeSizePath.add(0.8f, 1, p2);
 			}

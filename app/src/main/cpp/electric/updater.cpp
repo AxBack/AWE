@@ -91,8 +91,7 @@ float LOSS_FACTOR = 0.5f;
 
 				if(m_nrDischargeInstances >= m_dischargeInstances.size())
 					m_dischargeInstances.push_back({offset.x(), offset.y(), offset.z(),
-													c.x(), c.y(), c.z(),
-												    size});
+													c.x(), c.y(), c.z(), size});
 				else
 				{
 					m_dischargeInstances[m_nrDischargeInstances].x = offset.x();
