@@ -28,6 +28,9 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createClusterBinary(1000, "temp.dat");
+
         setContentView(R.layout.activity_main);
 
         mListValues = Arrays.asList(getResources().getStringArray(R.array.wallpapers));
@@ -45,10 +48,7 @@ public class MainActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-
-        List<Cluster> clusters = new ArrayList<>();
-        clusters.add(new Cluster(1000));
-        createBinary(clusters);
+        createClusterBinary(1000, "WAE.dat");
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -71,10 +71,16 @@ public class MainActivity extends ListActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void createBinary(List<Cluster> clusters) {
+    private void createClusterBinary(int nrNodes, String name) {
+        List<Cluster> clusters = new ArrayList<>();
+        clusters.add(new Cluster(nrNodes));
+        createBinary(clusters, name);
+    }
+
+    private void createBinary(List<Cluster> clusters, String name) {
 
         try {
-            String name = this.getFilesDir().getAbsolutePath() + "/WAE.dat";
+            name = this.getFilesDir().getAbsolutePath() + "/" + name;
             FileOutputStream file = new FileOutputStream(name, false);
             DataOutputStream data = new DataOutputStream(file);
 

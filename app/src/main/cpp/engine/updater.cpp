@@ -10,7 +10,7 @@ namespace Engine {
     UINT Updater::sThreadCounter = 0;
 
     bool Updater::init() {
-        stop();
+        start();
 
         return true;
     }
