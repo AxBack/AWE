@@ -24,16 +24,17 @@ public class MainActivity extends ListActivity {
     private List<String> mListValues;
 
     static WallpaperService sWallpaperService;
+    EditorView mEditorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        createClusterBinary(1000, "temp.dat");
-
         setContentView(R.layout.activity_main);
 
-        mListValues = Arrays.asList(getResources().getStringArray(R.array.wallpapers));
+        mEditorView = (EditorView)findViewById(R.id.editor);
+        updateEditorView();
+
+        mListValues = Arrays.asList(getResources().getStringArray(R.array.options));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, layout.simple_list_item_1,
                 mListValues);
         setListAdapter(adapter);
@@ -48,18 +49,38 @@ public class MainActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        createClusterBinary(1000, "WAE.dat");
+        switch (position) {
+            case 0:
+                updateEditorView();
+                break;
+            case 1:
+                updateWallpaper(mListValues.get(position));
+                break;
+        }
+    }
+
+    private void updateEditorView() {
+        List<Cluster> clusters = new ArrayList<>();
+        clusters.add(Cluster.createRandom(1000, 1));
+        createBinary(clusters, "temp.dat");
+        mEditorView.reset();
+    }
+
+    private void updateWallpaper(String type) {
+        List<Cluster> clusters = new ArrayList<>();
+        clusters.add(Cluster.createRandom(1000, 10));
+        createBinary(clusters, "WAE.dat");
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("WallpaperType", mListValues.get(position));
+        editor.putString("WallpaperType", type);
         editor.apply();
 
         Intent intent = new Intent(
                 WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
                 .putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                         new ComponentName(this, WallpaperService.class))
-                .putExtra("WallpaperType", mListValues.get(position));
+                .putExtra("WallpaperType", type);
         startActivityForResult(intent, 123);
     }
 
@@ -69,12 +90,6 @@ public class MainActivity extends ListActivity {
             sWallpaperService.restart();
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void createClusterBinary(int nrNodes, String name) {
-        List<Cluster> clusters = new ArrayList<>();
-        clusters.add(new Cluster(nrNodes));
-        createBinary(clusters, name);
     }
 
     private void createBinary(List<Cluster> clusters, String name) {
@@ -95,5 +110,17 @@ public class MainActivity extends ListActivity {
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mEditorView.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mEditorView.onResume();
     }
 }

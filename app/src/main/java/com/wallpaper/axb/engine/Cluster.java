@@ -13,25 +13,42 @@ public class Cluster {
 
     Path<Float> mChargePath = new Path<>();
 
-    float mSwitchInterval = 10.0f;
+    float mSwitchInterval = 30.0f;
     float mTransitionTime = 1.0f;
 
     int mNrNodes = 500;
 
+    static Cluster createRandom(int nrNodes, int nrStates) {
+        Cluster cluster = new Cluster(nrNodes);
+        Random random = new Random();
+        cluster.mSwitchInterval = 30.0f + (random.nextFloat() * 30.0f);
+
+        for(int x=0; x < nrStates; ++x) {
+            cluster.mStates.add(createRandomState(cluster));
+        }
+
+        return cluster;
+    }
+
+    static State createRandomState(Cluster cluster) {
+
+        State state = cluster.new State();
+        randomize(state.position, new Float3(-20, -20, -20), new Float3(20,20,20), 1, 3);
+        randomize(state.rotation, new Float3(0, 0, 0), new Float3(360,360,360), 2, 5);
+        randomize(state.offset, 0, 200, 1, 3);
+        randomize(state.spread, 10, 100, 1, 3);
+        randomize(state.color, new Float3(0, 0, 0), new Float3(1,1,1), 2, 4);
+        randomize(state.size, 0.5f, 5f, 2, 4);
+        randomize(state.yaw, 0, 180, 1, 3);
+        randomize(state.pitch, 0, 180, 1, 3);
+        return state;
+    }
+
     public Cluster(int nrNodes) {
         mNrNodes = nrNodes;
 
-        //temp
         Float[] points = {0.0f, 1.0f };
         mChargePath.add(1.0f, points);
-
-        Random random = new Random();
-        mSwitchInterval = 30.0f + (random.nextFloat() * 30.0f);
-
-        int i = Math.abs(random.nextInt() % 10) + 10;
-
-        for(int x=0; x < i; ++x)
-            mStates.add(new State());
     }
 
     public void write(DataOutputStream stream) throws IOException {
@@ -165,15 +182,7 @@ public class Cluster {
         public Path<Float> size = new Path<>();
 
         public State() {
-            //temp
-            randomize(position, new Float3(-20, -20, -20), new Float3(20,20,20), 1, 3);
-            randomize(rotation, new Float3(0, 0, 0), new Float3(360,360,360), 2, 5);
-            randomize(offset, 0, 200, 1, 3);
-            randomize(spread, 10, 100, 1, 3);
-            randomize(color, new Float3(0, 0, 0), new Float3(1,1,1), 2, 4);
-            randomize(size, 0.5f, 5f, 2, 4);
-            randomize(yaw, 0, 180, 1, 3);
-            randomize(pitch, 0, 180, 1, 3);
+
         }
 
         public void write(DataOutputStream stream) throws IOException {
