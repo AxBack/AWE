@@ -56,6 +56,9 @@ public class MainActivity extends ListActivity {
             case "Hourglass":
                 setState(ClusterState.createHourglass());
                 break;
+            case "AxB":
+                setState(ClusterState.createAxB());
+                break;
             case "Set":
                 updateWallpaper(mListValues.get(position));
                 break;
