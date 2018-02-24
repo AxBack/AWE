@@ -9,9 +9,9 @@ import java.util.Random;
 
 public class Cluster {
 
-    List<State> mStates = new ArrayList<>();
+    List<ClusterState> mStates = new ArrayList<>();
 
-    Path<Float> mChargePath = new Path<>();
+    Path<Floats.Float> mChargePath = new Path<>(Floats.Float.class);
 
     float mSwitchInterval = 30.0f;
     float mTransitionTime = 1.0f;
@@ -24,30 +24,16 @@ public class Cluster {
         cluster.mSwitchInterval = 30.0f + (random.nextFloat() * 30.0f);
 
         for(int x=0; x < nrStates; ++x) {
-            cluster.mStates.add(createRandomState(cluster));
+            cluster.mStates.add(ClusterState.createRandomState());
         }
 
         return cluster;
     }
 
-    static State createRandomState(Cluster cluster) {
-
-        State state = cluster.new State();
-        randomize(state.position, new Float3(-20, -20, -20), new Float3(20,20,20), 1, 3);
-        randomize(state.rotation, new Float3(0, 0, 0), new Float3(360,360,360), 2, 5);
-        randomize(state.offset, 0, 200, 1, 3);
-        randomize(state.spread, 10, 100, 1, 3);
-        randomize(state.color, new Float3(0, 0, 0), new Float3(1,1,1), 2, 4);
-        randomize(state.size, 0.5f, 5f, 2, 4);
-        randomize(state.yaw, 0, 180, 1, 3);
-        randomize(state.pitch, 0, 180, 1, 3);
-        return state;
-    }
-
     public Cluster(int nrNodes) {
         mNrNodes = nrNodes;
 
-        Float[] points = {0.0f, 1.0f };
+        Floats.Float[] points = {new Floats.Float(0.0f), new Floats.Float(1.0f) };
         mChargePath.add(1.0f, points);
     }
 
@@ -65,7 +51,7 @@ public class Cluster {
         stream.writeFloat(mTransitionTime);
 
         // charge
-        writePath(stream, mChargePath);
+        mChargePath.write(stream);
 
         // nr nodes
         stream.writeInt(mNrNodes);
@@ -73,143 +59,7 @@ public class Cluster {
         // nr states
         stream.writeInt(mStates.size());
 
-        for (State s : mStates)
+        for (ClusterState s : mStates)
             s.write(stream);
-    }
-
-    private static void writePath(DataOutputStream stream, Path<Float> path) throws IOException {
-        stream.writeInt(path.parts.size()); // nr parts
-
-        for (Path<Float>.Part p : path.parts) {
-            stream.writeFloat(p.time);
-            stream.writeInt(p.points.size());
-            for (float f : p.points)
-                stream.writeFloat(f);
-        }
-    }
-
-    private static void writePath3(DataOutputStream stream, Path<Float3> path) throws IOException {
-        stream.writeInt(path.parts.size()); // nr parts
-
-        for (Path<Float3>.Part p : path.parts) {
-            stream.writeFloat(p.time);
-            stream.writeInt(p.points.size());
-            for (Float3 f : p.points)
-                f.write(stream);
-        }
-    }
-
-    static void randomize(Path<Float> path, float min, float max, int minNrPoints, int maxNrPoints) {
-        path.clear();
-
-        Random random = new Random();
-
-        int nr = Math.abs(random.nextInt() % maxNrPoints) + minNrPoints;
-        Float[] points = new Float[nr];
-        for(int i=0; i < nr; ++i) {
-            points[i] = min + (random.nextFloat() * (max - min));
-        }
-        path.add(1.0f, points);
-    }
-
-    static void randomize(Path<Float3> path, Float3 min, Float3 max, int minNrPoints, int maxNrPoints) {
-        path.clear();
-
-        Random random = new Random();
-
-        int nr = Math.abs(random.nextInt() % maxNrPoints) + minNrPoints;
-        Float3[] points = new Float3[nr];
-        for(int i=0; i < nr; ++i) {
-            points[i] = new Float3(
-                    min.x + (random.nextFloat() * (max.x - min.x)),
-                    min.y + (random.nextFloat() * (max.y - min.y)),
-                    min.z + (random.nextFloat() * (max.z - min.z))
-            );
-        }
-        path.add(1.0f, points);
-    }
-
-    static class Float3 {
-        public float x;
-        public float y;
-        public float z;
-
-        public Float3(float x, float y, float z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public void write(DataOutputStream stream) throws IOException {
-            stream.writeFloat(x);
-            stream.writeFloat(y);
-            stream.writeFloat(z);
-        }
-    }
-
-    class Path<T> {
-
-        class Part {
-            float time;
-            List<T> points = new ArrayList<>();
-
-            public Part(float time, T[] points) {
-                this.time = time;
-                this.points = Arrays.asList(points);
-            }
-        }
-
-        List<Part> parts = new ArrayList<>();
-
-        void add(float time, T[] points) {
-            parts.add(new Part(time, points));
-        }
-
-        void clear() {
-            parts.clear();
-        }
-    }
-
-    class State {
-
-        public Path<Float3> position = new Path<>();
-        public Path<Float3> rotation = new Path<>();
-        public Path<Float> offset = new Path<>();
-        public Path<Float> spread = new Path<>();
-        public Path<Float> yaw = new Path<>();
-        public Path<Float> pitch = new Path<>();
-        public Path<Float3> color = new Path<>();
-        public Path<Float> size = new Path<>();
-
-        public State() {
-
-        }
-
-        public void write(DataOutputStream stream) throws IOException {
-
-            // position
-            writePath3(stream, position);
-
-            // rotation
-            writePath3(stream, rotation);
-
-            // offset
-            writePath(stream, offset);
-
-            // spread
-            writePath(stream, spread);
-
-            // yaw spread
-            writePath(stream, yaw);
-
-            // pitch spread
-            writePath(stream, pitch);
-
-            // color
-            writePath3(stream, color);
-
-            // size
-            writePath(stream, size);
-        }
     }
 }
