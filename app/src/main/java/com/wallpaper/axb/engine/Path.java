@@ -44,10 +44,14 @@ public class Path<T extends Floats> {
     }
 
     public void write(DataOutputStream stream) throws IOException {
+        float total = 0.0f;
+        for(Part p : parts)
+            total += p.time;
+
         stream.writeInt(parts.size()); // nr parts
 
         for (Part p : parts) {
-            stream.writeFloat(p.time);
+            stream.writeFloat(total == 0 ? p.time : p.time / total);
             stream.writeInt(p.points.size());
             for (Floats f : p.points)
                 f.write(stream);
