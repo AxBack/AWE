@@ -61,4 +61,98 @@ public class ClusterState {
         state.pitch.randomize(new Floats.Float(0), new Floats.Float(180), 1, 3);
         return state;
     }
+
+    public static ClusterState createHourglass() {
+        ClusterState state = new ClusterState();
+        state.position.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,-100,0),
+                new Floats.Float3(0,100,0)
+        });
+        state.rotation.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,0,0)
+        });
+        state.offset.add(0.5f, new Floats.Float[]{
+                new Floats.Float(0.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(0.0f)
+        });
+        state.offset.add(0.5f, new Floats.Float[]{
+                new Floats.Float(0.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(0.0f)
+        });
+        state.spread.add(1.0f, new Floats.Float[]{
+                new Floats.Float(0.0f)
+        });
+        state.color.add(0.5f, new Floats.Float3[]{
+                new Floats.Float3(1,0,0)
+        });
+        state.color.add(0.5f, new Floats.Float3[]{
+                new Floats.Float3(0,0,1)
+        });
+        state.size.add(1.0f, new Floats.Float[]{
+                new Floats.Float(1.0f),
+                new Floats.Float(0.1f),
+                new Floats.Float(1.0f)
+        });
+        state.yaw.add(1.0f, new Floats.Float[]{
+                new Floats.Float(0.0f)
+        });
+        state.pitch.add(1.0f, new Floats.Float[]{
+                new Floats.Float(360.0f)
+        });
+
+        return state;
+    }
+
+    public static ClusterState createAxB() {
+        ClusterState state = new ClusterState();
+        state.position.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,-100,0),
+                new Floats.Float3(0,100,0)
+        });
+        state.rotation.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,0,0)
+        });
+        state.offset.add(0.5f, new Floats.Float[]{
+                new Floats.Float(0.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(0.0f)
+        });
+        state.offset.add(0.5f, new Floats.Float[]{
+                new Floats.Float(0.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(50.0f),
+                new Floats.Float(0.0f)
+        });
+        state.spread.add(1.0f, new Floats.Float[]{
+                new Floats.Float(0.0f)
+        });
+        state.color.add(0.5f, new Floats.Float3[]{
+                new Floats.Float3(1,0,0)
+        });
+        state.color.add(0.5f, new Floats.Float3[]{
+                new Floats.Float3(0,0,1)
+        });
+        state.size.add(1.0f, new Floats.Float[]{
+                new Floats.Float(1.0f),
+                new Floats.Float(0.1f),
+                new Floats.Float(1.0f)
+        });
+        state.yaw.add(1.0f, new Floats.Float[]{
+                new Floats.Float(0.0f)
+        });
+        state.pitch.add(1.0f, new Floats.Float[]{
+                new Floats.Float(360.0f)
+        });
+
+        return state;
+    }
 }

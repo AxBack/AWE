@@ -37,6 +37,10 @@ public class Cluster {
         mChargePath.add(1.0f, points);
     }
 
+    public void add(ClusterState state) {
+        mStates.add(state);
+    }
+
     public void write(DataOutputStream stream) throws IOException {
 
         stream.writeFloat(0); // x

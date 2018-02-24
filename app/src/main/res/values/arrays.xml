@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="options">
-        <item>Update</item>
+        <item>Random</item>
+        <item>Hourglass</item>
+        <item>AxB</item>
         <item>Set</item>
     </string-array>
 </resources>

@@ -32,7 +32,7 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
 
         mEditorView = (EditorView)findViewById(R.id.editor);
-        updateEditorView();
+        setState(ClusterState.createRandomState());
 
         mListValues = Arrays.asList(getResources().getStringArray(R.array.options));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, layout.simple_list_item_1,
@@ -49,19 +49,23 @@ public class MainActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        switch (position) {
-            case 0:
-                updateEditorView();
+        switch (mListValues.get(position)) {
+            case "Random":
+                setState(ClusterState.createRandomState());
                 break;
-            case 1:
+            case "Hourglass":
+                setState(ClusterState.createHourglass());
+                break;
+            case "Set":
                 updateWallpaper(mListValues.get(position));
                 break;
         }
     }
 
-    private void updateEditorView() {
+    private void setState(ClusterState state) {
         List<Cluster> clusters = new ArrayList<>();
-        clusters.add(Cluster.createRandom(1000, 1));
+        clusters.add(new Cluster(1000));
+        clusters.get(0).add(state);
         createBinary(clusters, "temp.dat");
         mEditorView.reset();
     }
