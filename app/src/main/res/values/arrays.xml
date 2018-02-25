@@ -3,6 +3,7 @@
     <string-array name="options">
         <item>Random</item>
         <item>Hourglass</item>
+        <item>Spiral</item>
         <item>AxB</item>
         <item>Set</item>
     </string-array>

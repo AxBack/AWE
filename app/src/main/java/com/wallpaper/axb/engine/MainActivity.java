@@ -56,6 +56,9 @@ public class MainActivity extends ListActivity {
             case "Hourglass":
                 setState(ClusterState.createHourglass());
                 break;
+            case "Spiral":
+                setState(ClusterState.createSpiral());
+                break;
             case "AxB":
                 setState(ClusterState.createAxB());
                 break;
