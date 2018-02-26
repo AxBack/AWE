@@ -80,7 +80,7 @@ namespace Electric {
 		Updater()
 			: Engine::Updater()
 			, m_generator(840331)
-			, m_dischargeSpeed(100.0f)
+			, m_dischargeSpeed(10.0f)
 			, m_dirty(true)
 			, m_rotation(0.0f)
 			, m_nrDischargeInstances(0)
