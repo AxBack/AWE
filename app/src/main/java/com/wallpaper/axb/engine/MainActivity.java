@@ -62,6 +62,9 @@ public class MainActivity extends ListActivity {
             case "AxB":
                 setState(ClusterState.createAxB());
                 break;
+            case "PP":
+                setState(ClusterState.createPP());
+                break;
             case "Set":
                 updateWallpaper(mListValues.get(position));
                 break;

@@ -222,4 +222,44 @@ public class ClusterState {
 
         return state;
     }
+
+    public static ClusterState createPP() {
+        ClusterState state = new ClusterState();
+        state.position.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(-100,-25,0),
+                new Floats.Float3(-100,25,0)
+        });
+        state.rotation.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,0,0)
+        });
+        state.offset.add(1.0f, new Floats.Float[]{
+                new Floats.Float(0.0f),
+        });
+        state.spread.add(1.0f, new Floats.Float[]{
+                new Floats.Float(50.0f)
+        });
+        state.color.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(1,1,0),
+                new Floats.Float3(0,1,1),
+        });
+        state.size.add(1.0f, new Floats.Float[]{
+                new Floats.Float(2.0f),
+        });
+        state.yaw.add(1.0f, new Floats.Float[]{
+                new Floats.Float(360.0f)
+        });
+        state.pitch.add(1.0f, new Floats.Float[]{
+                new Floats.Float(360.0f)
+        });
+
+        state.position.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(-100,25,0),
+                new Floats.Float3(25,25,0),
+        });
+        state.color.add(1.0f, new Floats.Float3[]{
+                new Floats.Float3(0,1,1)
+        });
+
+        return state;
+    }
 }
