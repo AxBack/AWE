@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wallpaper.axb.engine.MainActivity"
-    android:orientation="vertical">
+    tools:context="com.wallpaper.axb.engine.com.wallpaper.axb.view.MainActivity">
 
     <com.wallpaper.axb.engine.EditorView
         android:id="@+id/editor"
         android:layout_width="match_parent"
-        android:layout_height="500dp"/>
+        android:layout_height="match_parent"/>
 
-    <ListView
-        android:id="@android:id/list"
+    <com.wallpaper.axb.view.SlideInView
+        android:id="@+id/slide_in_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:drawSelectorOnTop="false">
-    </ListView>
+        android:layout_height="match_parent" />
 
-</LinearLayout>
+</FrameLayout>

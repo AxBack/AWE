@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Generic dimens -->
+    <dimen name="generic_margin">8dp</dimen>
+    <dimen name="generic_elevation">4dp</dimen>
+</resources>

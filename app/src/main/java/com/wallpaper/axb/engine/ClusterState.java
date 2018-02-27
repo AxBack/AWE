@@ -48,7 +48,7 @@ public class ClusterState {
         size.write(stream);
     }
 
-    static ClusterState createRandomState() {
+    public static ClusterState createRandomState() {
 
         ClusterState state = new ClusterState();
         state.position.randomize(new Floats.Float3(-20, -20, -20), new Floats.Float3(20,20,20), 1, 3);

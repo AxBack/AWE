@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
+import com.wallpaper.axb.view.MainActivity;
+
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
 
     private static final boolean DEBUG = true;

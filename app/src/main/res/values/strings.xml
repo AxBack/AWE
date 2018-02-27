@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">AWE</string>
     <string name="description">AWE Desc</string>
+
+    <!-- Preset titles -->
+    <string name="preset_random_title">Random</string>
+    <string name="preset_hour_glass_title">Hour glass</string>
+    <string name="preset_spiral_title">Spiral</string>
+    <string name="preset_axb_title">Axb</string>
+    <string name="preset_pp_title">PP</string>
+    <string name="preset_custom_title">Custom</string>
 </resources>

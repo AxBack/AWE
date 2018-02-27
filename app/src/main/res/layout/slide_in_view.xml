@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/slide_in_fragment_fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:alpha="0.7" />
+
+    <ImageView
+        android:id="@+id/slide_in_view_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/generic_margin"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/arrow_down_float" />
+
+</LinearLayout>
