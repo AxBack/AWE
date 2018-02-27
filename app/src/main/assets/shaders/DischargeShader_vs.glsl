@@ -21,6 +21,6 @@ void main() {
     color = inColor;
     uv = texCoords;
     charge = size;
-    vec3 pos = offset + (right * position.x + up * position.y) * (scale + size);
+    vec3 pos = offset + (right * position.x + up * position.y) * (scale * size);
     gl_Position = viewProjection * vec4(pos, position.w);
 }

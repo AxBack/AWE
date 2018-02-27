@@ -91,10 +91,10 @@ namespace Electric {
 			}
 
 			{
-				float p1[] = {1.0, 0.3};
-				float p2[] = {0.3};
-				m_dischargeSizePath.add(0.2f, 2, p1);
-				m_dischargeSizePath.add(0.8f, 1, p2);
+				float p1[] = {1.0, 0.8};
+				float p2[] = {0.8, 0.8, 1.0 };
+				m_dischargeSizePath.add(0.3f, 2, p1);
+				m_dischargeSizePath.add(0.7f, 3, p2);
 			}
 		}
 

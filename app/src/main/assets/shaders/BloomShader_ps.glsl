@@ -7,7 +7,7 @@ in vec2 uv;
 
 out vec4 finalColor;
 
-const float luminocity = 1.5f;
+const float luminocity = 1.2f;
 
 void main() {
     finalColor = texture(uTexture, uv) * luminocity;

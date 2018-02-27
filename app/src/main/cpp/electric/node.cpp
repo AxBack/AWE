@@ -41,12 +41,12 @@ namespace Electric {
 			m_dirty = true;
 		}
 
-		m_charge += dt * OSMOSIS_PER_SECOND;
+		m_charge = std::min(m_charge + dt * OSMOSIS_PER_SECOND, 1.0f);
 
 		if(m_restitution > 0.0f)
 			m_restitution -= dt;
 
-		if(!m_waitingForDischargeResult && m_charge > 1.0f)
+		if(!m_waitingForDischargeResult && m_charge >= 1.0f)
 		{
 			m_waitingForDischargeResult = true;
 			m_pListener->onDischarge(this, std::min(DISCHARGE_RADIUS * m_charge, DISCHARGE_MAX_RADIUS));

@@ -234,7 +234,7 @@ namespace Electric {
 			m_nodeShader.render(m_camera, m_nodeMesh);
 
 		if(m_dischargeMesh.hasInstances())
-			m_dischargeShader.render(0.0f, m_camera, m_dischargeMesh, m_dischargeTexture);
+			m_dischargeShader.render(0.5f, m_camera, m_dischargeMesh, m_dischargeTexture);
 
 		m_bloomTarget.set();
 		m_bloomTarget.clear();
@@ -246,7 +246,7 @@ namespace Electric {
 			m_nodeOverlayShader.render(m_camera, m_nodeMesh);
 
 		if(m_dischargeMesh.hasInstances())
-			m_dischargeShader.render(2.0f, m_camera, m_dischargeMesh, m_dischargeTexture);
+			m_dischargeShader.render(1.0f, m_camera, m_dischargeMesh, m_dischargeTexture);
 
 		if(m_particlesMesh.hasInstances())
 			m_particleShader.render(m_camera, m_particlesMesh);
