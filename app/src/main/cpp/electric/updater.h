@@ -91,11 +91,11 @@ namespace Electric {
 			}
 
 			{
-				float p1[] = {1.0, 0.8};
-				float p2[] = {0.8, 0.8, 1.0 };
+				float p1[] = {2.0, 1.5};
+				float p2[] = {1.5, 1.5, 2.0 };
 				m_dischargeSizePath.add(0.3f, 2, p1);
 				m_dischargeSizePath.add(0.7f, 3, p2);
-			}
+			};
 		}
 
 		virtual bool init(const char* internalFilePath)

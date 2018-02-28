@@ -95,9 +95,9 @@ public class ClusterState {
                 new Floats.Float3(0,0,1)
         });
         state.size.add(1.0f, new Floats.Float[]{
+                new Floats.Float(2.0f),
                 new Floats.Float(1.0f),
-                new Floats.Float(0.1f),
-                new Floats.Float(1.0f)
+                new Floats.Float(2.0f)
         });
         state.yaw.add(1.0f, new Floats.Float[]{
                 new Floats.Float(0.0f)
@@ -211,7 +211,11 @@ public class ClusterState {
                 new Floats.Float3(0,0,1)
         });
         state.size.add(1.0f, new Floats.Float[]{
-                new Floats.Float(1.0f),
+                new Floats.Float(2.0f),
+                new Floats.Float(3.0f),
+                new Floats.Float(2.0f),
+                new Floats.Float(3.0f),
+                new Floats.Float(2.0f),
         });
         state.yaw.add(1.0f, new Floats.Float[]{
                 new Floats.Float(0.0f)
