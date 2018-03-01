@@ -27,15 +27,12 @@ float LOSS_FACTOR = 0.5f;
 
 	void Updater::reset(const char* internalFilePath)
 	{
-		bool running = isRunning();
-		if(running)
+		if(isRunning())
 			stop();
 
 		clear();
 		init(internalFilePath);
 
-		if(running)
-			start();
 	}
 
 	void Updater::clear()
