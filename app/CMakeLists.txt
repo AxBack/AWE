@@ -5,6 +5,9 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+include(AndroidNdkModules)
+android_ndk_import_module_cpufeatures()
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
@@ -55,6 +58,7 @@ target_link_libraries( # Specifies the target library.
                        ${OPENGL_LIB}
                        ${EGL_LIB}
                        ${ANDROID_LIB}
+                       cpufeatures
 
                        # Links the target library to the log library
                        # included in the NDK.

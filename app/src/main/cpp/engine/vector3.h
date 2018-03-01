@@ -3,6 +3,7 @@
 #include <math.h>
 #include <cmath>
 #include "binary_reader.h"
+#include <arm_neon.h>
 
 namespace Math {
 

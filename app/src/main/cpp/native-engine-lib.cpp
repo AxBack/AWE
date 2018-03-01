@@ -3,6 +3,7 @@
 #include "electric/engine.h"
 
 #include <map>
+#include <cpu-features.h>
 
 int id = 0;
 
@@ -14,6 +15,12 @@ JNIEXPORT jint JNICALL
 Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type,
 												  jstring internalFile, jobject assetManager)
 {
+	if(android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM &&
+			(android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON))
+	{
+		NEON_AVAILABLE = true;
+	}
+
     const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
 	const char* internalFilePath = pEnv->GetStringUTFChars(internalFile, (jboolean*)0);
     Engine::Engine* pEngine = nullptr;
