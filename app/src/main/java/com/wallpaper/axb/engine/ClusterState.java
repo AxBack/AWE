@@ -4,9 +4,28 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Created by AxB on 2/24/2018.
+ * A state for a Cluster.
+ *
+ * Each state consists of different paths of bezier curves (https://en.wikipedia.org/wiki/Bezier_curve)
+ * of either Float or Float3.
+ *
+ * Path
+ *      Curve
+ *          Point, Point, Point, Point
+ *      Curve
+ *          Point, Point
+ *      Curve
+ *          Point, Point
+ *
+ * Each curve has a length which in the export stage will be normalized so that a value can
+ * be extracted by using 0 - 1 as inputs.
+ *
+ *  Curve1 = 2.0f
+ *  Curve2 = 3.0f
+ *  Curve3 = 5.0f
+ *  = Curve1(0.0f - 0.2f), Curve2(0.2f - 0.3f), Curve3(0.5f - 1.0f)
+ *
  */
-
 public class ClusterState {
     public String id;
     public Path<Floats.Float3> position = new Path<>(Floats.Float3.class);
