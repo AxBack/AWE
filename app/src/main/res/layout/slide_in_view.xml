@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:alpha="0.7" />
+        android:alpha="@dimen/settings_screen_alpha" />
 
     <ImageView
         android:id="@+id/slide_in_view_icon"

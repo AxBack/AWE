@@ -12,10 +12,11 @@ import com.wallpaper.axb.engine.R;
 /**
  * Created by Atte on 2018-02-27.
  */
-
 public class SlideInView extends FrameLayout implements View.OnTouchListener {
 
     private int mCollapsedX;
+    private float touchStartX;
+    private boolean isExpanded;
 
     public SlideInView(Context context) {
         super(context);
@@ -41,15 +42,16 @@ public class SlideInView extends FrameLayout implements View.OnTouchListener {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        // set X to collapsed mode
         final int iconWidth = findViewById(R.id.slide_in_view_icon).getMeasuredWidth();
         final int width = getMeasuredWidth();
         mCollapsedX = (iconWidth - width);
-        setX(mCollapsedX);
+
+        if (!isExpanded) {
+            setX(mCollapsedX);
+            isExpanded = false;
+        }
     }
 
-
-    float touchStartX;
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction()) {
@@ -58,6 +60,7 @@ public class SlideInView extends FrameLayout implements View.OnTouchListener {
             case MotionEvent.ACTION_MOVE:
                 float newX = Math.min(0, Math.max(mCollapsedX, (event.getRawX() + touchStartX)));
                 setX(newX);
+                isExpanded = newX != mCollapsedX;
                 return true;
         }
         return false;

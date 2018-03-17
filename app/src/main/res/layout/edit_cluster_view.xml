@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/settings_card_background"
+    app:cardCornerRadius="@dimen/generic_card_corner_radius"
+    app:cardElevation="@dimen/generic_elevation"
+    app:contentPadding="@dimen/generic_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/edit_cluster_name"
+                android:text="Name:"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edit_cluster_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:minWidth="100dp" />
+
+        </LinearLayout>
+
+        <!-- Position container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/edit_cluster_position_x"
+                android:text="Position X:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_position_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_position_y"
+                android:text="Y:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_position_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_position_z"
+                android:text="Z:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_position_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+        </LinearLayout>
+
+        <!-- Rotation container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/edit_cluster_rotation_x"
+                android:text="Rotation X:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_rotation_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_rotation_y"
+                android:text="Y:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_rotation_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_rotation_z"
+                android:text="Z:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_rotation_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+        </LinearLayout>
+
+        <!-- Offset & Spread & Yaw container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/edit_cluster_offset"
+                android:text="Offset:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_offset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_spread"
+                android:text="Spread:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_spread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_yaw"
+                android:text="Yaw:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_yaw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+        </LinearLayout>
+
+        <!--Pitch & Color & Size container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/edit_cluster_pitch"
+                android:text="Pitch:" />
+
+            <EditText
+                android:id="@+id/edit_cluster_pitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:minWidth="50dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/generic_margin"
+                android:labelFor="@+id/edit_cluster_color"
+                android:text="Color:" />
+
+            <View
+                android:id="@+id/edit_cluster_color"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -8,6 +8,7 @@ import java.io.IOException;
  */
 
 public class ClusterState {
+    public String id;
     public Path<Floats.Float3> position = new Path<>(Floats.Float3.class);
     public Path<Floats.Float3> rotation = new Path<>(Floats.Float3.class);
     public Path<Floats.Float> offset = new Path<>(Floats.Float.class);

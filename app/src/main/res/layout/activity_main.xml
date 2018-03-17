@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wallpaper.axb.engine.com.wallpaper.axb.view.MainActivity">
+    tools:context="com.wallpaper.axb.view.MainActivity">
 
     <com.wallpaper.axb.engine.EditorView
         android:id="@+id/editor"

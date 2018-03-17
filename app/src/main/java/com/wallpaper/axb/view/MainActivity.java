@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements OnSettingsChangedListener 
     }
 
     /**
-     * Sets the given {@link ClusterState} to the active.
+     * Sets the given {@link ClusterState} as the active.
      */
     private void setState(ClusterState state) {
         List<Cluster> clusters = new ArrayList<>();
