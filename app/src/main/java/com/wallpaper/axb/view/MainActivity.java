@@ -77,37 +77,8 @@ public class MainActivity extends Activity implements OnSettingsChangedListener 
         mEditorView.onResume();
     }
 
-    /**
-     * Writes the given clusters to save file.
-     */
-    private void createBinary(List<Cluster> clusters, String name) {
-        try {
-            name = this.getFilesDir().getAbsolutePath() + "/" + name;
-            FileOutputStream file = new FileOutputStream(name, false);
-            DataOutputStream data = new DataOutputStream(file);
-
-            data.writeInt(clusters.size()); // nr clusters
-
-            for (Cluster c : clusters)
-                c.write(data);
-
-            file.flush();
-            file.close();
-
-        } catch (IOException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Sets the given {@link ClusterState} as the active.
-     */
-    private void setState(ClusterState state) {
-        List<Cluster> clusters = new ArrayList<>();
-        clusters.add(new Cluster(1000));
-        clusters.get(0).add(state);
-        createBinary(clusters, "temp.dat");
-        mEditorView.reset();
+    private String getWallpaperFilePath() {
+        return this.getFilesDir().getAbsolutePath() + "/WAE.dat";
     }
 
     /**
@@ -115,8 +86,8 @@ public class MainActivity extends Activity implements OnSettingsChangedListener 
      */
     private void setAsWallpaper(String type) {
         List<Cluster> clusters = new ArrayList<>();
-//        clusters.add(Cluster.createRandom(1000, 10));
-        createBinary(clusters, "WAE.dat");
+        clusters.add(Cluster.createRandom(1000, 10));
+        Cluster.createBinary(clusters, getWallpaperFilePath());
 
         final SharedPreferences preferences = getSharedPreferences("AxB", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -140,7 +111,7 @@ public class MainActivity extends Activity implements OnSettingsChangedListener 
             // TODO: probably do other stuff when custom
             Snackbar.make(findViewById(android.R.id.content), "Custom not available", Snackbar.LENGTH_SHORT).show();
         } else {
-            setState(preset.clusterState);
+            Preset.setupFromPreset(preset, mEditorView.getClusterState());
         }
     }
 }

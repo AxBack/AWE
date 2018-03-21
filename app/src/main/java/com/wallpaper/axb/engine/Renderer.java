@@ -94,11 +94,9 @@ class Renderer implements GLSurfaceView.Renderer {
         if(mNativeId > -1)
             return;
 
-        mNativeId = mRenderEngine.create("Electric",
-                mContext.getFilesDir().getAbsolutePath() + "/" + binaryFile,
+        mNativeId = mRenderEngine.create(mContext.getFilesDir().getAbsolutePath() + "/" + binaryFile,
                 mContext.getAssets());
         if(mIsActive)
             mRenderEngine.resume(mNativeId);
-
     }
 }

@@ -1,6 +1,7 @@
 package com.wallpaper.axb;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.wallpaper.axb.engine.ClusterState;
@@ -11,18 +12,16 @@ import com.wallpaper.axb.engine.R;
  */
 public enum Preset {
 
-    RANDOM(ClusterState.createRandomState(), R.string.preset_random_title),
-    HOUR_GLASS(ClusterState.createHourglass(), R.string.preset_hour_glass_title),
-    SPIRAL(ClusterState.createSpiral(), R.string.preset_spiral_title),
-    AXB(ClusterState.createAxB(), R.string.preset_axb_title),
-    PP(ClusterState.createPP(), R.string.preset_pp_title),
-    CUSTOM(null, R.string.preset_custom_title);
+    RANDOM(R.string.preset_random_title),
+    HOUR_GLASS(R.string.preset_hour_glass_title),
+    SPIRAL(R.string.preset_spiral_title),
+    AXB(R.string.preset_axb_title),
+    PP(R.string.preset_pp_title),
+    CUSTOM(R.string.preset_custom_title);
 
-    public ClusterState clusterState;
     public int titleResId;
 
-    Preset(ClusterState clusterState, int titleResId) {
-        this.clusterState = clusterState;
+    Preset(int titleResId) {
         this.titleResId = titleResId;
     }
 
@@ -46,5 +45,28 @@ public enum Preset {
         }
 
         return null;
+    }
+
+    public static ClusterState setupFromPreset(Preset preset, @NonNull ClusterState state) {
+        switch (preset) {
+            case RANDOM:
+                ClusterState.createRandomState(state);
+                break;
+            case HOUR_GLASS:
+                ClusterState.createHourglass(state);
+                break;
+            case SPIRAL:
+                ClusterState.createSpiral(state);
+                break;
+            case AXB:
+                ClusterState.createAxB(state);
+                break;
+            case PP:
+                ClusterState.createPP(state);
+                break;
+            default:
+                break;
+        }
+        return state;
     }
 }

@@ -113,5 +113,11 @@ namespace Electric {
 
 		void onDischarge(Node* pNode, float radius) override;
 
+		void setState(UINT cluster, const Cluster::State& state)
+		{
+			std::lock_guard<std::mutex> _(m_nodeMutex);
+			m_clusters[cluster]->setState(state);
+		}
+
     };
 }

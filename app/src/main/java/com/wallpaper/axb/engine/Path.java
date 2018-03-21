@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Path<T extends Floats> {
+
+    public interface OnPathChangedListener {
+        void onPathChanged(Path path);
+    }
+
     class Part {
         float time;
         List<Floats> points = new ArrayList<>();
@@ -20,11 +25,16 @@ public class Path<T extends Floats> {
         }
     }
 
+    OnPathChangedListener mOnPathChangedListener;
+
     List<Part> parts = new ArrayList<>();
 
     Class<T> clazz;
 
-    public Path(Class<T> clazz) { this.clazz = clazz; }
+    public Path(Class<T> clazz, OnPathChangedListener listener) {
+        this.clazz = clazz;
+        mOnPathChangedListener = listener;
+    }
 
     private Floats newFloatInstance() {
         try {
@@ -35,8 +45,15 @@ public class Path<T extends Floats> {
         return null;
     }
 
-    void add(float time, Floats[] points) {
+    void add(float time, Floats[] points, boolean quiet) {
         parts.add(new Part(time, points));
+        if (!quiet && mOnPathChangedListener != null) {
+            mOnPathChangedListener.onPathChanged(this);
+        }
+    }
+
+    void add(float time, Floats[] points) {
+        add(time, points, true);
     }
 
     void clear() {

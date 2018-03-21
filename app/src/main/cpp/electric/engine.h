@@ -138,6 +138,11 @@ namespace Electric {
 			float c = m_pinch;
 			m_pinch = std::max(0.0f, std::min(m_positionPath.getLength(), c + diff));
 		}
+
+		void setState(const Cluster::State& state)
+		{
+			m_updater.setState(0, state);
+		}
     };
 
 }

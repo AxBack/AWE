@@ -3,12 +3,14 @@ package com.wallpaper.axb.engine;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by AxB on 2/21/2018.
@@ -20,7 +22,8 @@ public class EditorView extends GLSurfaceView implements
 
     private static boolean DEBUG = true;
 
-    private com.wallpaper.axb.engine.Renderer mRenderer;
+    private Context mContext;
+    private Renderer mRenderer;
 
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetectorCompat mGestureDetector;
@@ -31,17 +34,17 @@ public class EditorView extends GLSurfaceView implements
 
     public EditorView(Context context) {
         super(context);
-
-        init(context);
+        mContext = context;
+        init();
     }
 
     public EditorView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        init(context);
+        mContext = context;
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         setEGLConfigChooser(8, 8, 8, 8, 24, 1);
         setEGLContextClientVersion(3);
         setPreserveEGLContextOnPause(true);
@@ -50,17 +53,15 @@ public class EditorView extends GLSurfaceView implements
             setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR);
         }
 
-        mRenderer = new com.wallpaper.axb.engine.Renderer(context, "temp.dat");
+        mRenderer = new Renderer(mContext);
         setRenderer(mRenderer);
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 
-        mScaleGestureDetector = new ScaleGestureDetector(context, this);
-        mGestureDetector = new GestureDetectorCompat(context, this);
+        mScaleGestureDetector = new ScaleGestureDetector(mContext, this);
+        mGestureDetector = new GestureDetectorCompat(mContext, this);
     }
 
-    public void reset() {
-        mRenderer.reset("temp.dat");
-    }
+    public ClusterState getClusterState() { return mRenderer.mClusterState; }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -155,5 +156,29 @@ public class EditorView extends GLSurfaceView implements
             }
         }
         return true;
+    }
+
+    private class EditableState extends ClusterState {
+
+        @Override
+        protected void onInvalidated() {
+            Cluster cluster = new Cluster(1000);
+            cluster.add(this);
+            List<Cluster> clusters = new ArrayList<>();
+            clusters.add(cluster);
+            Cluster.createBinary(clusters, mContext.getFilesDir().getAbsolutePath() + "/temp.dat");
+            mRenderer.reset("temp.dat");
+        }
+    }
+
+    private class Renderer extends com.wallpaper.axb.engine.Renderer {
+
+        private Context mContext;
+        private ClusterState mClusterState = new EditableState();
+
+        public Renderer(Context ctx) {
+            super(ctx, "temp.dat");
+            mContext = ctx;
+        }
     }
 }

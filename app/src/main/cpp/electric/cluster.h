@@ -18,8 +18,7 @@ namespace Electric {
 
 	class Cluster
 	{
-	private:
-
+	public:
 		typedef std::shared_ptr<Node> node_ptr;
 		typedef std::vector<node_ptr> node_vec;
 		typedef Engine::Path<Math::Vector3> vec3_path;
@@ -37,6 +36,8 @@ namespace Electric {
 			vec3_path colorPath;
 		};
 
+	private:
+
 		std::mt19937 m_generator;
 
 		float m_time;
@@ -53,10 +54,10 @@ namespace Electric {
 
 		std::vector<State> m_states;
 
-		void toState(State& state, float transitionTime);
+		void toState(const State& state, float transitionTime);
 
-		static void read(Engine::BinaryReader& reader, vec3_path& path);
-		static void read(Engine::BinaryReader& reader, float_path& path);
+		static void read(Engine::BinaryReader& reader, vec3_path& path, const Math::Vector3 def = {0,0,0});
+		static void read(Engine::BinaryReader& reader, float_path& path, const float def = 0.0f);
 		static void read(Engine::BinaryReader& reader, State& state);
 
 	public:
@@ -69,6 +70,8 @@ namespace Electric {
 
 		void init(std::mt19937& generator, Engine::BinaryReader& reader, std::vector<NodeInstance>& nodeInstances,
 				  DischargeListener* pDischargeListener);
+
+		void setState(const State& state);
 
 		void update(const Math::Matrix& parent, bool dirty, std::vector<Search>& searches, float dt);
 

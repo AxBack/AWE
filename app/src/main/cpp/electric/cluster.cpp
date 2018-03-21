@@ -44,9 +44,23 @@ namespace Electric {
 		toState(m_states[0], 0);
 	}
 
-	void Cluster::read(Engine::BinaryReader& reader, vec3_path& path)
+	void Cluster::setState(const State& state)
+	{
+		m_states.clear();
+		m_states.push_back(state);
+		m_state = 0;
+		toState(state, 0.1f);
+	}
+
+	void Cluster::read(Engine::BinaryReader& reader, vec3_path& path, const Math::Vector3 def)
 	{
 		int nrParts = reader.read<int>();
+		if(nrParts <= 0)
+		{
+			path.add(1.0f, 1, &def);
+			return;
+		}
+
 		for(int i=0; i<nrParts; ++i)
 		{
 			float time = reader.read<float>();
@@ -58,9 +72,15 @@ namespace Electric {
 		}
 	}
 
-	void Cluster::read(Engine::BinaryReader& reader, float_path& path)
+	void Cluster::read(Engine::BinaryReader& reader, float_path& path, const float def)
 	{
 		int nrParts = reader.read<int>();
+		if(nrParts <= 0)
+		{
+			path.add(1.0f, 1, &def);
+			return;
+		}
+
 		for(int i=0; i<nrParts; ++i)
 		{
 			float time = reader.read<float>();
@@ -80,11 +100,11 @@ namespace Electric {
 		read(reader, state.spreadPath);
 		read(reader, state.spreadDirectionYawPath);
 		read(reader, state.spreadDirectionPatchPath);
-		read(reader, state.colorPath);
-		read(reader, state.sizePath);
+		read(reader, state.colorPath, {1,1,1});
+		read(reader, state.sizePath, 1);
 	}
 
-	void Cluster::toState(State& state, float transitionTime)
+	void Cluster::toState(const State& state, float transitionTime)
 	{
 		std::uniform_real_distribution<> dist(0.0f, 1.0f);
 		for(auto& it : m_nodes)

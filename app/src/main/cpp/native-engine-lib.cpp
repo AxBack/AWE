@@ -6,21 +6,16 @@
 
 int id = 0;
 
-std::map<int, Engine::Engine*> engines;
+std::map<int, Electric::ElectricEngine*> engines;
 
 extern "C" {
 
 JNIEXPORT jint JNICALL
-Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/, jstring type,
+Java_com_wallpaper_axb_engine_NativeEngine_create(JNIEnv* pEnv, jobject /*thiz*/,
 												  jstring internalFile, jobject assetManager)
 {
-    const char* str = pEnv->GetStringUTFChars(type, (jboolean*)0);
 	const char* internalFilePath = pEnv->GetStringUTFChars(internalFile, (jboolean*)0);
-    Engine::Engine* pEngine = nullptr;
-    if(strcmp(str, "Electric") == 0)
-        pEngine = new Electric::ElectricEngine;
-    else
-        return -1;
+    Electric::ElectricEngine* pEngine = new Electric::ElectricEngine;
 
 	AAssetManager* pAssetManager = AAssetManager_fromJava(pEnv, assetManager);
 	if(!pEngine->init(internalFilePath, pAssetManager))
@@ -46,7 +41,6 @@ Java_com_wallpaper_axb_engine_NativeEngine_reset(JNIEnv* pEnv, jobject /*thiz*/,
 
 	it->second->reset(internalFilePath);
 }
-
 
 JNIEXPORT void JNICALL
 Java_com_wallpaper_axb_engine_NativeEngine_destroy(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id)

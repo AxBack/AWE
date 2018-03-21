@@ -155,7 +155,7 @@ namespace Engine {
             m_traversables.push_back(p);
         }
 
-        T traverse(float time)
+        T traverse(float time) const
         {
             if(m_traversables.size() <= 0)
                 return T();
