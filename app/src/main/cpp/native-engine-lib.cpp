@@ -125,4 +125,16 @@ Java_com_wallpaper_axb_engine_NativeEngine_onOffsetChanged(JNIEnv* /*pEnv*/, job
         LOGE("No Engine to touch");
 }
 
+JNIEXPORT void JNICALL
+Java_com_wallpaper_axb_engine_NativeEngine_updatePath(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, jfloatArray floats)
+{
+	auto it = engines.find(id);
+	if(it != engines.end())
+	{
+
+	}
+	else
+		LOGE("No Engine to touch");
+}
+
 }

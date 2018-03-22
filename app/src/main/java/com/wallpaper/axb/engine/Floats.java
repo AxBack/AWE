@@ -2,12 +2,14 @@ package com.wallpaper.axb.engine;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Floats {
 
     public abstract void write(DataOutputStream stream) throws IOException;
     public abstract void randomize(Random random, Floats min, Floats max);
+    public abstract void write(List<java.lang.Float> floats);
 
     public static class Float extends Floats {
         public float v;
@@ -20,6 +22,11 @@ public abstract class Floats {
         @Override
         public void write(DataOutputStream stream) throws IOException {
             stream.writeFloat(v);
+        }
+
+        @Override
+        public void write(List<java.lang.Float> floats) {
+            floats.add(v);
         }
 
         @Override
@@ -48,6 +55,13 @@ public abstract class Floats {
             stream.writeFloat(x);
             stream.writeFloat(y);
             stream.writeFloat(z);
+        }
+
+        @Override
+        public void write(List<java.lang.Float> floats) {
+            floats.add(x);
+            floats.add(y);
+            floats.add(z);
         }
 
         @Override

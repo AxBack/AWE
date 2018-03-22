@@ -27,8 +27,6 @@ namespace Electric {
 		typedef std::shared_ptr<vec3_path> vec3_path_ptr;
 		typedef std::shared_ptr<float_path> float_path_ptr;
 
-		UINT m_instanceId;
-
 		Math::Vector3 m_offset;
 		Math::Vector3 m_position;
 		Math::Vector3 m_color;
@@ -49,10 +47,9 @@ namespace Electric {
 
 	public:
 
-		Node(UINT instanceId, Math::Vector3 position, Math::Vector3 color, float size, float charge,
+		Node(Math::Vector3 position, Math::Vector3 color, float size, float charge,
 			 float dt, DischargeListener* pListener)
-				: m_instanceId(instanceId)
-				, m_position(position)
+				: m_position(position)
 				, m_offset(position)
 				, m_color(color)
 				, m_size(size)
@@ -67,20 +64,30 @@ namespace Electric {
 		}
 
 		void update(Cluster* pOwner, bool dirty, float dt);
-		void update(std::vector<NodeInstance>& nodeInstances)
+		void update(std::vector<NodeInstance>& nodeInstances, UINT currentIndex)
 		{
-			NodeInstance* pInstance = &nodeInstances[m_instanceId];
-			pInstance->charge = m_charge;
-			if(m_dirty)
+			if (currentIndex >= nodeInstances.size())
 			{
-				m_dirty = false;
-				pInstance->x = m_position.x();
-				pInstance->y = m_position.y();
-				pInstance->z = m_position.z();
-				pInstance->size = m_size;
-				pInstance->r = m_color.x();
-				pInstance->g = m_color.y();
-				pInstance->b = m_color.z();
+				nodeInstances.push_back({m_position.x(), m_position.y(), m_position.z(),
+										 m_color.x(), m_color.y(), m_color.z(),
+										 m_size, m_charge});
+			}
+			else
+			{
+				NodeInstance* pInstance = &nodeInstances[currentIndex];
+				pInstance->charge = m_charge;
+				if(m_dirty)
+				{
+					m_dirty = false;
+					pInstance->x = m_position.x();
+					pInstance->y = m_position.y();
+					pInstance->z = m_position.z();
+					pInstance->size = m_size;
+					pInstance->r = m_color.x();
+					pInstance->g = m_color.y();
+					pInstance->b = m_color.z();
+					pInstance->charge = m_charge;
+				}
 			}
 		}
 

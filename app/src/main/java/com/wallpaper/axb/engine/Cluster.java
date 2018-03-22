@@ -15,7 +15,7 @@ public class Cluster {
 
     List<ClusterState> mStates = new ArrayList<>();
 
-    Path<Floats.Float> mChargePath = new Path<>(Floats.Float.class, null);
+    Path<Floats.Float> mChargePath = new Path<>(Floats.Float.class, null, null);
 
     float mSwitchInterval = 30.0f;
     float mTransitionTime = 1.0f;

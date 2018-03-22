@@ -5,10 +5,16 @@
 
 namespace Electric {
 
-	void Cluster::init(std::mt19937& generator, Engine::BinaryReader& reader,
-					   std::vector<NodeInstance>& nodeInstances, DischargeListener* pDischargeListener)
+	void Cluster::init(std::mt19937& generator, Engine::BinaryReader& reader, DischargeListener* pDischargeListener)
 	{
 		m_generator = generator;
+		read(reader, pDischargeListener);
+	}
+
+	void Cluster::read(Engine::BinaryReader& reader, DischargeListener* pDischargeListener)
+	{
+		m_states.clear();
+
 		m_dirty = true;
 		m_position.read(reader);
 		m_rotation.read(reader);
@@ -16,22 +22,23 @@ namespace Electric {
 		m_switchInterval = reader.read<float>();
 		m_transitionTime = reader.read<float>();
 
-		std::uniform_real_distribution<> dist(0.0f, 1.0f);
-
-		float_path chargePath;
-		read(reader, chargePath);
-
+		read(reader, m_chargePath);
 		int nrNodes = reader.read<int>();
-		for(UINT i=0; i<nrNodes; ++i)
-		{
-			float dt = static_cast<float>(dist(generator));
-			float charge = chargePath.traverse(static_cast<float>(dist(generator)));
+		int diff = nrNodes - m_nrNodes;
 
-			node_ptr pNode(new Node(static_cast<UINT>(nodeInstances.size()), {0,0,0}, {0,0,0}, 1.0f,
-									charge, dt, pDischargeListener));
-			m_nodes.push_back(pNode);
-			nodeInstances.push_back({0, 0, 0, 0.0f, charge, 0,0,0});
+		if (diff < 0)
+		{
+			m_nodes.resize(static_cast<UINT>(nrNodes));
 		}
+		else
+		{
+			for(int i=0; i<diff; ++i)
+			{
+				m_nodes.push_back(createNode(pDischargeListener));
+			}
+		}
+
+		m_nrNodes = nrNodes;
 
 		int nrStates = reader.read<int>();
 		for(int i=0; i<nrStates; ++i)
@@ -41,7 +48,18 @@ namespace Electric {
 			m_states.push_back(state);
 		}
 
-		toState(m_states[0], 0);
+		toState(m_states[0], 1.0f);
+	}
+
+	auto Cluster::createNode(DischargeListener* pDischargeListener)->node_ptr
+	{
+		std::uniform_real_distribution<> dist(0.0f, 1.0f);
+		float dt = static_cast<float>(dist(m_generator));
+		float charge = m_chargePath.traverse(static_cast<float>(dist(m_generator)));
+
+		node_ptr pNode(new Node( {0,0,0}, {0,0,0}, 1.0f, charge, dt, pDischargeListener));
+		m_nodes.push_back(pNode);
+		return pNode;
 	}
 
 	void Cluster::setState(const State& state)
@@ -223,11 +241,11 @@ namespace Electric {
 		}
 	}
 
-	void Cluster::update(std::vector<NodeInstance>& nodeInstances)
+	void Cluster::update(std::vector<NodeInstance>& nodeInstances, UINT& currentIndex)
 	{
 		for(auto& node : m_nodes)
 		{
-			node->update(nodeInstances);
+			node->update(nodeInstances, currentIndex++);
 		}
 	}
 }

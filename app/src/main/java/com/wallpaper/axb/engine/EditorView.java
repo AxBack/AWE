@@ -169,16 +169,33 @@ public class EditorView extends GLSurfaceView implements
             Cluster.createBinary(clusters, mContext.getFilesDir().getAbsolutePath() + "/temp.dat");
             mRenderer.reset("temp.dat");
         }
+
+        @Override
+        public void onPathChanged(Path path) {
+            Type type = (Type)path.tag;
+
+            List<Float> floats = new ArrayList<>();
+            floats.add((float)type.id);
+            path.write(floats);
+
+            mRenderer.updatePath(floats);
+        }
     }
 
     private class Renderer extends com.wallpaper.axb.engine.Renderer {
 
-        private Context mContext;
         private ClusterState mClusterState = new EditableState();
 
         public Renderer(Context ctx) {
             super(ctx, "temp.dat");
-            mContext = ctx;
+        }
+
+        public void updatePath(List<Float> path) {
+            float[] floats = new float[path.size()];
+            for(int i = 0; i < path.size(); ++i)
+                floats[i] = path.get(i);
+
+            mRenderEngine.updatePath(mNativeId, floats);
         }
     }
 }

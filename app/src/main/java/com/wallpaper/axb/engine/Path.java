@@ -28,12 +28,13 @@ public class Path<T extends Floats> {
     OnPathChangedListener mOnPathChangedListener;
 
     List<Part> parts = new ArrayList<>();
-
     Class<T> clazz;
+    Object tag;
 
-    public Path(Class<T> clazz, OnPathChangedListener listener) {
+    public Path(Class<T> clazz, OnPathChangedListener listener, Object tag) {
         this.clazz = clazz;
         mOnPathChangedListener = listener;
+        this.tag = tag;
     }
 
     private Floats newFloatInstance() {
@@ -60,10 +61,15 @@ public class Path<T extends Floats> {
         parts.clear();
     }
 
-    public void write(DataOutputStream stream) throws IOException {
+    float getTotal() {
         float total = 0.0f;
         for(Part p : parts)
             total += p.time;
+        return total;
+    }
+
+    public void write(DataOutputStream stream) throws IOException {
+        float total = getTotal();
 
         stream.writeInt(parts.size()); // nr parts
 
@@ -75,7 +81,20 @@ public class Path<T extends Floats> {
         }
     }
 
-    public <T extends Floats> void randomize(T min, T max, int minNrPoints, int maxNrPoints) {
+    public void write(List<Float> floats) {
+        float total = getTotal();
+
+        floats.add((float)parts.size());
+        for(Part p : parts) {
+            floats.add(total == 0 ? p.time : p.time / total);
+            floats.add((float)p.points.size());
+            for(Floats f: p.points) {
+                f.write(floats);
+            }
+        }
+    }
+
+    public void randomize(T min, T max, int minNrPoints, int maxNrPoints) {
         parts.clear();
 
         Random random = new Random();

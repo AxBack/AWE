@@ -11,11 +11,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 class Renderer implements GLSurfaceView.Renderer {
 
-    private final Context mContext;
-    private final NativeEngine mRenderEngine = new NativeEngine();
+    protected final Context mContext;
+    protected final NativeEngine mRenderEngine = new NativeEngine();
 
-    private int mNativeId = -1;
-    private boolean mIsActive = false;
+    protected int mNativeId = -1;
+    protected boolean mIsActive = false;
 
     private final String mBinaryFile;
 

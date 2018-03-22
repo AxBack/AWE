@@ -39,6 +39,7 @@ namespace Electric {
 		typedef Engine::Path<float> float_path;
 
 		std::string m_internalFilePath;
+		std::atomic_bool m_resetClusters;
 
 		std::mt19937 m_generator;
 		Math::Matrix m_transform;
@@ -84,6 +85,7 @@ namespace Electric {
 			, m_dirty(true)
 			, m_rotation(0.0f)
 			, m_nrDischargeInstances(0)
+			, m_resetClusters(false)
 		{
 			{
 				float points[] = {0,0.9f,1};

@@ -27,12 +27,16 @@ float LOSS_FACTOR = 0.5f;
 
 	void Updater::reset(const char* internalFilePath)
 	{
+		/*
 		if(isRunning())
 			stop();
 
 		clear();
 		init(internalFilePath);
+		 */
 
+		m_internalFilePath = internalFilePath;
+		m_resetClusters = true;
 	}
 
 	void Updater::clear()
@@ -45,8 +49,10 @@ float LOSS_FACTOR = 0.5f;
 		{
 			std::lock_guard<std::mutex> _(m_nodeMutex);
 			m_nodeInstances.clear();
-			m_clusters.clear();
 		}
+
+		m_clusters.clear();
+		m_dischargeInstances.clear();
 
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
 		m_discharges.clear();
@@ -55,7 +61,7 @@ float LOSS_FACTOR = 0.5f;
 	void Updater::loadCluster(Engine::BinaryReader& reader)
 	{
 		cluster_ptr pCluster(new Cluster);
-		pCluster->init(m_generator, reader, m_nodeInstances, this);
+		pCluster->init(m_generator, reader, this);
 		m_clusters.push_back(pCluster);
 	}
 
@@ -143,14 +149,41 @@ float LOSS_FACTOR = 0.5f;
 	void Updater::updateNodeInstances()
 	{
 		std::lock_guard<std::mutex> _(m_nodeMutex);
+		UINT index = 0;
 		for(auto& cluster : m_clusters)
 		{
-			cluster->update(m_nodeInstances);
+			cluster->update(m_nodeInstances, index);
 		}
+
+		if(index < m_nodeInstances.size())
+			m_nodeInstances.resize(index);
 	}
 
     void Updater::advance(float dt)
     {
+		if(m_resetClusters)
+		{
+			Engine::BinaryReader reader(m_internalFilePath.c_str());
+			int nrClusters = reader.read<int>();
+
+			if(m_clusters.size() > nrClusters)
+				m_clusters.resize(static_cast<UINT>(nrClusters));
+
+			for(int i=0; i<nrClusters; ++i)
+			{
+				if(m_clusters.size() < i)
+				{
+					cluster_ptr pCluster(new Cluster());
+					pCluster->init(m_generator, reader, this);
+					m_clusters.push_back(pCluster);
+				}
+				else
+					m_clusters[i]->read(reader, this);
+
+			}
+			m_resetClusters = false;
+		}
+
 		for(auto& it : m_clusters)
 			updateCluster(it, dt);
 		updateCharges(dt);
@@ -182,6 +215,6 @@ float LOSS_FACTOR = 0.5f;
 	void Updater::updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh)
 	{
 		std::lock_guard<std::mutex> _(m_dischargeMutex);
-		mesh.updateInstances(m_nrDischargeInstances, m_nrDischargeInstances > 0 ? &m_dischargeInstances[0] : nullptr);
+		mesh.updateInstances(static_cast<UINT>(m_nrDischargeInstances), m_nrDischargeInstances > 0 ? &m_dischargeInstances[0] : nullptr);
 	}
 }

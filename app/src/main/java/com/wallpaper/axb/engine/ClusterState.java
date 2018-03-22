@@ -29,18 +29,22 @@ import java.io.IOException;
 public class ClusterState implements Path.OnPathChangedListener{
 
     enum Type {
-        POSITION, ROTATION, OFFSET, SPREAD, YAW, PITCH, COLOR, SIZE
+        POSITION(1), ROTATION(2), OFFSET(3), SPREAD(4), YAW(5), PITCH(6), COLOR(7), SIZE(8);
+
+        final int id;
+
+        Type(int id) { this.id = id; }
     }
 
     public String id;
-    private Path<Floats.Float3> mPosition = new Path<>(Floats.Float3.class, this);
-    private Path<Floats.Float3> mRotation = new Path<>(Floats.Float3.class, this);
-    private Path<Floats.Float> mOffset = new Path<>(Floats.Float.class, this);
-    private Path<Floats.Float> mSpread = new Path<>(Floats.Float.class, this);
-    private Path<Floats.Float> mYaw = new Path<>(Floats.Float.class, this);
-    private Path<Floats.Float> mPitch = new Path<>(Floats.Float.class, this);
-    private Path<Floats.Float3> mColor = new Path<>(Floats.Float3.class, this);
-    private Path<Floats.Float> mSize = new Path<>(Floats.Float.class, this);
+    protected Path<Floats.Float3> mPosition = new Path<>(Floats.Float3.class, this, Type.POSITION);
+    protected Path<Floats.Float3> mRotation = new Path<>(Floats.Float3.class, this, Type.ROTATION);
+    protected Path<Floats.Float> mOffset = new Path<>(Floats.Float.class, this, Type.OFFSET);
+    protected Path<Floats.Float> mSpread = new Path<>(Floats.Float.class, this, Type.SPREAD);
+    protected Path<Floats.Float> mYaw = new Path<>(Floats.Float.class, this, Type.YAW);
+    protected Path<Floats.Float> mPitch = new Path<>(Floats.Float.class, this, Type.PITCH);
+    protected Path<Floats.Float3> mColor = new Path<>(Floats.Float3.class, this, Type.COLOR);
+    protected Path<Floats.Float> mSize = new Path<>(Floats.Float.class, this, Type.SIZE);
 
     public ClusterState() {
 
