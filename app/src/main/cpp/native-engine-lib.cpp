@@ -126,15 +126,21 @@ Java_com_wallpaper_axb_engine_NativeEngine_onOffsetChanged(JNIEnv* /*pEnv*/, job
 }
 
 JNIEXPORT void JNICALL
-Java_com_wallpaper_axb_engine_NativeEngine_updatePath(JNIEnv* /*pEnv*/, jobject /*thiz*/, jint id, jfloatArray floats)
+Java_com_wallpaper_axb_engine_NativeEngine_updatePath(JNIEnv* pEnv, jobject /*thiz*/, jint id, jstring path)
 {
 	auto it = engines.find(id);
 	if(it != engines.end())
 	{
+		const char* pData = pEnv->GetStringUTFChars(path, (jboolean*)0); // not correct data..
 
+		// AXB_TODO: Something messes up along the way...
+
+		std::string d(pData);
+		Engine::IO::BinaryStringReader reader(d, false);
+		it->second->updatePath(&reader);
+		pEnv->ReleaseStringUTFChars(path, pData);
 	}
 	else
 		LOGE("No Engine to touch");
 }
-
 }

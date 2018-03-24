@@ -16,7 +16,7 @@ class NativeEngine {
     public native void onPinch(int id, float factor);
     public native void onOffsetChanged(int id, float x, float y);
 
-    public native void updatePath(int id, float[] path);
+    public native void updatePath(int id, String path);
 
     // Used to load the 'native-lib' library on application startup.
     static {

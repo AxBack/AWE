@@ -65,7 +65,7 @@ namespace Electric {
 		float_path m_dischargeOffsetPath;
 		float_path m_dischargeSizePath;
 
-		void loadCluster(Engine::BinaryReader& reader);
+		void loadCluster(Engine::IO::BinaryReader* pReader);
 
 		void updateCharges(float dt);
 		void updateCluster(cluster_ptr pCluster, float dt);;
@@ -109,17 +109,13 @@ namespace Electric {
 		void reset(const char* internalFilePath);
 		void clear();
 
+		void updatePath(UINT cluster, UINT state, Engine::IO::BinaryReader* pReader);
+
         void updateInstances(Engine::InstancedMesh<PositionVertex, ParticleInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<PositionVertex, NodeInstance>& mesh);
 		void updateInstances(Engine::InstancedMesh<DischargeVertex, DischargeInstance>& mesh);
 
 		void onDischarge(Node* pNode, float radius) override;
-
-		void setState(UINT cluster, const Cluster::State& state)
-		{
-			std::lock_guard<std::mutex> _(m_nodeMutex);
-			m_clusters[cluster]->setState(state);
-		}
 
     };
 }

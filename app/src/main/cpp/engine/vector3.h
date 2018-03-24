@@ -33,11 +33,11 @@ namespace Math {
 		void y(float v) { m_data[Y] = v; }
 		void z(float v) { m_data[Z] = v; }
 
-		void read(Engine::BinaryReader& in)
+		void read(Engine::IO::BinaryReader* in)
 		{
-			m_data[X] = in.read<float>();
-			m_data[Y] = in.read<float>();
-			m_data[Z] = in.read<float>();
+			m_data[X] = in->read<float>();
+			m_data[Y] = in->read<float>();
+			m_data[Z] = in->read<float>();
 		}
 
 		Vector3& operator=(const Vector3 &rhs) {

@@ -4,11 +4,16 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,11 +179,22 @@ public class EditorView extends GLSurfaceView implements
         public void onPathChanged(Path path) {
             Type type = (Type)path.tag;
 
-            List<Float> floats = new ArrayList<>();
-            floats.add((float)type.id);
-            path.write(floats);
+            byte[] bytes;
+            try {
+                ByteArrayOutputStream data = new ByteArrayOutputStream(path.calculateByteSize());
+                DataOutputStream stream = new DataOutputStream(data);
 
-            mRenderer.updatePath(floats);
+                stream.writeInt(type.id);
+                path.write(stream);
+
+                bytes = data.toByteArray();
+
+            } catch (IOException e) {
+                Log.d("Cluster", "Could not create binary");
+                return;
+            }
+
+            mRenderer.updatePath(bytes);
         }
     }
 
@@ -190,12 +206,9 @@ public class EditorView extends GLSurfaceView implements
             super(ctx, "temp.dat");
         }
 
-        public void updatePath(List<Float> path) {
-            float[] floats = new float[path.size()];
-            for(int i = 0; i < path.size(); ++i)
-                floats[i] = path.get(i);
-
-            mRenderEngine.updatePath(mNativeId, floats);
+        public void updatePath(byte[] bytes) {
+            String data = new String(bytes);
+            mRenderEngine.updatePath(mNativeId, data);
         }
     }
 }

@@ -10,6 +10,7 @@ public abstract class Floats {
     public abstract void write(DataOutputStream stream) throws IOException;
     public abstract void randomize(Random random, Floats min, Floats max);
     public abstract void write(List<java.lang.Float> floats);
+    public abstract int nrElements();
 
     public static class Float extends Floats {
         public float v;
@@ -32,6 +33,11 @@ public abstract class Floats {
         @Override
         public void randomize(Random random, Floats min, Floats max) {
             v = ((Floats.Float)min).v + (random.nextFloat() * (((Floats.Float)max).v- ((Floats.Float)min).v));
+        }
+
+        @Override
+        public int nrElements() {
+            return 1;
         }
     }
 
@@ -69,6 +75,11 @@ public abstract class Floats {
             x = ((Floats.Float3)min).x + (random.nextFloat() * (((Floats.Float3)max).x - ((Floats.Float3)min).x));
             y = ((Floats.Float3)min).y + (random.nextFloat() * (((Floats.Float3)max).y - ((Floats.Float3)min).y));
             z = ((Floats.Float3)min).z + (random.nextFloat() * (((Floats.Float3)max).z - ((Floats.Float3)min).z));
+        }
+
+        @Override
+        public int nrElements() {
+            return 3;
         }
     }
 }

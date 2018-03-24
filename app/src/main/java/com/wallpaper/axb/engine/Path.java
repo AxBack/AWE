@@ -68,6 +68,18 @@ public class Path<T extends Floats> {
         return total;
     }
 
+    int calculateByteSize() {
+        int size = 1;
+
+        for(Part p : parts) {
+            ++size;
+
+            size += p.points.size() * p.points.get(0).nrElements();
+        }
+
+        return size * 4;
+    }
+
     public void write(DataOutputStream stream) throws IOException {
         float total = getTotal();
 
@@ -78,19 +90,6 @@ public class Path<T extends Floats> {
             stream.writeInt(p.points.size());
             for (Floats f : p.points)
                 f.write(stream);
-        }
-    }
-
-    public void write(List<Float> floats) {
-        float total = getTotal();
-
-        floats.add((float)parts.size());
-        for(Part p : parts) {
-            floats.add(total == 0 ? p.time : p.time / total);
-            floats.add((float)p.points.size());
-            for(Floats f: p.points) {
-                f.write(floats);
-            }
         }
     }
 

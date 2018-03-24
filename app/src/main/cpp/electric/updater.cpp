@@ -14,12 +14,12 @@ float LOSS_FACTOR = 0.5f;
 	{
 		Math::Matrix::identity(m_transform);
 
-		Engine::BinaryReader reader(m_internalFilePath.c_str());
+		Engine::IO::BinaryFileReader reader(m_internalFilePath.c_str());
 		int nrClusters = reader.read<int>();
 
 		for(int i=0; i<nrClusters; ++i)
 		{
-			loadCluster(reader);
+			loadCluster(&reader);
 		}
 
 		return Engine::Updater::init();
@@ -58,10 +58,19 @@ float LOSS_FACTOR = 0.5f;
 		m_discharges.clear();
 	}
 
-	void Updater::loadCluster(Engine::BinaryReader& reader)
+	void Updater::updatePath(UINT cluster, UINT state, Engine::IO::BinaryReader* pReader)
+	{
+		std::lock_guard<std::mutex> _(m_nodeMutex);
+		if(cluster < m_clusters.size())
+		{
+			m_clusters[cluster]->updatePath(state, pReader);
+		}
+	}
+
+	void Updater::loadCluster(Engine::IO::BinaryReader* pReader)
 	{
 		cluster_ptr pCluster(new Cluster);
-		pCluster->init(m_generator, reader, this);
+		pCluster->init(m_generator, pReader, this);
 		m_clusters.push_back(pCluster);
 	}
 
@@ -163,7 +172,7 @@ float LOSS_FACTOR = 0.5f;
     {
 		if(m_resetClusters)
 		{
-			Engine::BinaryReader reader(m_internalFilePath.c_str());
+			Engine::IO::BinaryFileReader reader(m_internalFilePath.c_str(), true);
 			int nrClusters = reader.read<int>();
 
 			if(m_clusters.size() > nrClusters)
@@ -174,11 +183,11 @@ float LOSS_FACTOR = 0.5f;
 				if(m_clusters.size() < i)
 				{
 					cluster_ptr pCluster(new Cluster());
-					pCluster->init(m_generator, reader, this);
+					pCluster->init(m_generator, &reader, this);
 					m_clusters.push_back(pCluster);
 				}
 				else
-					m_clusters[i]->read(reader, this);
+					m_clusters[i]->read(&reader, this);
 
 			}
 			m_resetClusters = false;

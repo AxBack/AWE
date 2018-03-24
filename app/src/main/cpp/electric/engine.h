@@ -12,6 +12,7 @@
 #include "../engine/texture.h"
 #include "../engine/sensor.h"
 #include "node_overlay_shader.h"
+#include "../engine/binary_reader.h"
 
 #include <chrono>
 
@@ -139,10 +140,7 @@ namespace Electric {
 			m_pinch = std::max(0.0f, std::min(m_positionPath.getLength(), c + diff));
 		}
 
-		void setState(const Cluster::State& state)
-		{
-			m_updater.setState(0, state);
-		}
+		void updatePath(::Engine::IO::BinaryReader* pReader);
     };
 
 }

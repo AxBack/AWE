@@ -19,6 +19,11 @@ namespace Electric {
 	class Cluster
 	{
 	public:
+		enum Type
+		{
+			POSITION = 1, ROTATION = 2, OFFSET = 3, SPREAD = 4, YAW = 5, PITCH = 6, COLOR = 7, SIZE = 8
+		};
+
 		typedef std::shared_ptr<Node> node_ptr;
 		typedef std::vector<node_ptr> node_vec;
 		typedef Engine::Path<Math::Vector3> vec3_path;
@@ -60,9 +65,9 @@ namespace Electric {
 		node_ptr createNode(DischargeListener* pDischargeListener);
 		void toState(const State& state, float transitionTime);
 
-		static void read(Engine::BinaryReader& reader, vec3_path& path, const Math::Vector3 def = {0,0,0});
-		static void read(Engine::BinaryReader& reader, float_path& path, const float def = 0.0f);
-		static void read(Engine::BinaryReader& reader, State& state);
+		static void read(Engine::IO::BinaryReader* pReader, vec3_path& path, const Math::Vector3 def = {0,0,0});
+		static void read(Engine::IO::BinaryReader* pReader, float_path& path, const float def = 0.0f);
+		static void read(Engine::IO::BinaryReader* pReader, State& state);
 
 	public:
 
@@ -76,11 +81,12 @@ namespace Electric {
 		{
 		}
 
-		void init(std::mt19937& generator, Engine::BinaryReader& reader, DischargeListener* pDischargeListener);
+		void init(std::mt19937& generator, Engine::IO::BinaryReader* pReader, DischargeListener* pDischargeListener);
 
-		void read(Engine::BinaryReader& reader, DischargeListener* pDischargeListener);
+		void read(Engine::IO::BinaryReader* pReader, DischargeListener* pDischargeListener);
 
 		void setState(const State& state);
+		void updatePath(UINT state, Engine::IO::BinaryReader* pReader);
 
 		void update(const Math::Matrix& parent, bool dirty, std::vector<Search>& searches, float dt);
 

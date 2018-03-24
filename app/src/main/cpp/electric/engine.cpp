@@ -166,6 +166,11 @@ namespace Electric {
 		m_updater.reset(internalFilePath);
 	}
 
+	void ElectricEngine::updatePath(::Engine::IO::BinaryReader* pReader)
+	{
+		m_updater.updatePath(0, 0, pReader);
+	}
+
     bool ElectricEngine::render()
     {
 		if(m_sizeDirty)
