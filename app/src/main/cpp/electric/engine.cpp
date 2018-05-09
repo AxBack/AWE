@@ -212,17 +212,20 @@ namespace Electric {
 			m_sensor.update();
 			Math::Vector3 r = m_sensor.getRotation();
 
-			// Convert to radians instead of having a really small factor.
-			// However, might want to experiment with different speed and stuff
-			Math::Quaternion tilt = Math::Quaternion::fromEulerAngles(TO_RADIANS(-r.x()), TO_RADIANS(r.y()), TO_RADIANS(r.z()));
+			Math::Quaternion pitch = Math::Quaternion::fromAxisAngle({1,0,0}, r.x());
+			Math::Quaternion yaw = Math::Quaternion::fromAxisAngle({0,1,0}, -r.y());
+			Math::Quaternion roll = Math::Quaternion::fromAxisAngle({0,0,1}, r.z());
 
-			Math::Vector3 at = {0,0,1};
+			Math::Matrix tilt;
+			Math::Matrix::setRotate(tilt, pitch * yaw * roll);
+
+			Math::Vector3 at = Math::Matrix::transform(tilt, {0,0,1}, 0.0f);
 			Math::Vector3 up = {0,1,0};
 
 			Math::Quaternion offset = Math::Quaternion::fromAxisAngle(0,1,0, -m_yawPath.traverse(m_offset));
 
 			Math::Matrix rot;
-			Math::Matrix::setRotate(rot, tilt * offset);
+			Math::Matrix::setRotate(rot, offset);
 
 			Math::Vector3 pos = Math::Matrix::transform(rot, m_positionPath.traverse(m_pinch));
 			at = Math::Matrix::transform(rot, at, 0.0f);
